@@ -7,8 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -21,28 +24,45 @@ import dartmouth.edu.dartreminder.R;
 public class NewScheduleActivity extends Activity {
 
     private Switch mSwitchAllDay;
+    private Switch mSwitchLocation;
     private TextView mNewScheduleDate;
     private TextView mNewScheduleTime;
+    private ImageButton mChooseLocation;
+    private Spinner mChoosePriority;
 
-    private Calendar mDateAndTime;
+    private String mDate = "", mTime = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_schedule);
 
+        if(savedInstanceState != null) {
+            mDate = savedInstanceState.getString("Date");
+            mTime = savedInstanceState.getString("Time");
+        }
+
         mNewScheduleDate = (TextView) findViewById(R.id.TextView_DayPicker);
         mNewScheduleTime = (TextView) findViewById(R.id.TextView_TimePicker);
         mNewScheduleDate.setVisibility(View.GONE);
         mNewScheduleTime.setVisibility(View.GONE);
 
-        mDateAndTime = Calendar.getInstance();
+        mChooseLocation = (ImageButton) findViewById(R.id.ImageButton_ChooseLocation);
+        mChooseLocation.setImageResource(R.drawable.ic_menu_slideshow);
+        mChooseLocation.setVisibility(View.GONE);
+
+        mChoosePriority = (Spinner) findViewById(R.id.Spinner_Priority);
+        ArrayAdapter<String> arrayAdapterPriorities = new ArrayAdapter<String>(
+                getApplicationContext(),
+                android.R.layout.simple_list_item_1,
+                Globals.PRIORITIES );
+        mChoosePriority.setAdapter(arrayAdapterPriorities);
 
         mSwitchAllDay = (Switch) findViewById(R.id.Switch_AllDayReminder);
         mSwitchAllDay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.v("Switch State=", "" + isChecked);
+                Log.v("Switch State = ", "" + isChecked);
                 if(isChecked) {
                     mNewScheduleDate.setVisibility(View.VISIBLE);
                     mNewScheduleTime.setVisibility(View.VISIBLE);
@@ -52,6 +72,25 @@ public class NewScheduleActivity extends Activity {
                 }
             }
         });
+
+        mSwitchLocation = (Switch) findViewById(R.id.Switch_LocationReminder);
+        mSwitchLocation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    mChooseLocation.setVisibility(View.VISIBLE);
+                } else {
+                    mChooseLocation.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("Date", mDate);
+        outState.putString("Time", mTime);
     }
 
     public void onSaveClicked(View v) {
@@ -59,40 +98,27 @@ public class NewScheduleActivity extends Activity {
     }
 
     public void onCancelClicked(View v) {
-        v.setEnabled(false);
         finish();
     }
 
     public void onDatePickerClicked(View v) {
-        Log.d("S", "ss");
-        DatePickerDialog.OnDateSetListener mDateListener = new DatePickerDialog.OnDateSetListener() {
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                mDateAndTime.set(Calendar.YEAR, year);
-                mDateAndTime.set(Calendar.MONTH, monthOfYear);
-                mDateAndTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                SimpleDateFormat format = new SimpleDateFormat("EEEE, MMMM d, yyyy 'at' h:mm a");
-                //System.out.println(format.format(mDateAndTime.getTime()));
-            }
-        };
-
-        new DatePickerDialog(this, mDateListener,
-                mDateAndTime.get(Calendar.YEAR),
-                mDateAndTime.get(Calendar.MONTH),
-                mDateAndTime.get(Calendar.DAY_OF_MONTH)).show();
+        displayDialog(DialogFragment.DIALOG_ID_DATE);
     }
 
     public void onTimePickerClicked(View v) {
-        TimePickerDialog.OnTimeSetListener mTimeListener = new TimePickerDialog.OnTimeSetListener() {
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                mDateAndTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                mDateAndTime.set(Calendar.MINUTE, minute);
-            }
-        };
+        displayDialog(DialogFragment.DIALOG_ID_TIME);
+    }
 
-        new TimePickerDialog(this, mTimeListener,
-                mDateAndTime.get(Calendar.HOUR_OF_DAY),
-                mDateAndTime.get(Calendar.MINUTE), true).show();
+    public void displayDialog(int id) {
+        android.app.DialogFragment fragment = DialogFragment.newInstance(id);
+        fragment.show(getFragmentManager(), getString(R.string.dialog_fragment_tag_general));
+    }
 
+    public void onDateSet(int year, int month, int day) {
+        mDate = Integer.toString(year) + Integer.toString(month) + Integer.toString(day);
+    }
+
+    public void onTimeSet(int hour, int minute) {
+        mTime = Integer.toString(hour) + Integer.toString(minute);
     }
 }

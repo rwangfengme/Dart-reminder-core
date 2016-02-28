@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,16 +13,11 @@ import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import dartmouth.edu.dartreminder.R;
 
 public class ListViewAdapter extends BaseSwipeAdapter {
 
     private Context mContext;
-    private SwipeLayout swipeLayout;
-    private ArrayList<String> data_provider = new ArrayList<String>(Arrays.asList("A", "B", "C", "D", "E"));
 
     public ListViewAdapter(Context mContext) {
         this.mContext = mContext;
@@ -35,27 +29,25 @@ public class ListViewAdapter extends BaseSwipeAdapter {
     }
 
     @Override
-    public View generateView(final int position, ViewGroup parent) {
+    public View generateView(int position, ViewGroup parent) {
         View v = LayoutInflater.from(mContext).inflate(R.layout.listview_item, null);
-        swipeLayout = (SwipeLayout)v.findViewById(getSwipeLayoutResourceId(position));
+        SwipeLayout swipeLayout = (SwipeLayout)v.findViewById(getSwipeLayoutResourceId(position));
         swipeLayout.addSwipeListener(new SimpleSwipeListener() {
             @Override
             public void onOpen(SwipeLayout layout) {
                 //YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.trash));
             }
         });
+        swipeLayout.setOnDoubleClickListener(new SwipeLayout.DoubleClickListener() {
+            @Override
+            public void onDoubleClick(SwipeLayout layout, boolean surface) {
+                Toast.makeText(mContext, "DoubleClick", Toast.LENGTH_SHORT).show();
+            }
+        });
         v.findViewById(R.id.delete).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(mContext, "click delete", Toast.LENGTH_SHORT).show();
-                data_provider.remove(position);
-                ListViewAdapter.this.notifyDataSetChanged();
-            }
-        });
-        v.findViewById(R.id.share).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(mContext, "click share", Toast.LENGTH_SHORT).show();
             }
         });
         return v;
@@ -65,13 +57,11 @@ public class ListViewAdapter extends BaseSwipeAdapter {
     public void fillValues(int position, View convertView) {
         TextView t = (TextView)convertView.findViewById(R.id.position);
         t.setText((position + 1) + ".");
-        TextView text_data = (TextView)convertView.findViewById(R.id.text_data);
-        text_data.setText(data_provider.get(position));
     }
 
     @Override
     public int getCount() {
-        return data_provider.size();
+        return 30;
     }
 
     @Override
