@@ -1,6 +1,7 @@
 package dartmouth.edu.dartreminder.view;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -135,14 +136,13 @@ public class RecentListFragment extends Fragment {
             }
         });
 
-        /*FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorDeepRed)));
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                *//*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*//*
             }
-        });*/
+        });
 
         return view;
     }

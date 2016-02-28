@@ -16,29 +16,47 @@
         android:tag="Bottom3"
         android:weightSum="10">
 
-        <ImageView
-            android:id="@+id/trash"
-            android:layout_width="27dp"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:src="@drawable/trash" />
-
-        <TextView
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="5"
-            android:text="Delete Item?"
-            android:textColor="#fff"
-            android:textSize="17sp" />
-
-        <Button
             android:id="@+id/delete"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="4"
+            android:layout_weight="4">
+            <ImageView
+                android:id="@+id/trash_ico"
+                android:layout_width="27dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:src="@android:drawable/ic_menu_delete" />
 
-            android:text="Yes,Delete"
-            android:textColor="#FF5534" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Delete"
+                android:layout_weight="3"
+                android:textColor="#fff"
+                android:textSize="17sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/share"
+            android:layout_weight="4">
+            <ImageView
+                android:id="@+id/share_ico"
+                android:layout_width="27dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:src="@android:drawable/ic_menu_share" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="Share"
+                android:textColor="#fff"
+                android:textSize="17sp" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
