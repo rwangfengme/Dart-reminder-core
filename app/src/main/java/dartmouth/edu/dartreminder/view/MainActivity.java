@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.commit();
 
         //test
-        Intent i = new Intent(this, MapsActivity.class);
+        Intent i = new Intent(this, NewScheduleActivity.class);
         startActivity(i);
     }
 
