@@ -62,6 +62,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:padding="10dp">
 
         <TextView
@@ -73,7 +74,6 @@
             android:id="@+id/text_data"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:tag="Hover"
-            android:text="Do not, for one repulse, forgo the purpose that you resolved to effort. " />
+            android:tag="Hover" />
     </LinearLayout>
 </com.daimajia.swipe.SwipeLayout>
