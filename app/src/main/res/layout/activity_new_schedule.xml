@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="dartmouth.edu.dartreminder.NewScheduleActivity"
+    android:id="@+id/mineView">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="5dp"
+        android:clickable="false"
+        android:focusableInTouchMode="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Title"
+            android:id="@+id/TextView_NewScheduleTitle"
+            android:layout_gravity="center_vertical"
+            android:gravity="center" />
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:ems="10"
+            android:id="@+id/EditText_NewScheduleTitle" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Notes"
+            android:id="@+id/TextView_NewScheduleNotes"
+            android:layout_gravity="center_vertical"
+            android:gravity="center" />
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:ems="10"
+            android:id="@+id/EditText_NewScheduleNotes" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="All Day"
+                android:id="@+id/TextView_AllDay" />
+
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text=""
+                android:id="@+id/Switch_AllDayReminder" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date"
+                android:onClick="onDatePickerClicked"
+                android:id="@+id/TextView_DayPicker" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="Time"
+                android:onClick="onTimePickerClicked"
+                android:id="@+id/TextView_TimePicker" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:text="Save"
+                android:onClick="onSaveClicked"
+                android:id="@+id/Button_SaveNewSchedule"
+                android:layout_weight="1"
+                android:layout_marginLeft="40dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:text="CANCEL"
+                android:onClick="onCancelClicked"
+                android:id="@+id/Button_CancelNewSchedule"
+                android:layout_weight="1"
+                android:layout_marginRight="40dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
