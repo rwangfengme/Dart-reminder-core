@@ -1,4 +1,4 @@
-package dartmouth.edu.dartreminder;
+package dartmouth.edu.dartreminder.view;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -15,6 +15,8 @@ import android.widget.TimePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
+import dartmouth.edu.dartreminder.R;
 
 public class NewScheduleActivity extends Activity {
 

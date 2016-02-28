@@ -2,6 +2,7 @@ package dartmouth.edu.dartreminder.view;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
@@ -53,6 +54,10 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.replace(R.id.main_page, f1, "f1");
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+
+        //test
+        Intent i = new Intent(this, MapsActivity.class);
+        startActivity(i);
     }
 
     @Override
