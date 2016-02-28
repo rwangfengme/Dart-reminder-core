@@ -3,6 +3,7 @@ package dartmouth.edu.dartreminder.view;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,16 +11,19 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import dartmouth.edu.dartreminder.R;
+import dartmouth.edu.dartreminder.data.Schedule;
 
 public class NewScheduleActivity extends Activity {
 
@@ -30,16 +34,24 @@ public class NewScheduleActivity extends Activity {
     private ImageButton mChooseLocation;
     private Spinner mChoosePriority;
 
+    private Calendar mDateAndTime;
     private String mDate = "", mTime = "";
+
+    private Schedule schedule;
+    private InsertDbTask task = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_schedule);
 
+        mDateAndTime = Calendar.getInstance();
         if(savedInstanceState != null) {
-            mDate = savedInstanceState.getString("Date");
-            mTime = savedInstanceState.getString("Time");
+            mDateAndTime.setTimeInMillis(savedInstanceState.getLong("mDateAndTime"));
+//            mDate = Integer.toString(mDateAndTime.get(Calendar.YEAR));
+//            mTime = Integer.toString(mDateAndTime.get(Calendar.HOUR_OF_DAY));
+        } else {
+            mDateAndTime.setTimeInMillis(System.currentTimeMillis());
         }
 
         mNewScheduleDate = (TextView) findViewById(R.id.TextView_DayPicker);
@@ -84,17 +96,25 @@ public class NewScheduleActivity extends Activity {
                 }
             }
         });
+
+        schedule = new Schedule();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("Date", mDate);
-        outState.putString("Time", mTime);
+        outState.putLong("mDateAndTime", mDateAndTime.getTimeInMillis());
     }
 
     public void onSaveClicked(View v) {
-        finish();
+        schedule.setTitle(((EditText) findViewById(R.id.EditText_NewScheduleTitle)).getText()
+                .toString());
+        schedule.setNotes(((EditText) findViewById(R.id.EditText_NewScheduleNotes)).getText()
+                .toString());
+        schedule.setPriority(mChoosePriority.getSelectedItemPosition());
+        task = new InsertDbTask();
+        task.execute();
+        this.finish();
     }
 
     public void onCancelClicked(View v) {
@@ -115,10 +135,35 @@ public class NewScheduleActivity extends Activity {
     }
 
     public void onDateSet(int year, int month, int day) {
-        mDate = Integer.toString(year) + Integer.toString(month) + Integer.toString(day);
+        mDateAndTime.set(Calendar.YEAR, year);
+        mDateAndTime.set(Calendar.MONTH, month);
+        mDateAndTime.set(Calendar.DAY_OF_MONTH, day);
+        // mDate = Integer.toString(year) + Integer.toString(month) + Integer.toString(day);
     }
 
     public void onTimeSet(int hour, int minute) {
-        mTime = Integer.toString(hour) + Integer.toString(minute);
+        mDateAndTime.set(Calendar.HOUR_OF_DAY, hour);
+        mDateAndTime.set(Calendar.MINUTE, minute);
+        // mTime = Integer.toString(mDateAndTime.get(Calendar.HOUR_OF_DAY)) + mDateAndTime.get(Calendar.MINUTE);
+    }
+
+    class InsertDbTask extends AsyncTask<Void, String, Void> {
+
+        @Override
+        protected Void doInBackground(Void... unused) {
+
+            // publishProgress(Long.toString(e.getId()));
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(String... name) {
+            Toast.makeText(NewScheduleActivity.this, "Entry #" + name[0] + " saved", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            task = null;
+        }
     }
 }
