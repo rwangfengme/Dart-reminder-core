@@ -3,7 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:icon="@android:drawable/ic_input_add"
+        android:showAsAction="always"
+        android:title="Settings">
+    </item>
+    <item
+        android:id="@+id/action_sync"
+        android:icon="@drawable/cloud_sync"
+        android:showAsAction="always|withText"
+        android:title="Sync"/>
+
 </menu>
