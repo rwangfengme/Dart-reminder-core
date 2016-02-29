@@ -1,35 +1,33 @@
 package dartmouth.edu.dartreminder.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
 import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import dartmouth.edu.dartreminder.R;
 import dartmouth.edu.dartreminder.data.Schedule;
+import dartmouth.edu.dartreminder.data.ScheduleDBHelper;
 
 public class ListViewAdapter extends BaseSwipeAdapter {
 
-    private Context mContext;
-    private SwipeLayout swipeLayout;
+    private Context mContext;private
+    ScheduleDBHelper mScheduleDBHelper;
+    private DelScheduleTask task = null;
     private ArrayList<Schedule> dataScource;
+
+    private SwipeLayout swipeLayout;
 
     public ListViewAdapter(Context mContext, ArrayList dataSource) {
         this.mContext = mContext;
@@ -55,10 +53,15 @@ public class ListViewAdapter extends BaseSwipeAdapter {
             @Override
             public void onClick(View view) {
                 //TODO: Del DB
-                Toast.makeText(mContext, "delete success", Toast.LENGTH_SHORT).show();
+
+                dataScource.remove(position);
                 ListViewAdapter.this.notifyDataSetChanged();
                 swipeLayout = (SwipeLayout) v.findViewById(getSwipeLayoutResourceId(position-1));
                 swipeLayout.close(false);
+
+                mScheduleDBHelper = new ScheduleDBHelper(mContext);
+                task = new DelScheduleTask();
+                task.execute(dataScource.get(position).getId(), new Long(position));
             }
         });
         v.findViewById(R.id.share).setOnClickListener(new View.OnClickListener() {
@@ -101,5 +104,33 @@ public class ListViewAdapter extends BaseSwipeAdapter {
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    /*private void updateAfterDel(long pos){
+        View v = viewList.get((int) pos - 1);
+        Toast.makeText(mContext, "delete success", Toast.LENGTH_SHORT).show();
+        ListViewAdapter.this.notifyDataSetChanged();
+        swipeLayout = (SwipeLayout) v.findViewById(getSwipeLayoutResourceId((int) pos -1));
+        swipeLayout.close(false);
+    }*/
+
+    class DelScheduleTask extends AsyncTask<Long, String, Long> {
+
+        @Override
+        protected Long doInBackground(Long... rowId) {
+            mScheduleDBHelper.removeSchedule(rowId[0]);
+            return rowId[1];
+        }
+
+        @Override
+        protected void onProgressUpdate(String... name) {
+            //Toast.makeText(NewScheduleActivity.this, "Entry #" + name[0] + " saved", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(Long pos) {
+            //updateAfterDel(pos);
+            Toast.makeText(mContext, "delete success", Toast.LENGTH_SHORT).show();
+        }
     }
 }
