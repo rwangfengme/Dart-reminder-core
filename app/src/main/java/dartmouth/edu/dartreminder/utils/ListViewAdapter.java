@@ -23,15 +23,17 @@ import java.util.Arrays;
 import java.util.List;
 
 import dartmouth.edu.dartreminder.R;
+import dartmouth.edu.dartreminder.data.Schedule;
 
 public class ListViewAdapter extends BaseSwipeAdapter {
 
     private Context mContext;
     private SwipeLayout swipeLayout;
-    private ArrayList<String> data_provider = new ArrayList<String>(Arrays.asList("A", "B", "C", "D", "E"));
+    private ArrayList<Schedule> dataScource;
 
-    public ListViewAdapter(Context mContext) {
+    public ListViewAdapter(Context mContext, ArrayList dataSource) {
         this.mContext = mContext;
+        this.dataScource = dataSource;
     }
 
     @Override
@@ -54,7 +56,6 @@ public class ListViewAdapter extends BaseSwipeAdapter {
             public void onClick(View view) {
                 //TODO: Del DB
                 Toast.makeText(mContext, "delete success", Toast.LENGTH_SHORT).show();
-                data_provider.remove(position);
                 ListViewAdapter.this.notifyDataSetChanged();
                 swipeLayout = (SwipeLayout) v.findViewById(getSwipeLayoutResourceId(position-1));
                 swipeLayout.close(false);
@@ -79,15 +80,17 @@ public class ListViewAdapter extends BaseSwipeAdapter {
 
     @Override
     public void fillValues(int position, View convertView) {
+        Schedule singleSchedule = dataScource.get(position);
+
         TextView t = (TextView)convertView.findViewById(R.id.position);
-        t.setText("Event." + (position+1));
+        t.setText(singleSchedule.getTitle());
         TextView text_data = (TextView)convertView.findViewById(R.id.text_data);
-        text_data.setText(data_provider.get(position));
+        text_data.setText(singleSchedule.getNotes());
     }
 
     @Override
     public int getCount() {
-        return data_provider.size();
+        return dataScource.size();
     }
 
     @Override

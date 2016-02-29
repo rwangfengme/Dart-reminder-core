@@ -98,10 +98,6 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
-            fragmentTransaction = fragmentManager.beginTransaction();
-            BlankFragment2 f2 = new BlankFragment2();
-            fragmentTransaction.replace(R.id.main_page, f2, "f2").commit();
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
