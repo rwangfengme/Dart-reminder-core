@@ -24,20 +24,26 @@ import java.util.Calendar;
 
 import dartmouth.edu.dartreminder.R;
 import dartmouth.edu.dartreminder.data.Schedule;
+import dartmouth.edu.dartreminder.data.ScheduleDBHelper;
 
 public class NewScheduleActivity extends Activity {
 
     private Switch mSwitchAllDay;
     private Switch mSwitchLocation;
+    private Switch mSwitchActivity;
     private TextView mNewScheduleDate;
     private TextView mNewScheduleTime;
-    private ImageButton mChooseLocation;
+    private TextView mChooseLocation;
+    private TextView mDatePicker;
+    private TextView mTimePicker;
     private Spinner mChoosePriority;
+    private Spinner mChooseRepeat;
 
     private Calendar mDateAndTime;
-    private String mDate = "", mTime = "";
+    private boolean chooseTimeAlert = false, chooseLocationAlert = false;
 
     private Schedule schedule;
+    private ScheduleDBHelper mScheduleDBHelper;
     private InsertDbTask task = null;
 
     @Override
@@ -48,19 +54,21 @@ public class NewScheduleActivity extends Activity {
         mDateAndTime = Calendar.getInstance();
         if(savedInstanceState != null) {
             mDateAndTime.setTimeInMillis(savedInstanceState.getLong("mDateAndTime"));
-//            mDate = Integer.toString(mDateAndTime.get(Calendar.YEAR));
-//            mTime = Integer.toString(mDateAndTime.get(Calendar.HOUR_OF_DAY));
+            chooseTimeAlert = savedInstanceState.getBoolean("chooseTimeAlert");
+            chooseLocationAlert = savedInstanceState.getBoolean("chooseLocationAlert");
         } else {
             mDateAndTime.setTimeInMillis(System.currentTimeMillis());
         }
+
+        mDatePicker = (TextView) findViewById(R.id.TextView_DayPicker);
+        mTimePicker = (TextView) findViewById(R.id.TextView_TimePicker);
 
         mNewScheduleDate = (TextView) findViewById(R.id.TextView_DayPicker);
         mNewScheduleTime = (TextView) findViewById(R.id.TextView_TimePicker);
         mNewScheduleDate.setVisibility(View.GONE);
         mNewScheduleTime.setVisibility(View.GONE);
 
-        mChooseLocation = (ImageButton) findViewById(R.id.ImageButton_ChooseLocation);
-        mChooseLocation.setImageResource(R.drawable.ic_menu_slideshow);
+        mChooseLocation = (TextView) findViewById(R.id.TextView_Location);
         mChooseLocation.setVisibility(View.GONE);
 
         mChoosePriority = (Spinner) findViewById(R.id.Spinner_Priority);
@@ -70,6 +78,13 @@ public class NewScheduleActivity extends Activity {
                 Globals.PRIORITIES );
         mChoosePriority.setAdapter(arrayAdapterPriorities);
 
+        mChooseRepeat = (Spinner) findViewById(R.id.Spinner_Repeat);
+        ArrayAdapter<String> arrayAdapterRepeat = new ArrayAdapter<String>(
+                getApplicationContext(),
+                android.R.layout.simple_list_item_1,
+                Globals.REPEAT );
+        mChooseRepeat.setAdapter(arrayAdapterRepeat);
+
         mSwitchAllDay = (Switch) findViewById(R.id.Switch_AllDayReminder);
         mSwitchAllDay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -78,9 +93,11 @@ public class NewScheduleActivity extends Activity {
                 if(isChecked) {
                     mNewScheduleDate.setVisibility(View.VISIBLE);
                     mNewScheduleTime.setVisibility(View.VISIBLE);
+                    chooseTimeAlert = true;
                 } else {
                     mNewScheduleDate.setVisibility(View.GONE);
                     mNewScheduleTime.setVisibility(View.GONE);
+                    chooseTimeAlert = false;
                 }
             }
         });
@@ -91,27 +108,45 @@ public class NewScheduleActivity extends Activity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
                     mChooseLocation.setVisibility(View.VISIBLE);
+                    chooseLocationAlert = true;
                 } else {
                     mChooseLocation.setVisibility(View.GONE);
+                    chooseLocationAlert = false;
                 }
             }
         });
 
+        mSwitchActivity = (Switch) findViewById(R.id.Switch_ActivityReminder);
+
         schedule = new Schedule();
+        mScheduleDBHelper = new ScheduleDBHelper(this);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong("mDateAndTime", mDateAndTime.getTimeInMillis());
+        outState.putBoolean("chooseTimeAlert", chooseTimeAlert);
+        outState.putBoolean("chooseLocationAlert", chooseLocationAlert);
     }
 
     public void onSaveClicked(View v) {
+
         schedule.setTitle(((EditText) findViewById(R.id.EditText_NewScheduleTitle)).getText()
                 .toString());
         schedule.setNotes(((EditText) findViewById(R.id.EditText_NewScheduleNotes)).getText()
                 .toString());
+
+        if(chooseTimeAlert) {
+            schedule.setTime(mDateAndTime.getTimeInMillis());
+        }
+
+        if(chooseLocationAlert) {
+
+        }
+
         schedule.setPriority(mChoosePriority.getSelectedItemPosition());
+
         task = new InsertDbTask();
         task.execute();
         this.finish();
@@ -129,6 +164,10 @@ public class NewScheduleActivity extends Activity {
         displayDialog(DialogFragment.DIALOG_ID_TIME);
     }
 
+    public void onLocationClicked(View v) {
+        // start a map activity
+    }
+
     public void displayDialog(int id) {
         android.app.DialogFragment fragment = DialogFragment.newInstance(id);
         fragment.show(getFragmentManager(), getString(R.string.dialog_fragment_tag_general));
@@ -138,21 +177,23 @@ public class NewScheduleActivity extends Activity {
         mDateAndTime.set(Calendar.YEAR, year);
         mDateAndTime.set(Calendar.MONTH, month);
         mDateAndTime.set(Calendar.DAY_OF_MONTH, day);
-        // mDate = Integer.toString(year) + Integer.toString(month) + Integer.toString(day);
+        SimpleDateFormat format = new SimpleDateFormat("EEEE, MMM dd, yyyy");
+        mDatePicker.setText(format.format(mDateAndTime.getTime()));
     }
 
     public void onTimeSet(int hour, int minute) {
         mDateAndTime.set(Calendar.HOUR_OF_DAY, hour);
         mDateAndTime.set(Calendar.MINUTE, minute);
-        // mTime = Integer.toString(mDateAndTime.get(Calendar.HOUR_OF_DAY)) + mDateAndTime.get(Calendar.MINUTE);
+        SimpleDateFormat format = new SimpleDateFormat("hh:mm aaa");
+        mTimePicker.setText(format.format(mDateAndTime.getTime()));
     }
 
     class InsertDbTask extends AsyncTask<Void, String, Void> {
 
         @Override
         protected Void doInBackground(Void... unused) {
-
-            // publishProgress(Long.toString(e.getId()));
+            long id = mScheduleDBHelper.insertSchedule(schedule);
+            publishProgress(Long.toString(id));
             return null;
         }
 

@@ -55,9 +55,9 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
-        //test
-        Intent i = new Intent(this, NewScheduleActivity.class);
-        startActivity(i);
+//        //test
+//        Intent i = new Intent(this, NewScheduleActivity.class);
+//        startActivity(i);
     }
 
     @Override

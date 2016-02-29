@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 /**
  * Created by gejing on 2/28/16.
  */
@@ -56,8 +58,7 @@ public class ScheduleDBHelper extends SQLiteOpenHelper {
             + KEY_REPEAT
             + " INTEGER, "
             + KEY_COMPLETED
-            + " INTEGER, "
-            + ");";
+            + " INTEGER );";
 
     private static final String[] mColumnList = new String[] { KEY_ROWID,
             KEY_TITLE, KEY_NOTES, KEY_TIME, KEY_LOCATION_NAME,
@@ -101,7 +102,7 @@ public class ScheduleDBHelper extends SQLiteOpenHelper {
         return id;
     }
 
-    public void removeEntry(long rowIndex) {
+    public void removeSchedule(long rowIndex) {
         SQLiteDatabase dbObj = getWritableDatabase();
         dbObj.delete(TABLE_NAME_SCHEDULES, KEY_ROWID + "=" + rowIndex, null);
         dbObj.close();
@@ -120,12 +121,37 @@ public class ScheduleDBHelper extends SQLiteOpenHelper {
         return schedule;
     }
 
+    public ArrayList<Schedule> fetchSchedules() {
+        SQLiteDatabase dbObj = getReadableDatabase();
+        ArrayList<Schedule> list = new ArrayList<Schedule>();
+        Cursor cursor = dbObj.query(TABLE_NAME_SCHEDULES, mColumnList, null,
+                null, null, null, null);
+        while (cursor.moveToNext()) {
+            Schedule schedule = cursorToSchedule(cursor, false);
+            list.add(schedule);
+            Log.d("TAGG", "Got data");
+        }
+
+        cursor.close();
+        dbObj.close();
+
+        return list;
+    }
+
     private Schedule cursorToSchedule(Cursor cursor, boolean b) {
         Schedule schedule = new Schedule();
         schedule.setId(cursor.getLong(cursor.getColumnIndex(KEY_ROWID)));
-
+        schedule.setTitle(cursor.getString(cursor.getColumnIndex(KEY_TITLE)));
+        schedule.setNotes(cursor.getString(cursor.getColumnIndex(KEY_NOTES)));
+        schedule.setTime(cursor.getLong(cursor.getColumnIndex(KEY_TIME)));
+        schedule.setLocationName(cursor.getString(cursor.getColumnIndex(KEY_LOCATION_NAME)));
+        schedule.setArrive(cursor.getInt(cursor.getColumnIndex(KEY_ARRIVE)) == 1);
+        schedule.setRadius(cursor.getDouble(cursor.getColumnIndex(KEY_RADIUS)));
+        schedule.setLat(cursor.getDouble(cursor.getColumnIndex(KEY_LAT)));
+        schedule.setLng(cursor.getDouble(cursor.getColumnIndex(KEY_LNG)));
+        schedule.setPriority(cursor.getInt(cursor.getColumnIndex(KEY_PRIORITY)));
+        schedule.setRepeat(cursor.getInt(cursor.getColumnIndex(KEY_REPEAT)));
+        schedule.setCompleted(cursor.getInt(cursor.getColumnIndex(KEY_COMPLETED)) == 1);
         return schedule;
     }
-
-
 }

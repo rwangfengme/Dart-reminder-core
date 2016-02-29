@@ -11,27 +11,32 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_margin="5dp"
-        android:clickable="false"
+        android:layout_margin="10dp"
         android:focusableInTouchMode="true">
 
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Deatails"
+            android:textSize="20dip"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:text="Title"
-            android:id="@+id/TextView_NewScheduleTitle"
-            android:layout_gravity="center_vertical"
-            android:gravity="center" />
+            android:id="@+id/TextView_NewScheduleTitle" />
 
         <EditText
             android:layout_width="fill_parent"
-            android:layout_height="60dp"
-            android:ems="10"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
             android:id="@+id/EditText_NewScheduleTitle" />
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:text="Notes"
             android:id="@+id/TextView_NewScheduleNotes"
             android:layout_gravity="center_vertical"
@@ -39,15 +44,14 @@
 
         <EditText
             android:layout_width="fill_parent"
-            android:layout_height="60dp"
-            android:ems="10"
+            android:layout_height="wrap_content"
             android:id="@+id/EditText_NewScheduleNotes" />
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -64,29 +68,31 @@
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_margin="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Date"
+                android:text="Choose Event Date"
                 android:onClick="onDatePickerClicked"
                 android:id="@+id/TextView_DayPicker" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="right"
-                android:text="Time"
+                android:layout_marginTop="5dp"
+                android:text="Choose Event Time"
                 android:onClick="onTimePickerClicked"
                 android:id="@+id/TextView_TimePicker" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp">
 
 
             <TextView
@@ -103,47 +109,79 @@
                 android:id="@+id/Switch_LocationReminder" />
         </LinearLayout>
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/ImageButton_ChooseLocation" />
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="Priority" />
+            android:id="@+id/TextView_Location"
+            android:text="Choose Your Location"
+            android:onClick="onLocationClicked"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remind me when I..."
+                android:id="@+id/TextView_ActivityReminder" />
+
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text=""
+                android:id="@+id/Switch_ActivityReminder" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Repeat"
+            android:layout_marginTop="15dp"/>
 
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:id="@+id/Spinner_Repeat" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Priority"
+            android:layout_marginTop="10dp"/>
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/Spinner_Priority" />
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
 
             <Button
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
                 android:text="Save"
                 android:onClick="onSaveClicked"
                 android:id="@+id/Button_SaveNewSchedule"
-                android:layout_weight="1"
-                android:layout_marginLeft="40dp" />
+                />
 
             <Button
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
+                android:layout_weight="1"
                 android:text="CANCEL"
                 android:onClick="onCancelClicked"
-                android:id="@+id/Button_CancelNewSchedule"
-                android:layout_weight="1"
-                android:layout_marginRight="40dp" />
+                android:id="@+id/Button_CancelNewSchedule" />
         </LinearLayout>
 
     </LinearLayout>

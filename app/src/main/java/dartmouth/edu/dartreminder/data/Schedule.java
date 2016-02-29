@@ -20,7 +20,8 @@ public class Schedule {
     public Schedule() {
         this.Title = "";
         this.Notes = "";
-        this.Time = System.currentTimeMillis();
+        // this.Time = System.currentTimeMillis();
+        this.Time = -1L;
         this.LocationName = "";
         this.Lat = 0;
         this.Lng = 0;
