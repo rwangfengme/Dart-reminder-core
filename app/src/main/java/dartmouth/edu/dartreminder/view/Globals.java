@@ -6,4 +6,5 @@ package dartmouth.edu.dartreminder.view;
 public abstract class Globals {
     public static final String TAG = "DartReminder";
     public static final String[] PRIORITIES = {"None", "Important", "Very Important"};
+    public static final String[] REPEAT = {"Never", "Every Day", "Every Week", "Every Month", "Every Year"};
 }

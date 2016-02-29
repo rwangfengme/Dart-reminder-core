@@ -3,6 +3,7 @@ package dartmouth.edu.dartreminder.view;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.design.widget.FloatingActionButton;
@@ -19,7 +20,11 @@ import android.widget.Toast;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.util.Attributes;
 
+import java.util.ArrayList;
+
 import dartmouth.edu.dartreminder.R;
+import dartmouth.edu.dartreminder.data.Schedule;
+import dartmouth.edu.dartreminder.data.ScheduleDBHelper;
 import dartmouth.edu.dartreminder.utils.ListViewAdapter;
 
 
@@ -38,6 +43,10 @@ public class RecentListFragment extends Fragment {
     private ListView mListView;
     private ListViewAdapter mAdapter;
     private Context mContext;
+    private View view;
+
+    private ScheduleDBHelper mScheduleDBHelper;
+    private getAllFromDBTask task = null;
 
     public RecentListFragment() {
         // Required empty public constructor
@@ -60,67 +69,19 @@ public class RecentListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
+
+        mScheduleDBHelper = new ScheduleDBHelper(getActivity());
+        task = new getAllFromDBTask();
+        task.execute();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_recent_list, null);
+        view = inflater.inflate(R.layout.fragment_recent_list, null);
 
 
-        mContext = getActivity();
-        mListView = (ListView) view.findViewById(R.id.recent_listview);
-        mAdapter = new ListViewAdapter(mContext);
-
-
-        mListView.setAdapter(mAdapter);
-        mAdapter.setMode(Attributes.Mode.Single);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //((SwipeLayout)(mListView.getChildAt(position - mListView.getFirstVisiblePosition()))).open(true);
-            }
-        });
-        mListView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Log.e("ListView", "OnTouch");
-                return false;
-            }
-        });
-        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(mContext, "OnItemLongClickListener", Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
-        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                Log.e("ListView", "onScrollStateChanged");
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
-            }
-        });
-
-        mListView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.e("ListView", "onItemSelected:" + position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                Log.e("ListView", "onNothingSelected:");
-            }
-        });
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorDeepRed)));
@@ -131,6 +92,15 @@ public class RecentListFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void initialRecentList(ArrayList<Schedule> schedules){
+        mContext = getActivity();
+        mListView = (ListView) view.findViewById(R.id.recent_listview);
+        mAdapter = new ListViewAdapter(mContext, schedules);
+
+        mListView.setAdapter(mAdapter);
+        mAdapter.setMode(Attributes.Mode.Single);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -172,5 +142,24 @@ public class RecentListFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    class getAllFromDBTask extends AsyncTask<Void, String, ArrayList> {
+
+        @Override
+        protected ArrayList doInBackground(Void... unused) {
+            ArrayList<Schedule> allSchedule = mScheduleDBHelper.fetchSchedules();
+            return allSchedule;
+        }
+
+        @Override
+        protected void onProgressUpdate(String... name) {
+            //Toast.makeText(NewScheduleActivity.this, "Entry #" + name[0] + " saved", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList arrayList) {
+            initialRecentList(arrayList);
+        }
     }
 }
