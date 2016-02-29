@@ -1,6 +1,7 @@
 package dartmouth.edu.dartreminder.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -69,10 +70,6 @@ public class RecentListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mScheduleDBHelper = new ScheduleDBHelper(getActivity());
-        task = new getAllFromDBTask();
-        task.execute();
     }
 
     @Override
@@ -81,17 +78,24 @@ public class RecentListFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_recent_list, null);
 
-
-
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorDeepRed)));
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                startActivity(new Intent(getActivity(), NewScheduleActivity.class));
             }
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mScheduleDBHelper = new ScheduleDBHelper(getActivity());
+        task = new getAllFromDBTask();
+        task.execute();
     }
 
     private void initialRecentList(ArrayList<Schedule> schedules){
