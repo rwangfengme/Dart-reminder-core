@@ -6,10 +6,22 @@
     tools:context="dartmouth.edu.dartreminder.view.MapsActivity"
     android:orientation="vertical">
 
-    <EditText
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"/>
+        android:orientation="horizontal">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:layout_margin="5dp"
+            android:layout_weight="4"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/search_icon"
+            android:layout_weight="1"/>
+    </LinearLayout>
 
     <ListView
         android:layout_width="match_parent"
@@ -26,12 +38,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="When I Arrive"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:layout_margin="5dp"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="When I Leave"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:layout_margin="5dp"/>
     </LinearLayout>
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
@@ -40,6 +54,10 @@
               android:layout_height="match_parent"
               android:id="@+id/map"
               tools:context=".MapsActivity"
-              android:name="com.google.android.gms.maps.SupportMapFragment"/>
+              android:name="com.google.android.gms.maps.SupportMapFragment"
+              android:layout_marginTop="5dp"
+              android:layout_marginBottom="5dp"
+              android:layout_marginLeft="10dp"
+              android:layout_marginRight="10dp"/>
 
 </LinearLayout>
