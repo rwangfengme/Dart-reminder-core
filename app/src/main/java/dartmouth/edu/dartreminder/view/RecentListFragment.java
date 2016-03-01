@@ -1,6 +1,7 @@
 package dartmouth.edu.dartreminder.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
@@ -127,6 +128,8 @@ public class RecentListFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent i = new Intent(getActivity(), NewScheduleActivity.class);
+                startActivity(i);
             }
         });
 

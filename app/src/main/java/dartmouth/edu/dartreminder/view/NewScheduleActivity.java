@@ -3,6 +3,7 @@ package dartmouth.edu.dartreminder.view;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -166,6 +167,8 @@ public class NewScheduleActivity extends Activity {
 
     public void onLocationClicked(View v) {
         // start a map activity
+        Intent i = new Intent(this, MapsActivity.class);
+        startActivity(i);
     }
 
     public void displayDialog(int id) {

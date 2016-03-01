@@ -67,7 +67,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         getLocationAddress(location, currentLocaiton);
         locationList.add(currentLocaiton);
 
-        locationList.add(new CustomLocation("Location", 0, 0, "location 2"));
+         locationList.add(new CustomLocation("Location", 0, 0, "location 2"));
         LocationAdapter locationListAdapter = new LocationAdapter(this, locationList);
         mLocationList.setAdapter(locationListAdapter);
 

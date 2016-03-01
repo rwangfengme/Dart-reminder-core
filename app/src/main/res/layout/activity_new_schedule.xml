@@ -126,7 +126,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Remind me when I..."
+                android:text="Remind Me when I..."
                 android:id="@+id/TextView_ActivityReminder" />
 
             <Switch
