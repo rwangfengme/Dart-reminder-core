@@ -51,12 +51,10 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction = fragmentManager.beginTransaction();
 
         RecentListFragment f1 = new RecentListFragment();
+        //LocationFragment f1 = new LocationFragment();
         fragmentTransaction.replace(R.id.main_page, f1, "f1");
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
-
-        Intent i = new Intent(this, MapsActivity.class);
-        startActivity(i);
     }
 
     @Override
@@ -98,6 +96,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
+            
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {

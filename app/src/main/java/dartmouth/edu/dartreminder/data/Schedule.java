@@ -7,6 +7,7 @@ public class Schedule {
     private Long Id;
     private String Title;
     private String Notes;
+    private boolean UseTime;
     private Long Time;
     private String LocationName;
     private double Lat;
@@ -20,8 +21,8 @@ public class Schedule {
     public Schedule() {
         this.Title = "";
         this.Notes = "";
-        // this.Time = System.currentTimeMillis();
-        this.Time = -1L;
+        this.UseTime = false;
+        this.Time = System.currentTimeMillis();
         this.LocationName = "";
         this.Lat = 0;
         this.Lng = 0;
@@ -54,6 +55,14 @@ public class Schedule {
 
     public void setNotes(String notes) {
         this.Notes = notes;
+    }
+
+    public boolean getUseTime() {
+        return this.UseTime;
+    }
+
+    public void setUseTime(boolean usetime) {
+        this.UseTime = usetime;
     }
 
     public Long getTime() {

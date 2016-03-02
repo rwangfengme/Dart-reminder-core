@@ -54,6 +54,8 @@ public class ListViewAdapter extends BaseSwipeAdapter {
             public void onClick(View view) {
                 //TODO: Del DB
 
+
+
                 mScheduleDBHelper = new ScheduleDBHelper(mContext);
                 task = new DelScheduleTask();
                 task.execute(dataScource.get(position).getId(), new Long(position));

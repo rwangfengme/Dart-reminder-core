@@ -1,4 +1,4 @@
-package dartmouth.edu.dartreminder.view;
+package dartmouth.edu.dartreminder.data;
 
 /**
  * Created by LeoZhu on 2/28/16.

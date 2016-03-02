@@ -22,6 +22,7 @@ public class ScheduleDBHelper extends SQLiteOpenHelper {
     public static final String KEY_ROWID = "_id";
     public static final String KEY_TITLE = "title";
     public static final String KEY_NOTES = "notes";
+    public static final String KEY_USE_TIME = "use_time";
     public static final String KEY_TIME = "time";
     public static final String KEY_LOCATION_NAME = "location_name";
     public static final String KEY_ARRIVE = "arrive";
@@ -41,6 +42,8 @@ public class ScheduleDBHelper extends SQLiteOpenHelper {
             + " TEXT, "
             + KEY_NOTES
             + " TEXT, "
+            + KEY_USE_TIME
+            + " INTEGER, "
             + KEY_TIME
             + " INTEGER NOT NULL, "
             + KEY_LOCATION_NAME
@@ -61,7 +64,7 @@ public class ScheduleDBHelper extends SQLiteOpenHelper {
             + " INTEGER );";
 
     private static final String[] mColumnList = new String[] { KEY_ROWID,
-            KEY_TITLE, KEY_NOTES, KEY_TIME, KEY_LOCATION_NAME,
+            KEY_TITLE, KEY_NOTES, KEY_USE_TIME, KEY_TIME, KEY_LOCATION_NAME,
             KEY_ARRIVE, KEY_RADIUS, KEY_LAT, KEY_LNG, KEY_PRIORITY,
             KEY_REPEAT, KEY_COMPLETED};
 
@@ -85,6 +88,7 @@ public class ScheduleDBHelper extends SQLiteOpenHelper {
 
         value.put(KEY_TITLE, schedule.getTitle());
         value.put(KEY_NOTES, schedule.getNotes());
+        value.put(KEY_USE_TIME, schedule.getUseTime() ? 1 : 0);
         value.put(KEY_TIME, schedule.getTime());
         value.put(KEY_LOCATION_NAME, schedule.getLocationName());
         value.put(KEY_ARRIVE, schedule.getArrive() ? 1 : 0);
@@ -143,6 +147,7 @@ public class ScheduleDBHelper extends SQLiteOpenHelper {
         schedule.setId(cursor.getLong(cursor.getColumnIndex(KEY_ROWID)));
         schedule.setTitle(cursor.getString(cursor.getColumnIndex(KEY_TITLE)));
         schedule.setNotes(cursor.getString(cursor.getColumnIndex(KEY_NOTES)));
+        schedule.setUseTime(cursor.getInt(cursor.getColumnIndex(KEY_USE_TIME)) == 1);
         schedule.setTime(cursor.getLong(cursor.getColumnIndex(KEY_TIME)));
         schedule.setLocationName(cursor.getString(cursor.getColumnIndex(KEY_LOCATION_NAME)));
         schedule.setArrive(cursor.getInt(cursor.getColumnIndex(KEY_ARRIVE)) == 1);

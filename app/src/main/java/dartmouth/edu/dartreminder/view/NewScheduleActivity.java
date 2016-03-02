@@ -3,6 +3,7 @@ package dartmouth.edu.dartreminder.view;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -40,7 +41,7 @@ public class NewScheduleActivity extends Activity {
     private Spinner mChooseRepeat;
 
     private Calendar mDateAndTime;
-    private boolean chooseTimeAlert = false, chooseLocationAlert = false;
+    private boolean chooseDateAlert = false, chooseTimeAlert = false, chooseLocationAlert = false;
 
     private Schedule schedule;
     private ScheduleDBHelper mScheduleDBHelper;
@@ -50,15 +51,6 @@ public class NewScheduleActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_schedule);
-
-        mDateAndTime = Calendar.getInstance();
-        if(savedInstanceState != null) {
-            mDateAndTime.setTimeInMillis(savedInstanceState.getLong("mDateAndTime"));
-            chooseTimeAlert = savedInstanceState.getBoolean("chooseTimeAlert");
-            chooseLocationAlert = savedInstanceState.getBoolean("chooseLocationAlert");
-        } else {
-            mDateAndTime.setTimeInMillis(System.currentTimeMillis());
-        }
 
         mDatePicker = (TextView) findViewById(R.id.TextView_DayPicker);
         mTimePicker = (TextView) findViewById(R.id.TextView_TimePicker);
@@ -85,6 +77,24 @@ public class NewScheduleActivity extends Activity {
                 Globals.REPEAT );
         mChooseRepeat.setAdapter(arrayAdapterRepeat);
 
+        mDateAndTime = Calendar.getInstance();
+        if(savedInstanceState != null) {
+            mDateAndTime.setTimeInMillis(savedInstanceState.getLong("mDateAndTime"));
+            chooseDateAlert = savedInstanceState.getBoolean("chooseDateAlert");
+            if(chooseDateAlert) {
+                SimpleDateFormat format = new SimpleDateFormat("EEEE, MMM dd, yyyy");
+                mDatePicker.setText(format.format(mDateAndTime.getTime()));
+            }
+            chooseTimeAlert = savedInstanceState.getBoolean("chooseTimeAlert");
+            if(chooseTimeAlert) {
+                SimpleDateFormat format = new SimpleDateFormat("hh:mm aaa");
+                mTimePicker.setText(format.format(mDateAndTime.getTime()));
+            }
+            chooseLocationAlert = savedInstanceState.getBoolean("chooseLocationAlert");
+        } else {
+            mDateAndTime.setTimeInMillis(System.currentTimeMillis());
+        }
+
         mSwitchAllDay = (Switch) findViewById(R.id.Switch_AllDayReminder);
         mSwitchAllDay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -93,10 +103,10 @@ public class NewScheduleActivity extends Activity {
                 if(isChecked) {
                     mNewScheduleDate.setVisibility(View.VISIBLE);
                     mNewScheduleTime.setVisibility(View.VISIBLE);
-                    chooseTimeAlert = true;
                 } else {
                     mNewScheduleDate.setVisibility(View.GONE);
                     mNewScheduleTime.setVisibility(View.GONE);
+                    chooseDateAlert = false;
                     chooseTimeAlert = false;
                 }
             }
@@ -126,6 +136,7 @@ public class NewScheduleActivity extends Activity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong("mDateAndTime", mDateAndTime.getTimeInMillis());
+        outState.putBoolean("chooseDateAlert", chooseDateAlert);
         outState.putBoolean("chooseTimeAlert", chooseTimeAlert);
         outState.putBoolean("chooseLocationAlert", chooseLocationAlert);
     }
@@ -137,9 +148,8 @@ public class NewScheduleActivity extends Activity {
         schedule.setNotes(((EditText) findViewById(R.id.EditText_NewScheduleNotes)).getText()
                 .toString());
 
-        if(chooseTimeAlert) {
-            schedule.setTime(mDateAndTime.getTimeInMillis());
-        }
+        schedule.setUseTime(chooseDateAlert || chooseTimeAlert);
+        schedule.setTime(mDateAndTime.getTimeInMillis());
 
         if(chooseLocationAlert) {
 
@@ -166,6 +176,8 @@ public class NewScheduleActivity extends Activity {
 
     public void onLocationClicked(View v) {
         // start a map activity
+        Intent i = new Intent(this, MapsActivity.class);
+        startActivity(i);
     }
 
     public void displayDialog(int id) {
@@ -179,6 +191,7 @@ public class NewScheduleActivity extends Activity {
         mDateAndTime.set(Calendar.DAY_OF_MONTH, day);
         SimpleDateFormat format = new SimpleDateFormat("EEEE, MMM dd, yyyy");
         mDatePicker.setText(format.format(mDateAndTime.getTime()));
+        chooseDateAlert = true;
     }
 
     public void onTimeSet(int hour, int minute) {
@@ -186,6 +199,7 @@ public class NewScheduleActivity extends Activity {
         mDateAndTime.set(Calendar.MINUTE, minute);
         SimpleDateFormat format = new SimpleDateFormat("hh:mm aaa");
         mTimePicker.setText(format.format(mDateAndTime.getTime()));
+        chooseTimeAlert = true;
     }
 
     class InsertDbTask extends AsyncTask<Void, String, Void> {
