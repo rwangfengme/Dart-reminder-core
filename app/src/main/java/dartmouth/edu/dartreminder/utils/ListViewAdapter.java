@@ -54,14 +54,14 @@ public class ListViewAdapter extends BaseSwipeAdapter {
             public void onClick(View view) {
                 //TODO: Del DB
 
+                mScheduleDBHelper = new ScheduleDBHelper(mContext);
+                task = new DelScheduleTask();
+                task.execute(dataScource.get(position).getId(), new Long(position));
+
                 dataScource.remove(position);
                 ListViewAdapter.this.notifyDataSetChanged();
                 swipeLayout = (SwipeLayout) v.findViewById(getSwipeLayoutResourceId(position-1));
                 swipeLayout.close(false);
-
-                mScheduleDBHelper = new ScheduleDBHelper(mContext);
-                task = new DelScheduleTask();
-                task.execute(dataScource.get(position).getId(), new Long(position));
             }
         });
         v.findViewById(R.id.share).setOnClickListener(new View.OnClickListener() {
