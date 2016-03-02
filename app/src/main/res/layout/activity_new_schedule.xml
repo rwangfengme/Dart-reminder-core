@@ -8,8 +8,8 @@
     android:id="@+id/mineView">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:orientation="vertical"
         android:layout_margin="10dp"
         android:focusableInTouchMode="true">
@@ -70,30 +70,32 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Choose Event Date"
-                android:onClick="onDatePickerClicked"
-                android:id="@+id/TextView_DayPicker" />
+            android:layout_height="match_parent">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:padding="5dp"
                 android:text="Choose Event Time"
                 android:onClick="onTimePickerClicked"
+                android:background="?android:attr/selectableItemBackground"
                 android:id="@+id/TextView_TimePicker" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Choose Event Date"
+                android:padding="5dp"
+                android:onClick="onDatePickerClicked"
+                android:background="?android:attr/selectableItemBackground"
+                android:id="@+id/TextView_DayPicker" />
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dp">
-
+            android:layout_marginTop="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -112,21 +114,22 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:id="@+id/TextView_Location"
             android:text="Choose Your Location"
+            android:padding="5dp"
+            android:background="?android:attr/selectableItemBackground"
             android:onClick="onLocationClicked"/>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Remind Me when I..."
+                android:text="Remind Me When..."
                 android:id="@+id/TextView_ActivityReminder" />
 
             <Switch
@@ -141,7 +144,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Repeat"
-            android:layout_marginTop="15dp"/>
+            android:layout_marginTop="5dp"/>
 
         <Spinner
             android:layout_width="match_parent"
@@ -152,7 +155,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Priority"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="5dp"/>
 
         <Spinner
             android:layout_width="match_parent"
@@ -163,10 +166,11 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp">
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="15dp">
 
             <Button
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
@@ -176,7 +180,7 @@
                 />
 
             <Button
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="CANCEL"

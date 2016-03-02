@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Locale;
 
 import dartmouth.edu.dartreminder.R;
+import dartmouth.edu.dartreminder.data.CustomLocation;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 

@@ -83,12 +83,7 @@ public class RecentListFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-<<<<<<< HEAD
-                Intent i = new Intent(getActivity(), NewScheduleActivity.class);
-                startActivity(i);
-=======
                 startActivity(new Intent(getActivity(), NewScheduleActivity.class));
->>>>>>> f79b607556dd715ae789b2547520729c518ca600
             }
         });
 
