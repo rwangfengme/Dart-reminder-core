@@ -1,4 +1,4 @@
-package dartmouth.edu.dartreminder.view;
+package dartmouth.edu.dartreminder.data;
 
 import com.daimajia.easing.bounce.BounceEaseOut;
 

@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Locale;
 
 import dartmouth.edu.dartreminder.R;
+import dartmouth.edu.dartreminder.data.CustomLocation;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -67,7 +68,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         getLocationAddress(location, currentLocaiton);
         locationList.add(currentLocaiton);
 
-        locationList.add(new CustomLocation("Location", 0, 0, "location 2"));
+         locationList.add(new CustomLocation("Location", 0, 0, "location 2"));
         LocationAdapter locationListAdapter = new LocationAdapter(this, locationList);
         mLocationList.setAdapter(locationListAdapter);
 

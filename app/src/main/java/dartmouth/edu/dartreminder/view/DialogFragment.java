@@ -17,6 +17,9 @@ import java.util.Calendar;
 
 import dartmouth.edu.dartreminder.R;
 
+/**
+ * Created by gejing on 2/28/16.
+ */
 public class DialogFragment extends android.app.DialogFragment {
 
     public static final int DIALOG_ID_DATE = 1;
