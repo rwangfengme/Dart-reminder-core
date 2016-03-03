@@ -331,6 +331,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .position(latLng)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                     .draggable(false));
+
             drawCircle(DEFAULT_RADIUS);
 
             lat = latLng.latitude;
