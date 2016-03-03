@@ -2,6 +2,7 @@ package dartmouth.edu.dartreminder.view;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
@@ -18,9 +19,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +47,7 @@ import java.util.Locale;
 
 import dartmouth.edu.dartreminder.R;
 import dartmouth.edu.dartreminder.data.CustomLocation;
+import dartmouth.edu.dartreminder.utils.Globals;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
@@ -51,14 +55,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ListView mLocationList;
     private ImageView mImageView;
     private EditText mSearchText;
+    private Button mSaveButton;
+    private Button mCancelButton;
+    private RadioButton mArrive;
+    private RadioButton mLeave;
+    private TextView mRadiuText;
+
+
     private LocationAdapter locationListAdapter;
     private Marker mCenterMarker;
     private Marker mSelectMarker;
     private Polyline mPolyLine;
     private Circle mCircle;
-    private double radius = 0;
 
     private final double DEFAULT_RADIUS = 50.0;
+
+    private String locationName = Globals.DEFAULT_LOCATION_NAME;
+    private double lat;
+    private double lng;
+    private double radius = DEFAULT_RADIUS;
 
 
     @Override
@@ -68,6 +83,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mImageView = (ImageView) findViewById(R.id.map_search_button);
         mSearchText = (EditText) findViewById(R.id.map_search_text);
+        mSaveButton = (Button) findViewById(R.id.map_save_button);
+        mCancelButton = (Button) findViewById(R.id.map_cancel_button);
+        mArrive = (RadioButton) findViewById(R.id.map_arrive_radio);
+        mLeave = (RadioButton) findViewById(R.id.map_leave_radio);
+        mRadiuText = (TextView) findViewById(R.id.map_radius_text);
+
+        mArrive.setChecked(true);
+        mRadiuText.setText("Radius: " + Math.round(radius) + " M");
 
         setUpMapIfNeeded();
 
@@ -96,6 +119,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         location = locationManager.getLastKnownLocation(provider);
 
+        lat = location.getLatitude();
+        lng = location.getLongitude();
+
         mLocationList = (ListView) findViewById(R.id.locationList);
 
         //add current location to service
@@ -114,6 +140,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.clear();
                 CustomLocation locationEntry = locationList.get(position);
                 mSearchText.setText(locationEntry.getTitle());
+                if (position == 0){
+                    mLeave.setChecked(true);
+                    mArrive.setEnabled(false);
+                }else{
+                    mArrive.setEnabled(true);
+                    mArrive.setChecked(true);
+                    locationName = locationEntry.getTitle();
+                }
                 updateMap(locationEntry.getLatitude(), locationEntry.getLongitude(), true);
             }
         });
@@ -124,13 +158,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 String location = mSearchText.getText().toString();
                 CustomLocation customLocation = locationListAdapter.containsLocation(location);
-                if (customLocation != null){
+                if (customLocation != null) {
                     mMap.clear();
                     updateMap(customLocation.getLatitude(), customLocation.getLongitude(), true);
                     mSearchText.setText(customLocation.getTitle());
-                }else{
+                    locationName = customLocation.getTitle();
+                } else {
                     List<Address> addressList = null;
-                    if (location != null && !location.isEmpty()){
+                    if (location != null && !location.isEmpty()) {
                         Geocoder geocoder = new Geocoder(getApplicationContext());
                         try {
                             addressList = geocoder.getFromLocationName(location, 1);
@@ -138,15 +173,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             e.printStackTrace();
                         }
                     }
-                    if (addressList != null){
+                    if (addressList != null) {
                         Address address = addressList.get(0);
                         mMap.clear();
                         updateMap(address.getLatitude(), address.getLongitude(), true);
                         mSearchText.setText(fromAddressToString(address));
-                    }else{
+                    } else {
                         Toast.makeText(getApplicationContext(), "No Location Found", Toast.LENGTH_SHORT).show();
                     }
                 }
+            }
+        });
+
+        mSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent();
+                i.putExtra(Globals.SAVE, true);
+                i.putExtra(Globals.LOCATION_NAME, locationName);
+
+                if (mArrive.isChecked()){
+                    i.putExtra(Globals.ARRIVE, true);
+                }else{
+                    i.putExtra(Globals.ARRIVE, false);
+                }
+
+                i.putExtra(Globals.RADIUS, radius);
+                i.putExtra(Globals.LAT, lat);
+                i.putExtra(Globals.LNG, lng);
+                setResult(RESULT_OK, i);
+                finish();
+            }
+        });
+
+        mCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent();
+                i.putExtra(Globals.SAVE, false);
+                setResult(RESULT_OK, i);
+                finish();
             }
         });
     }
@@ -249,42 +315,60 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .position(latlng)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                     .draggable(false));
-            drawCircle(DEFAULT_RADIUS);
+            radius = DEFAULT_RADIUS;
+            mRadiuText.setText("Radius: " + Math.round(radius) + " M");
+            drawCircle(radius);
         }
     }
 
     @Override
     public void onMapClick(LatLng latLng) {
-        if(mSelectMarker != null){
-            mSelectMarker.remove();
-            mSelectMarker = null;
-        }
+        if (mCenterMarker == null){
+            mMap.clear();
+            radius = DEFAULT_RADIUS;
+            mRadiuText.setText("Radius: " + Math.round(radius) + " M");
+            mCenterMarker = mMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                    .draggable(false));
+            drawCircle(DEFAULT_RADIUS);
 
-        mSelectMarker = mMap.addMarker(new MarkerOptions()
-                .position(latLng)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                .draggable(true));
+            lat = latLng.latitude;
+            lng = latLng.longitude;
 
-        if (mPolyLine != null) {
-            mPolyLine.remove();
-            mPolyLine = null;
-        }
+        }else{
+            if(mSelectMarker != null){
+                mSelectMarker.remove();
+                mSelectMarker = null;
+            }
 
-        mPolyLine = mMap.addPolyline(new PolylineOptions()
-                .add(mCenterMarker.getPosition(), mSelectMarker.getPosition())
-                .width(5)
-                .color(Color.BLACK));
+            mSelectMarker = mMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                    .draggable(true));
+
+            if (mPolyLine != null) {
+                mPolyLine.remove();
+                mPolyLine = null;
+            }
+
+            mPolyLine = mMap.addPolyline(new PolylineOptions()
+                    .add(mCenterMarker.getPosition(), mSelectMarker.getPosition())
+                    .width(5)
+                    .color(Color.BLACK));
 
 //        radius = distance(mCenterMarker.getPosition().latitude, mCenterMarker.getPosition().longitude,
 //                mSelectMarker.getPosition().latitude, mSelectMarker.getPosition().longitude);
 
-        Location center = latLng2Location(mCenterMarker.getPosition());
-        Location bound = latLng2Location(mSelectMarker.getPosition());
-        radius = center.distanceTo(bound);
+            Location center = latLng2Location(mCenterMarker.getPosition());
+            Location bound = latLng2Location(mSelectMarker.getPosition());
+            radius = center.distanceTo(bound);
 
-        mSelectMarker.setTitle(Math.round(radius) + " Meters");
+            mRadiuText.setText("Radius: " + Math.round(radius) + " M");
+            mSelectMarker.setTitle(Math.round(radius) + " M");
 
-        drawCircle(radius);
+            drawCircle(radius);
+        }
     }
 
     public Location latLng2Location(LatLng latLng){

@@ -5,64 +5,97 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     tools:context="dartmouth.edu.dartreminder.view.MapsActivity"
     android:orientation="vertical">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <EditText
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/map_search_text"
-            android:singleLine="true"
-            android:layout_margin="5dp"
-            android:layout_weight="6"/>
-        <ImageView
-            android:layout_width="wrap_content"
+            android:orientation="horizontal">
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/map_search_text"
+                android:singleLine="true"
+                android:layout_margin="5dp"
+                android:layout_weight="6"
+                android:inputType="text"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/search_icon"
+                android:id="@+id/map_search_button"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:contentDescription="SearchIcon"/>
+        </LinearLayout>
+
+        <ListView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/search_icon"
-            android:id="@+id/map_search_button"
-            android:layout_weight="1"
-            android:layout_gravity="center"/>
-    </LinearLayout>
-
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/locationList"
-        android:layout_margin="5dp"/>
-
-
-
-    <RadioGroup
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="When I Arrive"
-            android:layout_weight="1"
+            android:id="@+id/locationList"
             android:layout_margin="5dp"/>
-        <RadioButton
-            android:layout_width="wrap_content"
+
+        <RadioGroup
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="When I Leave"
-            android:layout_weight="1"
-            android:layout_margin="5dp"/>
-    </RadioGroup>
+            android:orientation="horizontal">
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="When I Arrive"
+                android:id="@+id/map_arrive_radio"
+                android:layout_weight="1"
+                android:layout_margin="5dp"/>
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="When I Leave"
+                android:id="@+id/map_leave_radio"
+                android:layout_weight="1"
+                android:layout_margin="5dp"/>
+        </RadioGroup>
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                      xmlns:tools="http://schemas.android.com/tools"
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                      android:id="@+id/map"
+                      tools:context=".MapsActivity"
+                      android:name="com.google.android.gms.maps.SupportMapFragment"
+                      android:layout_marginTop="5dp"
+                      android:layout_marginBottom="5dp"
+                      android:layout_marginLeft="10dp"
+                      android:layout_marginRight="10dp"/>
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:id="@+id/map"
-              tools:context=".MapsActivity"
-              android:name="com.google.android.gms.maps.SupportMapFragment"
-              android:layout_marginTop="5dp"
-              android:layout_marginBottom="5dp"
-              android:layout_marginLeft="10dp"
-              android:layout_marginRight="10dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Radius: "
+                android:textSize="20dp"
+                android:id="@+id/map_radius_text"/>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="bottom">
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SAVE"
+                    android:id="@+id/map_save_button"
+                    android:background="#76EEC6"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CANCEL"
+                    android:id="@+id/map_cancel_button"
+                    android:background="#FFAEB9"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"/>
+            </LinearLayout>
+        </FrameLayout>
 </LinearLayout>

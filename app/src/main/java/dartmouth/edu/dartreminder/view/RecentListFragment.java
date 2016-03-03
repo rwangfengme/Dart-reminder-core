@@ -146,7 +146,7 @@ public class RecentListFragment extends Fragment {
 
         @Override
         protected ArrayList doInBackground(Void... unused) {
-            ArrayList<Schedule> allSchedule = mScheduleDBHelper.fetchSchedules();
+            ArrayList<Schedule> allSchedule = mScheduleDBHelper.fetchSchedulesByDate();
             return allSchedule;
         }
 
