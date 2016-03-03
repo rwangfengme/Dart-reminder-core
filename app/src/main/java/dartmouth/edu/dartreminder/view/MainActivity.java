@@ -2,6 +2,8 @@ package dartmouth.edu.dartreminder.view;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
@@ -22,6 +24,9 @@ public class MainActivity extends AppCompatActivity
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
 
+    private final RecentListFragment mRecentListFragment = new RecentListFragment();
+    private final UserProfileFragment mUserProfileFragment = new UserProfileFragment();
+    private final LocationFragment mLocationFragment = new LocationFragment();
     // Tracking Service based on time, location, activity
     private TrackingService mTrackingService;
 
@@ -99,18 +104,34 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_recent_list) {
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_page, mRecentListFragment)
+                    .commit();
+        } else if (id == R.id.nav_user_profile) {
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_page, mUserProfileFragment)
+                    .commit();
+        } else if (id == R.id.nav_location_list) {
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_page, mLocationFragment)
+                    .commit();
+        } else if (id == R.id.nav_sync) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_settings) {
 
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_sign_out) {
+            SharedPreferences prefs = getSharedPreferences("userProfile", MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.remove("USERNAME");
+            editor.remove("PASSWORD");
+            editor.apply();
+            finish();
+            Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
+            MainActivity.this.startActivity(myIntent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
