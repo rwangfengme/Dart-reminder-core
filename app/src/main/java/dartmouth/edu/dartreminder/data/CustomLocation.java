@@ -1,7 +1,5 @@
 package dartmouth.edu.dartreminder.data;
 
-import com.daimajia.easing.bounce.BounceEaseOut;
-
 /**
  * Created by LeoZhu on 2/28/16.
  */
@@ -11,12 +9,14 @@ public class CustomLocation {
     private double latitude;
     private double longitude;
     private String detail;
+    private Integer icon;
 
     public CustomLocation(String title){
         this.title = title;
         this.latitude = 0;
         this.longitude = 0;
         this.detail = "";
+        this.icon = 0;
     }
 
     public CustomLocation(String title, double latitude, double longitude, String detail){
@@ -24,6 +24,7 @@ public class CustomLocation {
         this.latitude = latitude;
         this.longitude = longitude;
         this.detail = detail;
+        this.icon = 0;
     }
 
     public long getId(){
@@ -68,6 +69,14 @@ public class CustomLocation {
 
     public boolean hasDetail(){
         return (this.detail != null) && (!this.detail.isEmpty());
+    }
+
+    public int getIcon(){
+        return icon;
+    }
+
+    public void setIcon(int icon){
+        this.icon = icon;
     }
 
 }
