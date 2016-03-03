@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -18,11 +21,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import dartmouth.edu.dartreminder.R;
+import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.data.Schedule;
-import dartmouth.edu.dartreminder.data.ScheduleDBHelper;
 import dartmouth.edu.dartreminder.utils.Globals;
 
-public class NewScheduleActivity extends Activity {
+public class NewScheduleActivity extends AppCompatActivity {
 
     private Switch mSwitchAllDay;
     private Switch mSwitchLocation;
@@ -39,7 +42,7 @@ public class NewScheduleActivity extends Activity {
     private boolean chooseDateAlert = false, chooseTimeAlert = false, chooseLocationAlert = false;
 
     private Schedule schedule;
-    private ScheduleDBHelper mScheduleDBHelper;
+    private DartReminderDBHelper mScheduleDBHelper;
     private InsertDbTask task = null;
 
     @Override
@@ -124,7 +127,7 @@ public class NewScheduleActivity extends Activity {
         mSwitchActivity = (Switch) findViewById(R.id.Switch_ActivityReminder);
 
         schedule = new Schedule();
-        mScheduleDBHelper = new ScheduleDBHelper(this);
+        mScheduleDBHelper = new DartReminderDBHelper(this);
     }
 
     @Override

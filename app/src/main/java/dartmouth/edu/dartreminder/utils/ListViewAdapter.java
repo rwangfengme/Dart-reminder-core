@@ -17,13 +17,13 @@ import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import java.util.ArrayList;
 
 import dartmouth.edu.dartreminder.R;
+import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.data.Schedule;
-import dartmouth.edu.dartreminder.data.ScheduleDBHelper;
 
 public class ListViewAdapter extends BaseSwipeAdapter {
 
     private Context mContext;private
-    ScheduleDBHelper mScheduleDBHelper;
+    DartReminderDBHelper mScheduleDBHelper;
     private DelScheduleTask task = null;
     private ArrayList<Schedule> dataScource;
 
@@ -56,7 +56,7 @@ public class ListViewAdapter extends BaseSwipeAdapter {
 
 
 
-                mScheduleDBHelper = new ScheduleDBHelper(mContext);
+                mScheduleDBHelper = new DartReminderDBHelper(mContext);
                 task = new DelScheduleTask();
                 task.execute(dataScource.get(position).getId(), new Long(position));
 

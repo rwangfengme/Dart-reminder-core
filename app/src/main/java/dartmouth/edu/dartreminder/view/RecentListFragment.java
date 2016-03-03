@@ -8,24 +8,18 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.util.Attributes;
 
 import java.util.ArrayList;
 
 import dartmouth.edu.dartreminder.R;
+import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.data.Schedule;
-import dartmouth.edu.dartreminder.data.ScheduleDBHelper;
 import dartmouth.edu.dartreminder.utils.ListViewAdapter;
 
 
@@ -46,7 +40,7 @@ public class RecentListFragment extends Fragment {
     private Context mContext;
     private View view;
 
-    private ScheduleDBHelper mScheduleDBHelper;
+    private DartReminderDBHelper mScheduleDBHelper;
     private getAllFromDBTask task = null;
 
     public RecentListFragment() {
@@ -93,7 +87,7 @@ public class RecentListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        mScheduleDBHelper = new ScheduleDBHelper(getActivity());
+        mScheduleDBHelper = new DartReminderDBHelper(getActivity());
         task = new getAllFromDBTask();
         task.execute();
     }
