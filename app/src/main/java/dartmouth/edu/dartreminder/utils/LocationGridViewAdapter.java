@@ -4,9 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,8 +16,7 @@ import dartmouth.edu.dartreminder.R;
 public class LocationGridViewAdapter extends BaseAdapter {
 
     private Context mContext;
-    private int[] mThumbIds = {R.drawable.arraw_icon, R.drawable.arraw_icon, R.drawable.arraw_icon,
-                                R.drawable.arraw_icon, R.drawable.arraw_icon, R.drawable.arraw_icon};
+    private int[] mThumbIds = Globals.LOCATION_LIST;
 
     public LocationGridViewAdapter(Context c) {
         mContext = c;

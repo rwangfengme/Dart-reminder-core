@@ -9,12 +9,14 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/hello_blank_fragment"/>
+        android:gravity="center"
+        android:text="Where"/>
 
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/GridView_Location_History"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         android:columnWidth="90dp"
         android:numColumns="4"
         android:horizontalSpacing="10dp"

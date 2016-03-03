@@ -1,23 +1,17 @@
 package dartmouth.edu.dartreminder.view;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -26,6 +20,7 @@ import java.util.Calendar;
 import dartmouth.edu.dartreminder.R;
 import dartmouth.edu.dartreminder.data.Schedule;
 import dartmouth.edu.dartreminder.data.ScheduleDBHelper;
+import dartmouth.edu.dartreminder.utils.Globals;
 
 public class NewScheduleActivity extends Activity {
 

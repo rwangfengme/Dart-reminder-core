@@ -5,17 +5,16 @@
     android:layout_height="match_parent">
     <ImageView
         android:id="@+id/ImageView_Grid_Location"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp" />
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:scaleType="fitXY" />
 
     <TextView
         android:id="@+id/TextView_Grid_Location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="15dp"
+        android:gravity="center"
         android:paddingTop="5dp"/>
 </LinearLayout>
