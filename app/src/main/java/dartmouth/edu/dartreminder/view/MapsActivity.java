@@ -1,11 +1,15 @@
 package dartmouth.edu.dartreminder.view;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,17 +18,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,22 +45,36 @@ import java.util.Locale;
 import dartmouth.edu.dartreminder.R;
 import dartmouth.edu.dartreminder.data.CustomLocation;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
     private GoogleMap mMap;
     private ListView mLocationList;
+    private ImageView mImageView;
+    private EditText mSearchText;
+    private LocationAdapter locationListAdapter;
+    private Marker mCenterMarker;
+    private Marker mSelectMarker;
+    private Polyline mPolyLine;
+    private Circle mCircle;
+    private double radius = 0;
+
+    private final double DEFAULT_RADIUS = 50.0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        mImageView = (ImageView) findViewById(R.id.map_search_button);
+        mSearchText = (EditText) findViewById(R.id.map_search_text);
+
         setUpMapIfNeeded();
 
         LocationManager locationManager;
-        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        Criteria criteria = new Criteria();
+        final Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
         criteria.setPowerRequirement(Criteria.POWER_LOW);
         criteria.setAltitudeRequired(false);
@@ -58,30 +83,86 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         criteria.setCostAllowed(true);
         String provider = locationManager.getBestProvider(criteria, true);
 
-        final Location location = locationManager.getLastKnownLocation(provider);
+        final Location location;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        location = locationManager.getLastKnownLocation(provider);
 
         mLocationList = (ListView) findViewById(R.id.locationList);
 
         //add current location to service
         final List<CustomLocation> locationList = new ArrayList<>();
-        CustomLocation currentLocaiton = new CustomLocation("Current Location");
-        getLocationAddress(location, currentLocaiton);
-        locationList.add(currentLocaiton);
+        final CustomLocation currentLocation = new CustomLocation("Current Location");
+        getLocationAddress(location, currentLocation);
+        locationList.add(currentLocation);
 
-         locationList.add(new CustomLocation("Location", 0, 0, "location 2"));
-        LocationAdapter locationListAdapter = new LocationAdapter(this, locationList);
+        locationList.add(new CustomLocation("Location", 0, 0, "location 2"));
+        locationListAdapter = new LocationAdapter(this, locationList);
         mLocationList.setAdapter(locationListAdapter);
 
         mLocationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
+                mMap.clear();
                 CustomLocation locationEntry = locationList.get(position);
-                updateMap(locationEntry.getLatitude(), locationEntry.getLongitude());
+                mSearchText.setText(locationEntry.getTitle());
+                updateMap(locationEntry.getLatitude(), locationEntry.getLongitude(), true);
+            }
+        });
+
+
+        mImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String location = mSearchText.getText().toString();
+                CustomLocation customLocation = locationListAdapter.containsLocation(location);
+                if (customLocation != null){
+                    mMap.clear();
+                    updateMap(customLocation.getLatitude(), customLocation.getLongitude(), true);
+                    mSearchText.setText(customLocation.getTitle());
+                }else{
+                    List<Address> addressList = null;
+                    if (location != null && !location.isEmpty()){
+                        Geocoder geocoder = new Geocoder(getApplicationContext());
+                        try {
+                            addressList = geocoder.getFromLocationName(location, 1);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (addressList != null){
+                        Address address = addressList.get(0);
+                        mMap.clear();
+                        updateMap(address.getLatitude(), address.getLongitude(), true);
+                        mSearchText.setText(fromAddressToString(address));
+                    }else{
+                        Toast.makeText(getApplicationContext(), "No Location Found", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
     }
 
     //<-- Location Related Area -->
+    public String fromAddressToString(Address address){
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < address.getMaxAddressLineIndex(); i++){
+            String addressLine = address.getAddressLine(i);
+            if (addressLine != null && !addressLine.isEmpty())
+                sb.append(address.getAddressLine(i)).append(", ");
+        }
+        sb.append(address.getCountryName());
+        return sb.toString();
+    }
+
     public static LatLng fromLocationToLatLng(Location location){
         return new LatLng(location.getLatitude(), location.getLongitude());
     }
@@ -130,15 +211,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     //<-- Map Related Area -->
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -149,21 +221,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
-    /**
-     * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
-     * installed) and the map has not already been instantiated.. This will ensure that we only ever
-     * call {@link #setUpMap()} once when {@link #mMap} is not null.
-     * <p/>
-     * If it isn't installed {@link SupportMapFragment} (and
-     * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
-     * install/update the Google Play services APK on their device.
-     * <p/>
-     * A user can return to this FragmentActivity after following the prompt and correctly
-     * installing/updating/enabling the Google Play services. Since the FragmentActivity may not
-     * have been completely destroyed during this process (it is likely that it would only be
-     * stopped or paused), {@link #onCreate(android.os.Bundle)} may not be called again so we should call this
-     * method in {@link #onResume()} to guarantee that it will be called.
-     */
     private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
@@ -177,34 +234,120 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
-     * <p/>
-     * This should only be called once and when we are sure that {@link #mMap} is not null.
-     */
     private void setUpMap() {
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        mMap.setOnMapClickListener(this);
     }
 
-    private void updateMap(double lat, double lng){
+    private void updateMap(double lat, double lng, boolean isCenter){
         LatLng latlng = new LatLng(lat, lng);
 
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng,
                 17));
-        mMap.addMarker(new MarkerOptions().position(latlng).icon(BitmapDescriptorFactory.defaultMarker(
-                BitmapDescriptorFactory.HUE_RED)));
+        if (isCenter){
+            mCenterMarker = mMap.addMarker(new MarkerOptions()
+                    .position(latlng)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                    .draggable(false));
+            drawCircle(DEFAULT_RADIUS);
+        }
     }
 
+    @Override
+    public void onMapClick(LatLng latLng) {
+        if(mSelectMarker != null){
+            mSelectMarker.remove();
+            mSelectMarker = null;
+        }
 
+        mSelectMarker = mMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                .draggable(true));
+
+        if (mPolyLine != null) {
+            mPolyLine.remove();
+            mPolyLine = null;
+        }
+
+        mPolyLine = mMap.addPolyline(new PolylineOptions()
+                .add(mCenterMarker.getPosition(), mSelectMarker.getPosition())
+                .width(5)
+                .color(Color.BLACK));
+
+//        radius = distance(mCenterMarker.getPosition().latitude, mCenterMarker.getPosition().longitude,
+//                mSelectMarker.getPosition().latitude, mSelectMarker.getPosition().longitude);
+
+        Location center = latLng2Location(mCenterMarker.getPosition());
+        Location bound = latLng2Location(mSelectMarker.getPosition());
+        radius = center.distanceTo(bound);
+
+        mSelectMarker.setTitle(Math.round(radius) + " Meters");
+
+        drawCircle(radius);
+    }
+
+    public Location latLng2Location(LatLng latLng){
+        Location location = new Location("");
+        location.setLatitude(latLng.latitude);
+        location.setLongitude(latLng.longitude);
+        return location;
+    }
+
+    public void drawCircle(Double radius){
+        if (mCircle != null){
+            mCircle.remove();
+            mCircle = null;
+        }
+        mCircle = mMap.addCircle(new CircleOptions()
+                .center(mCenterMarker.getPosition())
+                .radius(radius)
+                .strokeColor(Color.RED)
+                .strokeWidth(5));
+    }
+
+//    public double distance (double lat_a, double lng_a, double lat_b, double lng_b ) {
+//        double earthRadius = 3958.75;
+//        double latDiff = Math.toRadians(lat_b-lat_a);
+//        double lngDiff = Math.toRadians(lng_b-lng_a);
+//        double a = Math.sin(latDiff /2) * Math.sin(latDiff /2) +
+//                Math.cos(Math.toRadians(lat_a)) * Math.cos(Math.toRadians(lat_b)) *
+//                        Math.sin(lngDiff /2) * Math.sin(lngDiff /2);
+//        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+//        double distance = earthRadius * c;
+//
+//        int meterConversion = 1609;
+//
+//        double result = distance * meterConversion;
+//        return result;
+//    }
 
     //<-- Location Adapter Class -->
     // Subclass of ArrayAdapter to display interpreted database row values in
     // customized list view.
     private class LocationAdapter extends ArrayAdapter<CustomLocation> {
+        List<CustomLocation> locations;
         public LocationAdapter(Context context, List<CustomLocation> locations) {
             // set layout to show two lines for each item
             super(context, R.layout.location_item_layout, locations);
+            this.locations = locations;
+        }
+
+        public CustomLocation containsLocation(String location){
+            CustomLocation result = null;
+            String locationLowerCase = location.toLowerCase();
+            for (CustomLocation customLocation: locations){
+                String custom = customLocation.getTitle().toLowerCase();
+
+                if (custom.equals(locationLowerCase)){
+                    return customLocation;
+                }else{
+                    if (custom.contains(location)){
+                        result = customLocation;
+                    }
+                }
+            }
+            return result;
         }
 
         @Override
