@@ -56,7 +56,6 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
     private DartReminderDBHelper datasource;
 
     private boolean registered = false;
-
     private boolean isAdd = false;
 
     private AddCustomLocationTask addCustomLocationTask;
