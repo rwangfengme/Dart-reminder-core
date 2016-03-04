@@ -15,7 +15,7 @@ import dartmouth.edu.dartreminder.R;
 
 public class UserProfileFragment extends Fragment {
 
-    private final RecentListFragment mRecentListFragment = new RecentListFragment();
+    private final RecentTimeListFragment mRecentListFragment = new RecentTimeListFragment();
 
     private Button mSaveButton;
     private Button mCancelButton;

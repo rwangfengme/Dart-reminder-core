@@ -196,6 +196,11 @@ public class NewScheduleActivity extends AppCompatActivity {
         // write your own check function
         schedule.setCompleted(false);
 
+
+        // insert into uncompleted location based schedule if this schedule is location based
+        if (!schedule.getLocationName().isEmpty()){
+            MainActivity.unCompletedLocationScheduleList.add(schedule);
+        }
         task = new InsertDbTask();
         task.execute();
         this.finish();

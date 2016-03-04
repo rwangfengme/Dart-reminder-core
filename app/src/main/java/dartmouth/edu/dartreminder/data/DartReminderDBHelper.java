@@ -169,6 +169,24 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
         return list;
     }
 
+    public ArrayList<Schedule> fetchUncompletedLocationSchedules() {
+        SQLiteDatabase dbObj = getReadableDatabase();
+        ArrayList<Schedule> list = new ArrayList<>();
+        Cursor cursor = dbObj.query(true, TABLE_NAME_SCHEDULES, mColumnList_Schedule,
+                KEY_COMPLETED + " = 0 AND " + KEY_LOCATION_NAME + " <> \'\'" , null, null, null, null, null);
+
+        while (cursor.moveToNext()) {
+            Schedule schedule = cursorToSchedule(cursor, false);
+            list.add(schedule);
+            Log.d("TAG", "Got data");
+        }
+
+        cursor.close();
+        dbObj.close();
+
+        return list;
+    }
+
     private Schedule cursorToSchedule(Cursor cursor, boolean b) {
         Schedule schedule = new Schedule();
         schedule.setId(cursor.getLong(cursor.getColumnIndex(KEY_ROWID)));

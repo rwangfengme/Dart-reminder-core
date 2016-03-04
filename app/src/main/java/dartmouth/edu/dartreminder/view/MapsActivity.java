@@ -1,8 +1,10 @@
 package dartmouth.edu.dartreminder.view;
 
 import android.Manifest;
+import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
@@ -47,9 +49,12 @@ import java.util.Locale;
 
 import dartmouth.edu.dartreminder.R;
 import dartmouth.edu.dartreminder.data.CustomLocation;
+import dartmouth.edu.dartreminder.utils.CustomLocationLoader;
 import dartmouth.edu.dartreminder.utils.Globals;
+import dartmouth.edu.dartreminder.utils.LocationGridViewAdapter;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener,
+        LoaderManager.LoaderCallbacks<ArrayList<CustomLocation>>{
 
     private GoogleMap mMap;
     private ListView mLocationList;
@@ -59,10 +64,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Button mCancelButton;
     private RadioButton mArrive;
     private RadioButton mLeave;
-    private TextView mRadiuText;
+    private TextView mRadiusText;
 
-
-    private LocationAdapter locationListAdapter;
     private Marker mCenterMarker;
     private Marker mSelectMarker;
     private Polyline mPolyLine;
@@ -75,6 +78,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private double lng;
     private double radius = DEFAULT_RADIUS;
 
+    private LatLng currentLatlng;
+
+    private List<CustomLocation> mCustomLocationList;
+    public static LocationAdapter locationListAdapter;
+    private LoaderManager loaderManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,58 +95,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mCancelButton = (Button) findViewById(R.id.map_cancel_button);
         mArrive = (RadioButton) findViewById(R.id.map_arrive_radio);
         mLeave = (RadioButton) findViewById(R.id.map_leave_radio);
-        mRadiuText = (TextView) findViewById(R.id.map_radius_text);
+        mRadiusText = (TextView) findViewById(R.id.map_radius_text);
 
         mArrive.setChecked(true);
-        mRadiuText.setText("Radius: " + Math.round(radius) + " M");
+        mRadiusText.setText("Radius: " + Math.round(radius) + " M");
 
         setUpMapIfNeeded();
-
-        LocationManager locationManager;
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        final Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        criteria.setPowerRequirement(Criteria.POWER_LOW);
-        criteria.setAltitudeRequired(false);
-        criteria.setBearingRequired(false);
-        criteria.setSpeedRequired(false);
-        criteria.setCostAllowed(true);
-        String provider = locationManager.getBestProvider(criteria, true);
-
-        Location location;
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        location = locationManager.getLastKnownLocation(provider);
-
-        lat = location.getLatitude();
-        lng = location.getLongitude();
 
         mLocationList = (ListView) findViewById(R.id.locationList);
 
         //add current location to service
-        final List<CustomLocation> locationList = new ArrayList<>();
-        final CustomLocation currentLocation = new CustomLocation("Current Location", R.drawable.arraw_icon);
-        getLocationAddress(location, currentLocation);
-        locationList.add(currentLocation);
-
-        locationList.add(new CustomLocation("Location", 0, 0, "location 2", R.drawable.arraw_icon));
-        locationListAdapter = new LocationAdapter(this, locationList);
-        mLocationList.setAdapter(locationListAdapter);
+        loaderManager = getLoaderManager();
+        loaderManager.initLoader(1, null, this).forceLoad();
 
         mLocationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 mMap.clear();
-                CustomLocation locationEntry = locationList.get(position);
+                CustomLocation locationEntry = mCustomLocationList.get(position);
                 mSearchText.setText(locationEntry.getTitle());
                 if (position == 0){
                     mLeave.setChecked(true);
@@ -316,7 +290,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                     .draggable(false));
             radius = DEFAULT_RADIUS;
-            mRadiuText.setText("Radius: " + Math.round(radius) + " M");
+            mRadiusText.setText("Radius: " + Math.round(radius) + " M");
             drawCircle(radius);
         }
     }
@@ -326,7 +300,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (mCenterMarker == null){
             mMap.clear();
             radius = DEFAULT_RADIUS;
-            mRadiuText.setText("Radius: " + Math.round(radius) + " M");
+            mRadiusText.setText("Radius: " + Math.round(radius) + " M");
             mCenterMarker = mMap.addMarker(new MarkerOptions()
                     .position(latLng)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
@@ -365,7 +339,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Location bound = latLng2Location(mSelectMarker.getPosition());
             radius = center.distanceTo(bound);
 
-            mRadiuText.setText("Radius: " + Math.round(radius) + " M");
+            mRadiusText.setText("Radius: " + Math.round(radius) + " M");
             mSelectMarker.setTitle(Math.round(radius) + " M");
 
             drawCircle(radius);
@@ -391,21 +365,71 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .strokeWidth(5));
     }
 
-//    public double distance (double lat_a, double lng_a, double lat_b, double lng_b ) {
-//        double earthRadius = 3958.75;
-//        double latDiff = Math.toRadians(lat_b-lat_a);
-//        double lngDiff = Math.toRadians(lng_b-lng_a);
-//        double a = Math.sin(latDiff /2) * Math.sin(latDiff /2) +
-//                Math.cos(Math.toRadians(lat_a)) * Math.cos(Math.toRadians(lat_b)) *
-//                        Math.sin(lngDiff /2) * Math.sin(lngDiff /2);
-//        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-//        double distance = earthRadius * c;
-//
-//        int meterConversion = 1609;
-//
-//        double result = distance * meterConversion;
-//        return result;
-//    }
+    @Override
+    public Loader<ArrayList<CustomLocation>> onCreateLoader(int id, Bundle args) {
+        return new CustomLocationLoader(this);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<ArrayList<CustomLocation>> loader, ArrayList<CustomLocation> data) {
+        mCustomLocationList = data;
+
+        Location location;
+        if (MainActivity.currentLatLng == null){
+            LocationManager locationManager;
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+            final Criteria criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_FINE);
+            criteria.setPowerRequirement(Criteria.POWER_LOW);
+            criteria.setAltitudeRequired(false);
+            criteria.setBearingRequired(false);
+            criteria.setSpeedRequired(false);
+            criteria.setCostAllowed(true);
+            String provider = locationManager.getBestProvider(criteria, true);
+
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            location = locationManager.getLastKnownLocation(provider);
+            currentLatlng = fromLocationToLatLng(location);
+            lat = location.getLatitude();
+            lng = location.getLongitude();
+        }else{
+            location = new Location("");
+            currentLatlng = MainActivity.currentLatLng;
+            lat = currentLatlng.latitude;
+            lng = currentLatlng.longitude;
+            location.setLongitude(currentLatlng.longitude);
+            location.setLatitude(currentLatlng.latitude);
+        }
+
+        final CustomLocation currentLocation = new CustomLocation("Current Location", R.drawable.arraw_icon);
+        getLocationAddress(location, currentLocation);
+
+        if (mCustomLocationList == null){
+            mCustomLocationList = new ArrayList<>();
+        }
+        mCustomLocationList.add(0, currentLocation);
+
+        locationListAdapter = new LocationAdapter(this, mCustomLocationList);
+        mLocationList.setAdapter(locationListAdapter);
+        Log.d("TAGG", "Load Finished");
+    }
+
+    @Override
+    public void onLoaderReset(Loader<ArrayList<CustomLocation>> loader) {
+        locationListAdapter = new LocationAdapter(this, mCustomLocationList);
+        mLocationList.setAdapter(locationListAdapter);
+    }
+
 
     //<-- Location Adapter Class -->
     // Subclass of ArrayAdapter to display interpreted database row values in

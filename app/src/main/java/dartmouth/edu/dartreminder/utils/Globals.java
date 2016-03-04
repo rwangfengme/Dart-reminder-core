@@ -33,4 +33,10 @@ public abstract class Globals {
     public static final String LOCATION_DETAIL = "location_detail";
     public static final String LOCATION_LAT = "location_lat";
     public static final String LOCATION_LNG = "location_lng";
+
+    public static final String SCHEDULE_TITLE = "schedule_title";
+    public static final String SCHEDULE_NOTE = "schedule_note";
+
+    public static final String MSG_LOCATION_CHANGE = "location_changed";
+    public static final String MSG_LOCATION_ALARM = "location_alarm";
 }

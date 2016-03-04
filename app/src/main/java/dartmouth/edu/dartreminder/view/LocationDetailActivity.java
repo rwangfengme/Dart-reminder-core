@@ -1,8 +1,10 @@
 package dartmouth.edu.dartreminder.view;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Criteria;
@@ -12,7 +14,6 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -54,7 +55,25 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
     private LatLng mLatLng;
     private DartReminderDBHelper datasource;
 
+    private boolean registered = false;
+
+    private boolean isAdd = false;
+
     private AddCustomLocationTask addCustomLocationTask;
+    private LocationChangedReceiver locationChangedReceiver;
+
+    public class LocationChangedReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context ctx, Intent intent) {
+            Log.e("onReceive","onReceive");
+
+            double lat = intent.getDoubleExtra(Globals.LOCATION_LAT, 0);
+            double lng = intent.getDoubleExtra(Globals.LOCATION_LNG, 0);
+
+            setMarker(new LatLng(lat, lng));
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,10 +89,11 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
         mSearchLayout = (LinearLayout) findViewById(R.id.location_search_frame);
 
         datasource = new DartReminderDBHelper(getApplicationContext());
+        locationChangedReceiver = new LocationChangedReceiver();
 
         setUpMapIfNeeded();
         Intent data = getIntent();
-        boolean isAdd = data.getBooleanExtra(Globals.ADD_LOCATION, false);
+        isAdd = data.getBooleanExtra(Globals.ADD_LOCATION, false);
         if (!isAdd){
             String title = data.getStringExtra(Globals.LOCATION_TITLE);
             String detail = data.getStringExtra(Globals.LOCATION_DETAIL);
@@ -90,6 +110,11 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
             mTitleText.setEnabled(false);
             mAddressText.setEnabled(false);
         }else{
+            IntentFilter intentFilter = new IntentFilter(
+                    LocationChangedReceiver.class.getName());
+            registerReceiver(locationChangedReceiver, intentFilter);
+            registered = true;
+
             LocationManager locationManager;
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -122,6 +147,11 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
         mSearchIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (registered){
+                    unregisterReceiver(locationChangedReceiver);
+                    registered = false;
+                }
+
                 String location = mSearchText.getText().toString();
                 List<Address> addressList = null;
                 if (location != null && !location.isEmpty()) {
@@ -136,7 +166,8 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
                 if (addressList != null && addressList.size() > 0) {
                     Address address = addressList.get(0);
                     mMap.clear();
-                    setMarker(new LatLng(address.getLatitude(), address.getLongitude()));
+                    mLatLng = new LatLng(address.getLatitude(), address.getLongitude());
+                    setMarker(mLatLng);
                     mSearchText.setText("");
                     mAddressText.setText(fromAddressToString(address));
                 } else {
@@ -179,6 +210,15 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
             }
         });
     }
+
+    @Override
+    protected void onDestroy(){
+        if (registered){
+            unregisterReceiver(locationChangedReceiver);
+        }
+        super.onDestroy();
+    }
+
 
     private String fromAddressToString(Address address){
         StringBuffer sb = new StringBuffer();
@@ -271,9 +311,11 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
 
     @Override
     public void onMapClick(LatLng latLng) {
-        mLatLng = latLng;
-        setMarker(latLng);
-        mAddressText.setText(fromLatLng2Address(latLng));
+        if (isAdd){
+            mLatLng = latLng;
+            setMarker(latLng);
+            mAddressText.setText(fromLatLng2Address(latLng));
+        }
     }
 
 
