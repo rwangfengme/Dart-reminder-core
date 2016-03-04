@@ -142,6 +142,8 @@ public class TrackingService extends Service implements
     // send update to the activity
     private void sendUpdate(Schedule schedule, int i) {
         mScheduleList.remove(i);
+        dartReminderDBHelper.removeSchedule(schedule.getId());
+
         Intent intent = new Intent(
                 MainActivity.ScheduleTriggeredReceiver.class.getName());
         intent.putExtra(MSG_ENTITY_UPDATE, true);

@@ -44,6 +44,8 @@ import dartmouth.edu.dartreminder.utils.Globals;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private NavigationView navigationView;
+
     public static List<Schedule> unCompletedLocationScheduleList;
     public static LatLng currentLatLng;
 
@@ -54,8 +56,8 @@ public class MainActivity extends AppCompatActivity
     // For keeping if the service bound already
     private boolean mIsBound;
 
-    private SlidingTabLayout slidingTabLayout;
-    private ViewPager viewPager;
+    public static SlidingTabLayout slidingTabLayout;
+    public static ViewPager viewPager;
 
     private ArrayList<Fragment> fragments;
     private ViewPageAdapter mViewPagerAdapter;
@@ -143,7 +145,7 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();*/
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         /*fragmentManager = getFragmentManager();
@@ -205,6 +207,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_recent_list) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
             //TODO:
             /*getFragmentManager()
                     .beginTransaction()
