@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -42,6 +43,8 @@ import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.utils.Globals;
 
 public class LocationDetailActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
+    private TextView mTitleView;
+    private TextView mAddressView;
     private EditText mTitleText;
     private EditText mAddressText;
     private EditText mSearchText;
@@ -80,6 +83,8 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location_detail);
 
+        mTitleView = (TextView) findViewById(R.id.location_title_view);
+        mAddressView = (TextView) findViewById(R.id.location_address_view);
         mTitleText = (EditText) findViewById(R.id.location_title_text);
         mAddressText = (EditText) findViewById(R.id.location_address_text);
         mSearchText = (EditText) findViewById(R.id.location_search_text);
@@ -100,10 +105,14 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
             String detail = data.getStringExtra(Globals.LOCATION_DETAIL);
             double lat = data.getDoubleExtra(Globals.LOCATION_LAT, 0);
             double lng = data.getDoubleExtra(Globals.LOCATION_LNG, 0);
+
             mTitleText.setText(title);
             mAddressText.setText(detail);
             mLatLng = new LatLng(lat, lng);
             setMarker(mLatLng);
+
+            mTitleView.setText("Title: ");
+            mTitleText.setText("Note: ");
 
             mSaveButton.setVisibility(View.GONE);
             mCancelButton.setVisibility(View.GONE);

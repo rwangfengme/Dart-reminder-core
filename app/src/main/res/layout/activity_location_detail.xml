@@ -13,6 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Title: "
+            android:id="@+id/location_title_view"
             android:layout_margin="5dp"/>
         <EditText
             android:layout_width="match_parent"
@@ -29,6 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Address: "
+            android:id="@+id/location_address_view"
             android:layout_margin="5dp"/>
         <EditText
             android:layout_width="match_parent"

@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity
         intent.putExtra(Globals.LOCATION_DETAIL, note);
         intent.putExtra(Globals.LOCATION_LAT, lat);
         intent.putExtra(Globals.LOCATION_LNG, lng);
-        //startActivity(intent);
+        startActivity(intent);
     }
 
     @Override
