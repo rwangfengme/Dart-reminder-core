@@ -94,13 +94,34 @@ public class MainActivity extends AppCompatActivity
         intent.putExtra(Globals.LOCATION_DETAIL, note);
         intent.putExtra(Globals.LOCATION_LAT, lat);
         intent.putExtra(Globals.LOCATION_LNG, lng);
-        startActivity(intent);
+        //startActivity(intent);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tab);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+
+        recentTimeListFragment = new RecentTimeListFragment();
+        recentLocationListFragment = new RecentLocationListFragment();
+        recentActivityListFragment = new RecentActivityListFragment();
+
+
+        fragments = new ArrayList<Fragment>();
+        fragments.add(recentTimeListFragment);
+        fragments.add(recentLocationListFragment);
+        fragments.add(recentActivityListFragment);
+
+        mViewPagerAdapter =new ViewPageAdapter(getFragmentManager(),
+                fragments);
+        viewPager.setAdapter(mViewPagerAdapter);
+
+        slidingTabLayout.setDistributeEvenly(true);
+        slidingTabLayout.setViewPager(viewPager);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -122,8 +143,8 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        fragmentManager = getFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
+        /*fragmentManager = getFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();*/
 
         /*RecentListFragment f1 = new RecentListFragment();
         fragmentTransaction.replace(R.id.main_page, f1, "f1");
@@ -139,7 +160,7 @@ public class MainActivity extends AppCompatActivity
         IntentFilter intentFilter = new IntentFilter(
                 ScheduleTriggeredReceiver.class.getName());
         registerReceiver(mScheduleTriggeredReceiver, intentFilter);
-        fragmentTransaction.commit();
+        //fragmentTransaction.commit();
     }
 
     @Override
@@ -187,11 +208,15 @@ public class MainActivity extends AppCompatActivity
                     .replace(R.id.main_page, mRecentTimeListFragment)
                     .commit();*/
         } else if (id == R.id.nav_user_profile) {
+            slidingTabLayout.setVisibility(View.INVISIBLE);
+            viewPager.setVisibility(View.INVISIBLE);
             getFragmentManager()
                     .beginTransaction()
                     .replace(R.id.main_page, mUserProfileFragment)
                     .commit();
         } else if (id == R.id.nav_location_list) {
+            slidingTabLayout.setVisibility(View.INVISIBLE);
+            viewPager.setVisibility(View.INVISIBLE);
             getFragmentManager()
                     .beginTransaction()
                     .replace(R.id.main_page, mLocationFragment)
@@ -201,6 +226,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_sign_out) {
+            slidingTabLayout.setVisibility(View.INVISIBLE);
+            viewPager.setVisibility(View.INVISIBLE);
             mDartReminderDBHelper = new DartReminderDBHelper(this);
             clearSharedPreferences();
             clearAllDataTable();
