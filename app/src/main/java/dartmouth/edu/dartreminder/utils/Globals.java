@@ -19,4 +19,10 @@ public abstract class Globals {
     public static final String LAT = "lat";
     public static final String LNG = "lng";
     public static final String DEFAULT_LOCATION_NAME = "User Selected Location";
+
+    public static final String ADD_LOCATION = "add_location";
+    public static final String LOCATION_TITLE = "location_title";
+    public static final String LOCATION_DETAIL = "location_detail";
+    public static final String LOCATION_LAT = "location_lat";
+    public static final String LOCATION_LNG = "location_lng";
 }

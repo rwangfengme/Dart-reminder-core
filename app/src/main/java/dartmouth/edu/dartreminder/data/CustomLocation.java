@@ -11,6 +11,7 @@ public class CustomLocation {
     private String detail;
     private Integer icon;
 
+
     public CustomLocation(String title){
         this.title = title;
         this.latitude = 0;
@@ -19,12 +20,20 @@ public class CustomLocation {
         this.icon = 0;
     }
 
-    public CustomLocation(String title, double latitude, double longitude, String detail){
+    public CustomLocation(String title, int icon){
+        this.title = title;
+        this.latitude = 0;
+        this.longitude = 0;
+        this.detail = "";
+        this.icon = icon;
+    }
+
+    public CustomLocation(String title, double latitude, double longitude, String detail, int id){
         this.title = title;
         this.latitude = latitude;
         this.longitude = longitude;
         this.detail = detail;
-        this.icon = 0;
+        this.icon = id;
     }
 
     public long getId(){
@@ -72,7 +81,7 @@ public class CustomLocation {
     }
 
     public int getIcon(){
-        return icon;
+        return this.icon;
     }
 
     public void setIcon(int icon){

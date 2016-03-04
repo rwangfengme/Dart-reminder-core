@@ -106,7 +106,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         criteria.setCostAllowed(true);
         String provider = locationManager.getBestProvider(criteria, true);
 
-        final Location location;
+        Location location;
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -126,11 +126,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //add current location to service
         final List<CustomLocation> locationList = new ArrayList<>();
-        final CustomLocation currentLocation = new CustomLocation("Current Location");
+        final CustomLocation currentLocation = new CustomLocation("Current Location", R.drawable.arraw_icon);
         getLocationAddress(location, currentLocation);
         locationList.add(currentLocation);
 
-        locationList.add(new CustomLocation("Location", 0, 0, "location 2"));
+        locationList.add(new CustomLocation("Location", 0, 0, "location 2", R.drawable.arraw_icon));
         locationListAdapter = new LocationAdapter(this, locationList);
         mLocationList.setAdapter(locationListAdapter);
 
