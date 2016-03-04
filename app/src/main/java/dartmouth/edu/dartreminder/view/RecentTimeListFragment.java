@@ -26,12 +26,12 @@ import dartmouth.edu.dartreminder.utils.ListViewAdapter;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link RecentListFragment.OnFragmentInteractionListener} interface
+ * {@link RecentTimeListFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link RecentListFragment#newInstance} factory method to
+ * Use the {@link RecentTimeListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RecentListFragment extends Fragment {
+public class RecentTimeListFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
@@ -43,7 +43,7 @@ public class RecentListFragment extends Fragment {
     private DartReminderDBHelper mScheduleDBHelper;
     private getAllFromDBTask task = null;
 
-    public RecentListFragment() {
+    public RecentTimeListFragment() {
         // Required empty public constructor
     }
 
@@ -53,11 +53,11 @@ public class RecentListFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment RecentListFragment.
+     * @return A new instance of fragment RecentTimeListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static RecentListFragment newInstance(String param1, String param2) {
-        RecentListFragment fragment = new RecentListFragment();
+    public static RecentTimeListFragment newInstance(String param1, String param2) {
+        RecentTimeListFragment fragment = new RecentTimeListFragment();
         return fragment;
     }
 
@@ -70,7 +70,7 @@ public class RecentListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_recent_list, null);
+        view = inflater.inflate(R.layout.fragment_recent_time, null);
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorDeepRed)));
@@ -146,7 +146,8 @@ public class RecentListFragment extends Fragment {
 
         @Override
         protected ArrayList doInBackground(Void... unused) {
-            ArrayList<Schedule> allSchedule = mScheduleDBHelper.fetchSchedules();
+            ArrayList<Schedule> allSchedule = mScheduleDBHelper.fetchSchedulesByTime();
+
             return allSchedule;
         }
 

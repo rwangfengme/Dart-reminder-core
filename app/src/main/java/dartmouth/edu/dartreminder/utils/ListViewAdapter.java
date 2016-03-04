@@ -22,8 +22,8 @@ import dartmouth.edu.dartreminder.data.Schedule;
 
 public class ListViewAdapter extends BaseSwipeAdapter {
 
-    private Context mContext;
-    private DartReminderDBHelper mScheduleDBHelper;
+    private Context mContext;private
+    DartReminderDBHelper mScheduleDBHelper;
     private DelScheduleTask task = null;
     private ArrayList<Schedule> dataScource;
 

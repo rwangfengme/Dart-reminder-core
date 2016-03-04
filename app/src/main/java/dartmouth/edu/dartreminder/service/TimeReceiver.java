@@ -1,17 +1,10 @@
 package dartmouth.edu.dartreminder.service;
 
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Vibrator;
-import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
-import dartmouth.edu.dartreminder.R;
 import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
-import dartmouth.edu.dartreminder.data.Schedule;
-import dartmouth.edu.dartreminder.view.NewScheduleActivity;
 import dartmouth.edu.dartreminder.view.NotifyReceivedActivity;
 
 /**

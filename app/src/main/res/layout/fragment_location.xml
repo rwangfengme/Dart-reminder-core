@@ -5,7 +5,6 @@
              tools:context="dartmouth.edu.dartreminder.view.LocationFragment"
             android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,10 +19,21 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:columnWidth="90dp"
-        android:numColumns="4"
-        android:horizontalSpacing="10dp"
+        android:numColumns="3"
+        android:horizontalSpacing="15dp"
         android:stretchMode="columnWidth"
-        android:gravity="center_horizontal"
-        />
-
+        android:gravity="center_horizontal"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:gravity="right">
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/add_location_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/white_cross"
+            android:layout_margin="10dp"/>
+    </LinearLayout>
 </LinearLayout>

@@ -135,50 +135,14 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
         return schedule;
     }
 
-    public void updateSchedule(Schedule schedule) {
-        ContentValues value = new ContentValues();
-
-        value.put(KEY_TITLE, schedule.getTitle());
-        value.put(KEY_NOTES, schedule.getNotes());
-        value.put(KEY_USE_TIME, schedule.getUseTime() ? 1 : 0);
-        value.put(KEY_TIME, schedule.getTime());
-        value.put(KEY_LOCATION_NAME, schedule.getLocationName());
-        value.put(KEY_ARRIVE, schedule.getArrive() ? 1 : 0);
-        value.put(KEY_RADIUS, schedule.getRadius());
-        value.put(KEY_LAT, schedule.getLat());
-        value.put(KEY_LNG, schedule.getLng());
-        value.put(KEY_PRIORITY, schedule.getPriority());
-        value.put(KEY_REPEAT, schedule.getRepeat());
-        value.put(KEY_COMPLETED, schedule.getCompleted() ? 1 : 0);
-
-        SQLiteDatabase dbObj = getWritableDatabase();
-        dbObj.update(TABLE_NAME_SCHEDULES, value, "_id=" + schedule.getId(), null);
-    }
-
-    public ArrayList<Schedule> fetchSchedulesByUseTime() throws SQLException {
+    public ArrayList<Schedule> fetchSchedulesByTime(){
         SQLiteDatabase dbObj = getReadableDatabase();
         ArrayList<Schedule> list = new ArrayList<Schedule>();
-        Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_USE_TIME + " = 1 AND " + KEY_COMPLETED + " = 0 ORDER BY " + KEY_TIME + " DESC", null);
+        Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_USE_TIME + " = 1 ORDER BY " + KEY_TIME + " DESC", null);
         while (cursor.moveToNext()) {
             Schedule schedule = cursorToSchedule(cursor, false);
             list.add(schedule);
-            Log.d("TAGG", "Got data");
-        }
-
-        cursor.close();
-        dbObj.close();
-
-        return list;
-    }
-
-    public ArrayList<Schedule> fetchSchedulesByDate(){
-        SQLiteDatabase dbObj = getReadableDatabase();
-        ArrayList<Schedule> list = new ArrayList<Schedule>();
-        Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_USE_TIME + " = 1 ORDER BY " + KEY_TIME +" DESC", null);
-        while (cursor.moveToNext()) {
-            Schedule schedule = cursorToSchedule(cursor, false);
-            list.add(schedule);
-            Log.d("TAGG", "Got data");
+            Log.d("TAG", "Got data");
         }
 
         cursor.close();
@@ -214,7 +178,7 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
         while (cursor.moveToNext()) {
             Schedule schedule = cursorToSchedule(cursor, false);
             list.add(schedule);
-            Log.d("TAGG", "Got data");
+            Log.d("TAG", "Got data");
         }
 
         cursor.close();
@@ -266,6 +230,7 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
     public static final String KEY_LOCATION_LAT = "latitude";
     public static final String KEY_LOCATION_LNG = "longitude";
     public static final String KEY_LOCATION_DETAIL = "detail";
+    public static final String KEY_ICON_ID = "icon";
 
     private static final String CREATE_TABLE_CUSTOM_LOCATIONS = "CREATE TABLE IF NOT EXISTS "
             + TABLE_NAME_CUSTOM_LOCATIONS
@@ -273,25 +238,27 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
             + KEY_LOCATION_ROWID
             + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + KEY_LOCATION_TITLE
-            + " TEXT, "
+            + " VARCHAR(100), "
             + KEY_LOCATION_LAT
             + " FLOAT,"
             + KEY_LOCATION_LNG
             + " FLOAT, "
             + KEY_LOCATION_DETAIL
-            + " TEXT );";
+            + " VARCHAR(100), "
+            + KEY_ICON_ID +
+            " INTEGER );";
 
     private static final String[] mColumnList_Location = new String[] { KEY_LOCATION_ROWID,
-            KEY_LOCATION_TITLE, KEY_LOCATION_LAT, KEY_LOCATION_LNG, KEY_LOCATION_DETAIL};
+            KEY_LOCATION_TITLE, KEY_LOCATION_LAT, KEY_LOCATION_LNG, KEY_LOCATION_DETAIL, KEY_ICON_ID};
 
     public long insertCustomLocation(CustomLocation cs) {
-
         ContentValues value = new ContentValues();
 
         value.put(KEY_LOCATION_TITLE, cs.getTitle());
         value.put(KEY_LOCATION_LAT, cs.getLatitude());
         value.put(KEY_LOCATION_LNG, cs.getLongitude());
         value.put(KEY_LOCATION_DETAIL, cs.getDetail());
+        value.put(KEY_ICON_ID, cs.getIcon());
 
         SQLiteDatabase dbObj = getWritableDatabase();
         long id = dbObj.insert(TABLE_NAME_CUSTOM_LOCATIONS, null, value);
@@ -304,6 +271,42 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
         SQLiteDatabase dbObj = getWritableDatabase();
         dbObj.delete(TABLE_NAME_CUSTOM_LOCATIONS, KEY_LOCATION_ROWID + "=" + rowIndex, null);
         dbObj.close();
+    }
+
+    public void updateSchedule(Schedule schedule) {
+        ContentValues value = new ContentValues();
+
+        value.put(KEY_TITLE, schedule.getTitle());
+        value.put(KEY_NOTES, schedule.getNotes());
+        value.put(KEY_USE_TIME, schedule.getUseTime() ? 1 : 0);
+        value.put(KEY_TIME, schedule.getTime());
+        value.put(KEY_LOCATION_NAME, schedule.getLocationName());
+        value.put(KEY_ARRIVE, schedule.getArrive() ? 1 : 0);
+        value.put(KEY_RADIUS, schedule.getRadius());
+        value.put(KEY_LAT, schedule.getLat());
+        value.put(KEY_LNG, schedule.getLng());
+        value.put(KEY_PRIORITY, schedule.getPriority());
+        value.put(KEY_REPEAT, schedule.getRepeat());
+        value.put(KEY_COMPLETED, schedule.getCompleted() ? 1 : 0);
+
+        SQLiteDatabase dbObj = getWritableDatabase();
+        dbObj.update(TABLE_NAME_SCHEDULES, value, "_id=" + schedule.getId(), null);
+    }
+
+    public ArrayList<Schedule> fetchSchedulesByUseTime() throws SQLException {
+        SQLiteDatabase dbObj = getReadableDatabase();
+        ArrayList<Schedule> list = new ArrayList<Schedule>();
+        Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_USE_TIME + " = 1 AND " + KEY_COMPLETED + " = 0 ORDER BY " + KEY_TIME + " DESC", null);
+        while (cursor.moveToNext()) {
+            Schedule schedule = cursorToSchedule(cursor, false);
+            list.add(schedule);
+            Log.d("TAGG", "Got data");
+        }
+
+        cursor.close();
+        dbObj.close();
+
+        return list;
     }
 
     public CustomLocation fetchLocationByIndex(long rowId) throws SQLException {
@@ -343,6 +346,7 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
         cs.setLatitude(cursor.getDouble(cursor.getColumnIndex(KEY_LOCATION_LAT)));
         cs.setLongtitude(cursor.getDouble(cursor.getColumnIndex(KEY_LOCATION_LNG)));
         cs.setDetail(cursor.getString(cursor.getColumnIndex(KEY_LOCATION_DETAIL)));
+        cs.setIcon(cursor.getInt(cursor.getColumnIndex(KEY_ICON_ID)));
         return cs;
     }
 

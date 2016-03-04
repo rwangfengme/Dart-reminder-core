@@ -1,6 +1,7 @@
 package dartmouth.edu.dartreminder.view;
 
 import android.app.AlarmManager;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.PendingIntent;
@@ -12,8 +13,6 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.support.design.widget.FloatingActionButton;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
@@ -37,6 +36,7 @@ import java.util.List;
 import dartmouth.edu.dartreminder.R;
 import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.data.Schedule;
+//import dartmouth.edu.dartreminder.service.TimeReceiver;
 import dartmouth.edu.dartreminder.service.TimeReceiver;
 import dartmouth.edu.dartreminder.service.TrackingService;
 import dartmouth.edu.dartreminder.utils.Globals;
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
 
-    //    private final RecentListFragment mRecentListFragment = new RecentListFragment();
+//    private final RecentListFragment mRecentListFragment = new RecentListFragment();
     private final RecentTimeListFragment mRecentTimeListFragment = new RecentTimeListFragment();
     private final UserProfileFragment mUserProfileFragment = new UserProfileFragment();
     private final LocationFragment mLocationFragment = new LocationFragment();
@@ -97,71 +97,71 @@ public class MainActivity extends AppCompatActivity
         intent.putExtra(Globals.LOCATION_DETAIL, note);
         intent.putExtra(Globals.LOCATION_LAT, lat);
         intent.putExtra(Globals.LOCATION_LNG, lng);
-        //startActivity(intent);
+        startActivity(intent);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+
         slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tab);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
-        
+
         recentTimeListFragment = new RecentTimeListFragment();
         recentLocationListFragment = new RecentLocationListFragment();
         recentActivityListFragment = new RecentActivityListFragment();
-        
-        
+
+
         fragments = new ArrayList<Fragment>();
         fragments.add(recentTimeListFragment);
         fragments.add(recentLocationListFragment);
         fragments.add(recentActivityListFragment);
-        
+
         mViewPagerAdapter =new ViewPageAdapter(getFragmentManager(),
-                                               fragments);
+                fragments);
         viewPager.setAdapter(mViewPagerAdapter);
-        
+
         slidingTabLayout.setDistributeEvenly(true);
         slidingTabLayout.setViewPager(viewPager);
-        
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                 .setAction("Action", null).show();*/
+                        .setAction("Action", null).show();*/
             }
         });
-        
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         /*ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-         this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-         drawer.setDrawerListener(toggle);
-         toggle.syncState();*/
-        
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();*/
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        
+
         /*fragmentManager = getFragmentManager();
-         fragmentTransaction = fragmentManager.beginTransaction();*/
-        
+        fragmentTransaction = fragmentManager.beginTransaction();*/
+
         /*RecentListFragment f1 = new RecentListFragment();
-         fragmentTransaction.replace(R.id.main_page, f1, "f1");
-         fragmentTransaction.addToBackStack(null);
-         fragmentTransaction.commit();*/
-        
-        
+        fragmentTransaction.replace(R.id.main_page, f1, "f1");
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();*/
+
+
         //service section
         startTrackingService();
-        
+
         //register schedule triggered receiver
         mScheduleTriggeredReceiver = new ScheduleTriggeredReceiver();
         IntentFilter intentFilter = new IntentFilter(
-                                                     ScheduleTriggeredReceiver.class.getName());
+                ScheduleTriggeredReceiver.class.getName());
         registerReceiver(mScheduleTriggeredReceiver, intentFilter);
         //fragmentTransaction.commit();
     }
@@ -205,18 +205,21 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_recent_list) {
-            getFragmentManager()
             //TODO:
             /*getFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.main_page, mRecentListFragment)
+                    .replace(R.id.main_page, mRecentTimeListFragment)
                     .commit();*/
         } else if (id == R.id.nav_user_profile) {
+            slidingTabLayout.setVisibility(View.INVISIBLE);
+            viewPager.setVisibility(View.INVISIBLE);
             getFragmentManager()
                     .beginTransaction()
                     .replace(R.id.main_page, mUserProfileFragment)
                     .commit();
         } else if (id == R.id.nav_location_list) {
+            slidingTabLayout.setVisibility(View.INVISIBLE);
+            viewPager.setVisibility(View.INVISIBLE);
             getFragmentManager()
                     .beginTransaction()
                     .replace(R.id.main_page, mLocationFragment)
@@ -274,7 +277,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
-}
+
     //<-- Service Section-->
     // service connection that handles service binding
     private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -347,9 +350,4 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void clearAllDataTable() {
-        mDartReminderDBHelper.deleteTable(Globals.TABLE_NAME_SCHEDULES);
-        mDartReminderDBHelper.deleteTable(Globals.TABLE_NAME_CUSTOM_LOCATIONS);
-    }
 }
->>>>>>> 42dc91a7607c5eab494b966d7b297d7cdd6f0b2d

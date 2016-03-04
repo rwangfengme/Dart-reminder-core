@@ -10,20 +10,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
-import android.view.View;
 
 import dartmouth.edu.dartreminder.R;
 import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.data.Schedule;
 import dartmouth.edu.dartreminder.service.TimeReceiver;
 
+/**
+ * Created by gejing on 3/4/16.
+ */
 public class NotifyReceivedActivity extends Activity {
 
     private DartReminderDBHelper mScheduleDBHelper;

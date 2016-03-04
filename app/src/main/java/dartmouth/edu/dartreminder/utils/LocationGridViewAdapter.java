@@ -8,7 +8,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 import dartmouth.edu.dartreminder.R;
+import dartmouth.edu.dartreminder.data.CustomLocation;
 
 /**
  * Created by gejing on 3/1/16.
@@ -17,9 +20,11 @@ public class LocationGridViewAdapter extends BaseAdapter {
 
     private Context mContext;
     private int[] mThumbIds = Globals.LOCATION_LIST;
+    private List<CustomLocation> customLocationList;
 
-    public LocationGridViewAdapter(Context c) {
+    public LocationGridViewAdapter(Context c, List<CustomLocation> customLocationList) {
         mContext = c;
+        this.customLocationList = customLocationList;
     }
 
     public int getCount() {
@@ -44,8 +49,13 @@ public class LocationGridViewAdapter extends BaseAdapter {
             grid = inflater.inflate(R.layout.location_history_list_item, null);
             TextView textView = (TextView) grid.findViewById(R.id.TextView_Grid_Location);
             ImageView imageView = (ImageView)grid.findViewById(R.id.ImageView_Grid_Location);
-            textView.setText("Sudikoff");
-            imageView.setImageResource(mThumbIds[position]);
+            if (customLocationList != null && customLocationList.size() > position){
+                CustomLocation customLocation = customLocationList.get(position);
+                if (customLocation != null){
+                    textView.setText(customLocation.getTitle());
+                    imageView.setImageResource(customLocation.getIcon());
+                }
+            }
         } else {
             grid = convertView;
         }
@@ -53,4 +63,8 @@ public class LocationGridViewAdapter extends BaseAdapter {
         return grid;
     }
 
+    public void add(CustomLocation customLocation){
+        this.customLocationList.add(customLocation);
+        notifyDataSetChanged();
+    }
 }

@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -42,6 +43,8 @@ import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.utils.Globals;
 
 public class LocationDetailActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
+    private TextView mTitleView;
+    private TextView mAddressView;
     private EditText mTitleText;
     private EditText mAddressText;
     private EditText mSearchText;
@@ -57,6 +60,7 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
 
     private boolean registered = false;
     private boolean isAdd = false;
+    private boolean isAlarm = false;
 
     private AddCustomLocationTask addCustomLocationTask;
     private LocationChangedReceiver locationChangedReceiver;
@@ -79,6 +83,8 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location_detail);
 
+        mTitleView = (TextView) findViewById(R.id.location_title_view);
+        mAddressView = (TextView) findViewById(R.id.location_address_view);
         mTitleText = (EditText) findViewById(R.id.location_title_text);
         mAddressText = (EditText) findViewById(R.id.location_address_text);
         mSearchText = (EditText) findViewById(R.id.location_search_text);
@@ -92,16 +98,21 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
 
         setUpMapIfNeeded();
         Intent data = getIntent();
-        isAdd = data.getBooleanExtra(Globals.ADD_LOCATION, false);
-        if (!isAdd){
+
+        isAlarm = data.getBooleanExtra(Globals.MSG_LOCATION_ALARM, false);
+        if (isAlarm){
             String title = data.getStringExtra(Globals.LOCATION_TITLE);
             String detail = data.getStringExtra(Globals.LOCATION_DETAIL);
             double lat = data.getDoubleExtra(Globals.LOCATION_LAT, 0);
             double lng = data.getDoubleExtra(Globals.LOCATION_LNG, 0);
+
             mTitleText.setText(title);
             mAddressText.setText(detail);
             mLatLng = new LatLng(lat, lng);
             setMarker(mLatLng);
+
+            mTitleView.setText("Title: ");
+            mTitleText.setText("Note: ");
 
             mSaveButton.setVisibility(View.GONE);
             mCancelButton.setVisibility(View.GONE);
@@ -109,38 +120,56 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
             mTitleText.setEnabled(false);
             mAddressText.setEnabled(false);
         }else{
-            IntentFilter intentFilter = new IntentFilter(
-                    LocationChangedReceiver.class.getName());
-            registerReceiver(locationChangedReceiver, intentFilter);
-            registered = true;
+            isAdd = data.getBooleanExtra(Globals.ADD_LOCATION, false);
+            if (!isAdd){
+                String title = data.getStringExtra(Globals.LOCATION_TITLE);
+                String detail = data.getStringExtra(Globals.LOCATION_DETAIL);
+                double lat = data.getDoubleExtra(Globals.LOCATION_LAT, 0);
+                double lng = data.getDoubleExtra(Globals.LOCATION_LNG, 0);
+                mTitleText.setText(title);
+                mAddressText.setText(detail);
+                mLatLng = new LatLng(lat, lng);
+                setMarker(mLatLng);
 
-            LocationManager locationManager;
-            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                mSaveButton.setVisibility(View.GONE);
+                mCancelButton.setVisibility(View.GONE);
+                mSearchLayout.setVisibility(View.GONE);
+                mTitleText.setEnabled(false);
+                mAddressText.setEnabled(false);
+            }else{
+                IntentFilter intentFilter = new IntentFilter(
+                        LocationChangedReceiver.class.getName());
+                registerReceiver(locationChangedReceiver, intentFilter);
+                registered = true;
 
-            final Criteria criteria = new Criteria();
-            criteria.setAccuracy(Criteria.ACCURACY_FINE);
-            criteria.setPowerRequirement(Criteria.POWER_LOW);
-            criteria.setAltitudeRequired(false);
-            criteria.setBearingRequired(false);
-            criteria.setSpeedRequired(false);
-            criteria.setCostAllowed(true);
-            String provider = locationManager.getBestProvider(criteria, true);
+                LocationManager locationManager;
+                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-            Location location;
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
+                final Criteria criteria = new Criteria();
+                criteria.setAccuracy(Criteria.ACCURACY_FINE);
+                criteria.setPowerRequirement(Criteria.POWER_LOW);
+                criteria.setAltitudeRequired(false);
+                criteria.setBearingRequired(false);
+                criteria.setSpeedRequired(false);
+                criteria.setCostAllowed(true);
+                String provider = locationManager.getBestProvider(criteria, true);
+
+                Location location;
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                location = locationManager.getLastKnownLocation(provider);
+                mLatLng = location2Latlng(location);
+                setMarker(mLatLng);
+                mAddressText.setText(fromLatLng2Address(mLatLng));
             }
-            location = locationManager.getLastKnownLocation(provider);
-            mLatLng = location2Latlng(location);
-            setMarker(mLatLng);
-            mAddressText.setText(fromLatLng2Address(mLatLng));
         }
 
         mSearchIcon.setOnClickListener(new View.OnClickListener() {

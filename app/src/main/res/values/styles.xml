@@ -40,4 +40,5 @@
         <item name="android:textAppearance">@android:style/TextAppearance.Holo.DialogWindowTitle</item>
     </style>
 
+
 </resources>
