@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity
         ArrayList<Schedule> list = mDartReminderDBHelper.fetchSchedulesByUseTime();
         for(Schedule s : list) {
             long id = s.getId();
-            PendingIntent pendingUpdateIntent = PendingIntent.getService(getApplicationContext(), (int)id, updateServiceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingUpdateIntent = PendingIntent.getBroadcast(getApplicationContext(), (int)id, updateServiceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             try {
                 pendingUpdateIntent.cancel();
                 mgrAlarm.cancel(pendingUpdateIntent);

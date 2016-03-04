@@ -29,6 +29,7 @@ public class NotifyReceivedActivity extends Activity {
     private DartReminderDBHelper mScheduleDBHelper;
     private Schedule schedule;
     private Vibrator vibrator;
+    private Context mContext;
     int row_id;
     private static final long[] mVibratePattern = new long[]{0, 500, 500};
 
@@ -37,13 +38,16 @@ public class NotifyReceivedActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
+        mContext = getApplicationContext();
         row_id = intent.getIntExtra("id", -1);
         mScheduleDBHelper = new DartReminderDBHelper(getApplicationContext());
         schedule = mScheduleDBHelper.fetchScheduleByIndex(row_id);
         vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
 
-        if(schedule == null || schedule.getCompleted())
-            finish();
+//        if(schedule == null || schedule.getCompleted()) {
+//            finish();
+//            return;
+//        }
 
         vibrator.vibrate(mVibratePattern, 1);
 
@@ -54,7 +58,7 @@ public class NotifyReceivedActivity extends Activity {
                             .setSmallIcon(R.drawable.ic_launcher)
                             .setContentTitle(schedule.getTitle())
                             .setContentText(schedule.getNotes());
-            NotificationManager mNotificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.notify(row_id, mBuilder.build());
 
             // set alert box
@@ -75,10 +79,10 @@ public class NotifyReceivedActivity extends Activity {
                     })
                     .setNegativeButton("Snooze", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            // delete old schedule
-                            // add a new schedule with 5 minutes later
+                            // update schedule with 5 minutes later
                             schedule.setTime(schedule.getTime() + 60000 * 5);
                             mScheduleDBHelper.updateSchedule(schedule);
+
                             AlarmManager mgrAlarm = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
                             Intent intent = new Intent(getApplicationContext(), TimeReceiver.class);
                             intent.putExtra("id", row_id);

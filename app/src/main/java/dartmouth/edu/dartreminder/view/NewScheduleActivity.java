@@ -75,14 +75,14 @@ public class NewScheduleActivity extends AppCompatActivity {
 
         mChoosePriority = (Spinner) findViewById(R.id.Spinner_Priority);
         ArrayAdapter<String> arrayAdapterPriorities = new ArrayAdapter<String>(
-                getApplicationContext(),
+                this,
                 android.R.layout.simple_list_item_1,
                 Globals.PRIORITIES );
         mChoosePriority.setAdapter(arrayAdapterPriorities);
 
         mChooseRepeat = (Spinner) findViewById(R.id.Spinner_Repeat);
         ArrayAdapter<String> arrayAdapterRepeat = new ArrayAdapter<String>(
-                getApplicationContext(),
+                this,
                 android.R.layout.simple_list_item_1,
                 Globals.REPEAT );
         mChooseRepeat.setAdapter(arrayAdapterRepeat);
