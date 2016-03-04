@@ -252,13 +252,13 @@ public class NewScheduleActivity extends AppCompatActivity {
         protected Void doInBackground(Void... unused) {
             long id = mScheduleDBHelper.insertSchedule(schedule);
             publishProgress(Long.toString(id));
-//            AlarmManager mgrAlarm = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
-//            Intent intent = new Intent(getApplicationContext(), TimeReceiver.class);
-//            intent.putExtra("idfromtask", id);
-//            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), (int)id, intent, 0);
-//            mgrAlarm.set(AlarmManager.RTC_WAKEUP,
-//                    mDateAndTime.getTimeInMillis(),
-//                    pendingIntent);
+            AlarmManager mgrAlarm = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
+            Intent intent = new Intent(getApplicationContext(), TimeReceiver.class);
+            intent.putExtra("idfromtask", id);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), (int)id, intent, 0);
+            mgrAlarm.set(AlarmManager.RTC_WAKEUP,
+                    mDateAndTime.getTimeInMillis(),
+                    pendingIntent);
             return null;
         }
 
