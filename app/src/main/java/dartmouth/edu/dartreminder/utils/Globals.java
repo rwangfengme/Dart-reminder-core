@@ -6,6 +6,10 @@ import dartmouth.edu.dartreminder.R;
  * Created by gejing on 2/28/16.
  */
 public abstract class Globals {
+    public static final String TABLE_NAME_SCHEDULES = "SCHEDULES";
+    public static final String TABLE_NAME_CUSTOM_LOCATIONS = "CUSTOM_LOCATIONS";
+    public static final String TABLE_NAME_USER_ACCOUNTS = "USER_ACCOUNTS";
+
     public static final String TAG = "DartReminder";
     public static final String[] PRIORITIES = {"None", "Important", "Very Important"};
     public static final String[] REPEAT = {"Never", "Every Day", "Every Week", "Every Month", "Every Year"};

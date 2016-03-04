@@ -10,6 +10,8 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import dartmouth.edu.dartreminder.utils.Globals;
+
 /**
  * Created by gejing on 3/2/16.
  */
@@ -24,6 +26,12 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_USER_ACCOUNTS);
     }
 
+    public void deleteTable(String tableName) {
+        SQLiteDatabase dbObj = getWritableDatabase();
+        dbObj.delete(tableName, null, null);
+        dbObj.close();
+    }
+
     @Override
     public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
     }
@@ -33,7 +41,7 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
     }
 
     // part I: Schedule
-    private static final String TABLE_NAME_SCHEDULES = "SCHEDULES";
+    private static final String TABLE_NAME_SCHEDULES = Globals.TABLE_NAME_SCHEDULES;
 
     public static final String KEY_ROWID = "_id";
     public static final String KEY_TITLE = "title";
@@ -180,7 +188,7 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
     }
 
     // part II: Location
-    private static final String TABLE_NAME_CUSTOM_LOCATIONS = "CUSTOM_LOCATIONS";
+    private static final String TABLE_NAME_CUSTOM_LOCATIONS = Globals.TABLE_NAME_CUSTOM_LOCATIONS;
     public static final String KEY_LOCATION_ROWID = "_id";
     public static final String KEY_LOCATION_TITLE = "title";
     public static final String KEY_LOCATION_LAT = "latitude";
@@ -271,7 +279,7 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
     }
 
     // part III: user account
-    private static final String TABLE_NAME_USER_ACCOUNTS = "USER_ACCOUNTS";
+    private static final String TABLE_NAME_USER_ACCOUNTS = Globals.TABLE_NAME_USER_ACCOUNTS;
 
     public static final String KEY_USER_ROWID = "_id";
     public static final String KEY_USER_NAME = "email";
