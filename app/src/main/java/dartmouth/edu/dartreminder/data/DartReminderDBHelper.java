@@ -127,14 +127,14 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
         return schedule;
     }
 
-    public ArrayList<Schedule> fetchSchedulesByDate(){
+    public ArrayList<Schedule> fetchSchedulesByTime(){
         SQLiteDatabase dbObj = getReadableDatabase();
         ArrayList<Schedule> list = new ArrayList<Schedule>();
         Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_USE_TIME + " = 1 ORDER BY " + KEY_TIME +" DESC", null);
         while (cursor.moveToNext()) {
             Schedule schedule = cursorToSchedule(cursor, false);
             list.add(schedule);
-            Log.d("TAGG", "Got data");
+            Log.d("TAG", "Got data");
         }
 
         cursor.close();
@@ -152,7 +152,7 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
         while (cursor.moveToNext()) {
             Schedule schedule = cursorToSchedule(cursor, false);
             list.add(schedule);
-            Log.d("TAGG", "Got data");
+            Log.d("TAG", "Got data");
         }
 
         cursor.close();

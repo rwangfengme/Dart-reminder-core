@@ -1,20 +1,17 @@
 package dartmouth.edu.dartreminder.view;
 
-import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 
 import dartmouth.edu.dartreminder.R;
 
 public class UserProfileFragment extends Fragment {
 
-    private final RecentListFragment mRecentListFragment = new RecentListFragment();
+    private final RecentTimeListFragment mRecentTimeListFragment = new RecentTimeListFragment();
 
     Button mCancelButton;
 
@@ -38,7 +35,7 @@ public class UserProfileFragment extends Fragment {
             public void onClick(View v) {
                 getFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.main_page, mRecentListFragment)
+                        .replace(R.id.main_page, mRecentTimeListFragment)
                         .commit();
             }
         });
