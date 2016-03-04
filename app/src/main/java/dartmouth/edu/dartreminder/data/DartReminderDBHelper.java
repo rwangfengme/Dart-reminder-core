@@ -187,6 +187,24 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
         return list;
     }
 
+    public ArrayList<Schedule> fetchSchedulesByLocation(){
+        SQLiteDatabase dbObj = getReadableDatabase();
+        ArrayList<Schedule> list = new ArrayList<Schedule>();
+        Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_LOCATION_NAME + " <> '' ", null);
+        while (cursor.moveToNext()) {
+            Schedule schedule = cursorToSchedule(cursor, false);
+            list.add(schedule);
+            Log.d("TAG", "Got data");
+        }
+
+        cursor.close();
+        dbObj.close();
+
+        return list;
+    }
+
+
+
     public ArrayList<Schedule> fetchSchedules() {
         SQLiteDatabase dbObj = getReadableDatabase();
         ArrayList<Schedule> list = new ArrayList<Schedule>();
@@ -197,6 +215,24 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
             Schedule schedule = cursorToSchedule(cursor, false);
             list.add(schedule);
             Log.d("TAGG", "Got data");
+        }
+
+        cursor.close();
+        dbObj.close();
+
+        return list;
+    }
+
+    public ArrayList<Schedule> fetchUncompletedLocationSchedules() {
+        SQLiteDatabase dbObj = getReadableDatabase();
+        ArrayList<Schedule> list = new ArrayList<>();
+        Cursor cursor = dbObj.query(true, TABLE_NAME_SCHEDULES, mColumnList_Schedule,
+                KEY_COMPLETED + " = 0 AND " + KEY_LOCATION_NAME + " <> \'\'" , null, null, null, null, null);
+
+        while (cursor.moveToNext()) {
+            Schedule schedule = cursorToSchedule(cursor, false);
+            list.add(schedule);
+            Log.d("TAG", "Got data");
         }
 
         cursor.close();

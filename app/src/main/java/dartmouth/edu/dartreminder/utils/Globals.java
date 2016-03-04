@@ -23,4 +23,21 @@ public abstract class Globals {
     public static final String LAT = "lat";
     public static final String LNG = "lng";
     public static final String DEFAULT_LOCATION_NAME = "User Selected Location";
+
+    public static final String UI_TAB_TIME = "Time";
+    public static final String UI_TAB_MAP = "Location";
+    public static final String UI_TAB_ACTIVITY = "Activity";
+
+    public static final String ADD_LOCATION = "add_location";
+    public static final String LOCATION_TITLE = "location_title";
+    public static final String LOCATION_DETAIL = "location_detail";
+    public static final String LOCATION_LAT = "location_lat";
+    public static final String LOCATION_LNG = "location_lng";
+
+    public static final String SCHEDULE_TITLE = "schedule_title";
+    public static final String SCHEDULE_NOTE = "schedule_note";
+
+    public static final String MSG_LOCATION_CHANGE = "location_changed";
+    public static final String MSG_LOCATION_ALARM = "location_alarm";
+
 }

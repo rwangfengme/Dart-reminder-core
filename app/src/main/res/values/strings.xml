@@ -28,4 +28,7 @@
     </string>
     <string name="action_sign_up_short">Sign up</string>
     <string name="title_activity_notify_received">NotifyReceivedActivity</string>
+    <string name="title_activity_location_detail">Custome Location</string>
+    <string name="ui_maps_display_notification_title">Tracking Started</string>
+    <string name="ui_maps_display_notification_content">You location is being tracked by DartRem!</string>
 </resources>

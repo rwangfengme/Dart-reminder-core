@@ -1,5 +1,7 @@
 package dartmouth.edu.dartreminder.data;
 
+import android.location.Location;
+
 /**
  * Created by gejing on 2/28/16.
  */
@@ -135,6 +137,13 @@ public class Schedule {
 
     public void setCompleted(boolean completed) {
         this.isCompleted = completed;
+    }
+
+    public Location getLocation(){
+        Location location = new Location("");
+        location.setLatitude(this.Lat);
+        location.setLongitude(this.Lng);
+        return location;
     }
 }
 
