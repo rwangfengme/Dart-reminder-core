@@ -1,6 +1,7 @@
 package dartmouth.edu.dartreminder.view;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,7 +16,7 @@ import dartmouth.edu.dartreminder.R;
 
 public class UserProfileFragment extends Fragment {
 
-    private final RecentTimeListFragment mRecentListFragment = new RecentTimeListFragment();
+    //private final RecentTimeListFragment mRecentListFragment = new RecentTimeListFragment();
 
     private Button mSaveButton;
     private Button mCancelButton;
@@ -50,10 +51,16 @@ public class UserProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 saveProfile();
-                getFragmentManager()
+                /*getFragmentManager()
                         .beginTransaction()
                         .replace(R.id.main_page, mRecentListFragment)
-                        .commit();
+                        .commit();*/
+                startActivity(new Intent(getActivity(), MainActivity.class));
+                getActivity().finish();
+                //getActivity().getFragmentManager().beginTransaction().remove(UserProfileFragment.this).commit();
+
+                //MainActivity.slidingTabLayout.setVisibility(View.VISIBLE);
+                //MainActivity.viewPager.setVisibility(View.VISIBLE);
             }
         });
 
@@ -61,10 +68,12 @@ public class UserProfileFragment extends Fragment {
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragmentManager()
+                /*getFragmentManager()
                         .beginTransaction()
                         .replace(R.id.main_page, mRecentListFragment)
-                        .commit();
+                        .commit();*/
+                startActivity(new Intent(getActivity(), MainActivity.class));
+                getActivity().finish();
             }
         });
         return view;
