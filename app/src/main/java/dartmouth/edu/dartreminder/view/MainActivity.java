@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 
 import dartmouth.edu.dartreminder.R;
 import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
+import dartmouth.edu.dartreminder.data.Schedule;
 import dartmouth.edu.dartreminder.service.TimeReceiver;
 import dartmouth.edu.dartreminder.service.TrackingService;
 import dartmouth.edu.dartreminder.utils.Globals;
@@ -49,29 +51,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //------------------------------------------------------------------------------------------
-        // Test for Alarm and Receiver
-//        AlarmManager mgrAlarm = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
-//        ArrayList<PendingIntent> intentArray = new ArrayList<PendingIntent>();
-//        long time = System.currentTimeMillis() + 30000;
-//
-//        for(int i = 0; i < 10; ++i) {
-//            Intent intent = new Intent(getApplicationContext(), TimeReceiver.class);
-//            intent.putExtra("id", i);
-//            // Loop counter `i` is used as a `requestCode`
-//            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), i, intent, 0);
-//            // Single alarms in 1, 2, ..., 10 minutes (in `i` minutes)
-//            mgrAlarm.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-//                    SystemClock.elapsedRealtime() + 30000 * i,
-//                    pendingIntent);
-//
-//            intentArray.add(pendingIntent);
-//        }
-
-
-        // Test for Alarm and Receiver
-        //------------------------------------------------------------------------------------------
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,7 +73,6 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction = fragmentManager.beginTransaction();
 
         RecentListFragment f1 = new RecentListFragment();
-        //LocationFragment f1 = new LocationFragment();
         fragmentTransaction.replace(R.id.main_page, f1, "f1");
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
@@ -158,10 +136,11 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_sign_out) {
-            clearSharedPreferences();
             mDartReminderDBHelper = new DartReminderDBHelper(this);
-            mDartReminderDBHelper.deleteTable(Globals.TABLE_NAME_SCHEDULES);
-            mDartReminderDBHelper.deleteTable(Globals.TABLE_NAME_CUSTOM_LOCATIONS);
+            cancelAllPendingEvents();
+            clearSharedPreferences();
+            clearAllDataTable();
+
             finish();
             Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
             MainActivity.this.startActivity(myIntent);
@@ -180,5 +159,27 @@ public class MainActivity extends AppCompatActivity
         editor.remove("USERNAME");
         editor.remove("PASSWORD");
         editor.apply();
+    }
+
+    private void clearAllDataTable() {
+        mDartReminderDBHelper.deleteTable(Globals.TABLE_NAME_SCHEDULES);
+        mDartReminderDBHelper.deleteTable(Globals.TABLE_NAME_CUSTOM_LOCATIONS);
+    }
+
+    private void cancelAllPendingEvents() {
+        AlarmManager mgrAlarm = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
+        Intent updateServiceIntent = new Intent(getApplicationContext(), TimeReceiver.class);
+        ArrayList<Schedule> list = mDartReminderDBHelper.fetchSchedulesByUseTime();
+        for(Schedule s : list) {
+            long id = s.getId();
+            PendingIntent pendingUpdateIntent = PendingIntent.getService(getApplicationContext(), (int)id, updateServiceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            try {
+                pendingUpdateIntent.cancel();
+                mgrAlarm.cancel(pendingUpdateIntent);
+                Log.e("Haha", "AlarmManager canceled! ");
+            } catch (Exception e) {
+                Log.e("Oops", "AlarmManager update was not canceled. " + e.toString());
+            }
+        }
     }
 }

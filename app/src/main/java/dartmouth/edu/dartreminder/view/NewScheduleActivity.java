@@ -3,6 +3,7 @@ package dartmouth.edu.dartreminder.view;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -252,13 +253,20 @@ public class NewScheduleActivity extends AppCompatActivity {
         protected Void doInBackground(Void... unused) {
             long id = mScheduleDBHelper.insertSchedule(schedule);
             publishProgress(Long.toString(id));
-            AlarmManager mgrAlarm = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
-            Intent intent = new Intent(getApplicationContext(), TimeReceiver.class);
-            intent.putExtra("idfromtask", id);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), (int)id, intent, 0);
-            mgrAlarm.set(AlarmManager.RTC_WAKEUP,
-                    mDateAndTime.getTimeInMillis(),
-                    pendingIntent);
+
+            if(schedule.getUseTime() && !schedule.getCompleted()) {
+                AlarmManager mgrAlarm = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
+                Intent intent = new Intent(getApplicationContext(), TimeReceiver.class);
+                intent.putExtra("id", (int) id);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), (int) id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                mgrAlarm.set(AlarmManager.RTC_WAKEUP,
+                        mDateAndTime.getTimeInMillis(),
+                        pendingIntent);
+
+//                pendingIntent.cancel();
+//                mgrAlarm.cancel(pendingIntent);
+            }
+
             return null;
         }
 

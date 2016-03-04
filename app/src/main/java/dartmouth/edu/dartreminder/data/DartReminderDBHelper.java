@@ -135,6 +135,26 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
         return schedule;
     }
 
+    public void updateSchedule(Schedule schedule) {
+        ContentValues value = new ContentValues();
+
+        value.put(KEY_TITLE, schedule.getTitle());
+        value.put(KEY_NOTES, schedule.getNotes());
+        value.put(KEY_USE_TIME, schedule.getUseTime() ? 1 : 0);
+        value.put(KEY_TIME, schedule.getTime());
+        value.put(KEY_LOCATION_NAME, schedule.getLocationName());
+        value.put(KEY_ARRIVE, schedule.getArrive() ? 1 : 0);
+        value.put(KEY_RADIUS, schedule.getRadius());
+        value.put(KEY_LAT, schedule.getLat());
+        value.put(KEY_LNG, schedule.getLng());
+        value.put(KEY_PRIORITY, schedule.getPriority());
+        value.put(KEY_REPEAT, schedule.getRepeat());
+        value.put(KEY_COMPLETED, schedule.getCompleted() ? 1 : 0);
+
+        SQLiteDatabase dbObj = getWritableDatabase();
+        dbObj.update(TABLE_NAME_SCHEDULES, value, "_id=" + schedule.getId(), null);
+    }
+
     public ArrayList<Schedule> fetchSchedulesByUseTime() throws SQLException {
         SQLiteDatabase dbObj = getReadableDatabase();
         ArrayList<Schedule> list = new ArrayList<Schedule>();
