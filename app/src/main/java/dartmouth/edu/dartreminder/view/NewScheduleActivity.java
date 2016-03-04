@@ -1,10 +1,13 @@
 package dartmouth.edu.dartreminder.view;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,11 +23,13 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import dartmouth.edu.dartreminder.R;
 import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.data.Schedule;
+import dartmouth.edu.dartreminder.service.TimeReceiver;
 import dartmouth.edu.dartreminder.utils.Globals;
 
 public class NewScheduleActivity extends AppCompatActivity {
@@ -247,6 +252,13 @@ public class NewScheduleActivity extends AppCompatActivity {
         protected Void doInBackground(Void... unused) {
             long id = mScheduleDBHelper.insertSchedule(schedule);
             publishProgress(Long.toString(id));
+//            AlarmManager mgrAlarm = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
+//            Intent intent = new Intent(getApplicationContext(), TimeReceiver.class);
+//            intent.putExtra("idfromtask", id);
+//            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), (int)id, intent, 0);
+//            mgrAlarm.set(AlarmManager.RTC_WAKEUP,
+//                    mDateAndTime.getTimeInMillis(),
+//                    pendingIntent);
             return null;
         }
 

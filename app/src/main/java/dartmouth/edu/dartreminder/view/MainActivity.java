@@ -1,10 +1,13 @@
 package dartmouth.edu.dartreminder.view;
 
+import android.app.AlarmManager;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -15,8 +18,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+
 import dartmouth.edu.dartreminder.R;
 import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
+import dartmouth.edu.dartreminder.service.TimeReceiver;
 import dartmouth.edu.dartreminder.service.TrackingService;
 import dartmouth.edu.dartreminder.utils.Globals;
 
@@ -42,6 +48,29 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //------------------------------------------------------------------------------------------
+        // Test for Alarm and Receiver
+//        AlarmManager mgrAlarm = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
+//        ArrayList<PendingIntent> intentArray = new ArrayList<PendingIntent>();
+//        long time = System.currentTimeMillis() + 30000;
+//
+//        for(int i = 0; i < 10; ++i) {
+//            Intent intent = new Intent(getApplicationContext(), TimeReceiver.class);
+//            intent.putExtra("id", i);
+//            // Loop counter `i` is used as a `requestCode`
+//            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), i, intent, 0);
+//            // Single alarms in 1, 2, ..., 10 minutes (in `i` minutes)
+//            mgrAlarm.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+//                    SystemClock.elapsedRealtime() + 30000 * i,
+//                    pendingIntent);
+//
+//            intentArray.add(pendingIntent);
+//        }
+
+
+        // Test for Alarm and Receiver
+        //------------------------------------------------------------------------------------------
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
