@@ -10,6 +10,8 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import dartmouth.edu.dartreminder.utils.Globals;
+
 /**
  * Created by gejing on 3/2/16.
  */
@@ -24,6 +26,12 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_USER_ACCOUNTS);
     }
 
+    public void deleteTable(String tableName) {
+        SQLiteDatabase dbObj = getWritableDatabase();
+        dbObj.delete(tableName, null, null);
+        dbObj.close();
+    }
+
     @Override
     public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
     }
@@ -33,7 +41,7 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
     }
 
     // part I: Schedule
-    private static final String TABLE_NAME_SCHEDULES = "SCHEDULES";
+    private static final String TABLE_NAME_SCHEDULES = Globals.TABLE_NAME_SCHEDULES;
 
     public static final String KEY_ROWID = "_id";
     public static final String KEY_TITLE = "title";
@@ -130,7 +138,7 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
     public ArrayList<Schedule> fetchSchedulesByTime(){
         SQLiteDatabase dbObj = getReadableDatabase();
         ArrayList<Schedule> list = new ArrayList<Schedule>();
-        Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_USE_TIME + " = 1 ORDER BY " + KEY_TIME +" DESC", null);
+        Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_USE_TIME + " = 1 ORDER BY " + KEY_TIME + " DESC", null);
         while (cursor.moveToNext()) {
             Schedule schedule = cursorToSchedule(cursor, false);
             list.add(schedule);
@@ -180,12 +188,13 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
     }
 
     // part II: Location
-    private static final String TABLE_NAME_CUSTOM_LOCATIONS = "CUSTOM_LOCATIONS";
+    private static final String TABLE_NAME_CUSTOM_LOCATIONS = Globals.TABLE_NAME_CUSTOM_LOCATIONS;
     public static final String KEY_LOCATION_ROWID = "_id";
     public static final String KEY_LOCATION_TITLE = "title";
     public static final String KEY_LOCATION_LAT = "latitude";
     public static final String KEY_LOCATION_LNG = "longitude";
     public static final String KEY_LOCATION_DETAIL = "detail";
+    public static final String KEY_ICON_ID = "icon";
 
     private static final String CREATE_TABLE_CUSTOM_LOCATIONS = "CREATE TABLE IF NOT EXISTS "
             + TABLE_NAME_CUSTOM_LOCATIONS
@@ -193,25 +202,27 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
             + KEY_LOCATION_ROWID
             + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + KEY_LOCATION_TITLE
-            + " TEXT, "
+            + " VARCHAR(100), "
             + KEY_LOCATION_LAT
             + " FLOAT,"
             + KEY_LOCATION_LNG
             + " FLOAT, "
             + KEY_LOCATION_DETAIL
-            + " TEXT );";
+            + " VARCHAR(100), "
+            + KEY_ICON_ID +
+            " INTEGER );";
 
     private static final String[] mColumnList_Location = new String[] { KEY_LOCATION_ROWID,
-            KEY_LOCATION_TITLE, KEY_LOCATION_LAT, KEY_LOCATION_LNG, KEY_LOCATION_DETAIL};
+            KEY_LOCATION_TITLE, KEY_LOCATION_LAT, KEY_LOCATION_LNG, KEY_LOCATION_DETAIL, KEY_ICON_ID};
 
     public long insertCustomLocation(CustomLocation cs) {
-
         ContentValues value = new ContentValues();
 
         value.put(KEY_LOCATION_TITLE, cs.getTitle());
         value.put(KEY_LOCATION_LAT, cs.getLatitude());
         value.put(KEY_LOCATION_LNG, cs.getLongitude());
         value.put(KEY_LOCATION_DETAIL, cs.getDetail());
+        value.put(KEY_ICON_ID, cs.getIcon());
 
         SQLiteDatabase dbObj = getWritableDatabase();
         long id = dbObj.insert(TABLE_NAME_CUSTOM_LOCATIONS, null, value);
@@ -263,11 +274,12 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
         cs.setLatitude(cursor.getDouble(cursor.getColumnIndex(KEY_LOCATION_LAT)));
         cs.setLongtitude(cursor.getDouble(cursor.getColumnIndex(KEY_LOCATION_LNG)));
         cs.setDetail(cursor.getString(cursor.getColumnIndex(KEY_LOCATION_DETAIL)));
+        cs.setIcon(cursor.getInt(cursor.getColumnIndex(KEY_ICON_ID)));
         return cs;
     }
 
     // part III: user account
-    private static final String TABLE_NAME_USER_ACCOUNTS = "USER_ACCOUNTS";
+    private static final String TABLE_NAME_USER_ACCOUNTS = Globals.TABLE_NAME_USER_ACCOUNTS;
 
     public static final String KEY_USER_ROWID = "_id";
     public static final String KEY_USER_NAME = "email";

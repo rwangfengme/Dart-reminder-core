@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import dartmouth.edu.dartreminder.R;
+import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.service.TrackingService;
 import dartmouth.edu.dartreminder.utils.Globals;
 
@@ -43,6 +44,9 @@ public class MainActivity extends AppCompatActivity
     private final RecentTimeListFragment mRecentTimeListFragment = new RecentTimeListFragment();
     private final UserProfileFragment mUserProfileFragment = new UserProfileFragment();
     private final LocationFragment mLocationFragment = new LocationFragment();
+
+    private DartReminderDBHelper mDartReminderDBHelper;
+
     // Tracking Service based on time, location, activity
     private TrackingService mTrackingService;
 
@@ -175,6 +179,11 @@ public class MainActivity extends AppCompatActivity
             editor.remove("USERNAME");
             editor.remove("PASSWORD");
             editor.apply();
+
+            clearSharedPreferences();
+            mDartReminderDBHelper = new DartReminderDBHelper(this);
+            mDartReminderDBHelper.deleteTable(Globals.TABLE_NAME_SCHEDULES);
+            mDartReminderDBHelper.deleteTable(Globals.TABLE_NAME_CUSTOM_LOCATIONS);
             finish();
             Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
             MainActivity.this.startActivity(myIntent);
@@ -183,5 +192,15 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void clearSharedPreferences() {
+        SharedPreferences prefs = getSharedPreferences("userProfile", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.remove("USER");
+        editor.remove("USERPHONE");
+        editor.remove("USERNAME");
+        editor.remove("PASSWORD");
+        editor.apply();
     }
 }

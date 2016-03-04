@@ -147,6 +147,7 @@ public class RecentTimeListFragment extends Fragment {
         @Override
         protected ArrayList doInBackground(Void... unused) {
             ArrayList<Schedule> allSchedule = mScheduleDBHelper.fetchSchedulesByTime();
+
             return allSchedule;
         }
 

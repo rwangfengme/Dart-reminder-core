@@ -2,6 +2,7 @@ package dartmouth.edu.dartreminder.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -17,6 +18,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -39,6 +41,10 @@ public class NewScheduleActivity extends AppCompatActivity {
     private Spinner mChooseRepeat;
 
     private Calendar mDateAndTime;
+    private boolean useLocation = false;
+    private String mLocationTitle = "";
+    private boolean mArrive = true;
+    private double mRadius = 0.0, mLat = 0.0, mLng = 0.0;
     private boolean chooseDateAlert = false, chooseTimeAlert = false, chooseLocationAlert = false;
 
     private Schedule schedule;
@@ -89,6 +95,13 @@ public class NewScheduleActivity extends AppCompatActivity {
                 mTimePicker.setText(format.format(mDateAndTime.getTime()));
             }
             chooseLocationAlert = savedInstanceState.getBoolean("chooseLocationAlert");
+
+            useLocation = savedInstanceState.getBoolean("useLocation");
+            mArrive = savedInstanceState.getBoolean("Arrive");
+            mLocationTitle = savedInstanceState.getString("Location_Title");
+            mRadius = savedInstanceState.getDouble("Radius");
+            mLat = savedInstanceState.getDouble("Lat");
+            mLng = savedInstanceState.getDouble("Lng");
         } else {
             mDateAndTime.setTimeInMillis(System.currentTimeMillis());
         }
@@ -131,12 +144,32 @@ public class NewScheduleActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != RESULT_OK)
+            return;
+        useLocation = data.getBooleanExtra(Globals.SAVE, false);
+        if(useLocation){
+            mLocationTitle = data.getStringExtra(Globals.LOCATION_NAME);
+            mArrive = data.getBooleanExtra(Globals.ARRIVE, true);
+            mRadius = data.getDoubleExtra(Globals.RADIUS, 0.0);
+            mLat = data.getDoubleExtra(Globals.LAT, 0.0);
+            mLng = data.getDoubleExtra(Globals.LNG, 0.0);
+        }
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong("mDateAndTime", mDateAndTime.getTimeInMillis());
         outState.putBoolean("chooseDateAlert", chooseDateAlert);
         outState.putBoolean("chooseTimeAlert", chooseTimeAlert);
         outState.putBoolean("chooseLocationAlert", chooseLocationAlert);
+        outState.putBoolean("useLocation", useLocation);
+        outState.putString("Location_Title", mLocationTitle);
+        outState.putBoolean("Arrive", mArrive);
+        outState.putDouble("Radius", mRadius);
+        outState.putDouble("Lat", mLat);
+        outState.putDouble("Lng", mLng);
     }
 
     public void onSaveClicked(View v) {
@@ -150,10 +183,18 @@ public class NewScheduleActivity extends AppCompatActivity {
         schedule.setTime(mDateAndTime.getTimeInMillis());
 
         if(chooseLocationAlert) {
-
+            schedule.setLocationName(mLocationTitle);
+            schedule.setArrive(mArrive);
+            schedule.setRadius(mRadius);
+            schedule.setLat(mLat);
+            schedule.setLng(mLng);
         }
 
+        schedule.setRepeat(mChooseRepeat.getSelectedItemPosition());
         schedule.setPriority(mChoosePriority.getSelectedItemPosition());
+
+        // write your own check function
+        schedule.setCompleted(false);
 
         task = new InsertDbTask();
         task.execute();
@@ -175,7 +216,7 @@ public class NewScheduleActivity extends AppCompatActivity {
     public void onLocationClicked(View v) {
         // start a map activity
         Intent i = new Intent(this, MapsActivity.class);
-        startActivity(i);
+        startActivityForResult(i, 1);
     }
 
     public void displayDialog(int id) {
