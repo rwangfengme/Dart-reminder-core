@@ -4,10 +4,10 @@
 
     To get one, follow this link, follow the directions and press "Create" at the end:
 
-    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=27:3D:9C:4B:7F:38:F3:AC:58:BB:C2:25:C2:85:A5:30:8D:8F:80:63%3Bdartmouth.edu.dartreminder.view
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=D8:63:75:83:11:3F:8B:73:B7:A6:F1:F2:57:06:12:F7:DE:04:75:59%3Bdartmouth.edu.dartreminder
 
     You can also add your credentials to an existing key, using this line:
-    27:3D:9C:4B:7F:38:F3:AC:58:BB:C2:25:C2:85:A5:30:8D:8F:80:63;dartmouth.edu.dartreminder.view
+    D8:63:75:83:11:3F:8B:73:B7:A6:F1:F2:57:06:12:F7:DE:04:75:59;dartmouth.edu.dartreminder
 
     Alternatively, follow the directions here:
     https://developers.google.com/maps/documentation/android/start#get-key
@@ -16,7 +16,6 @@
     string in this file.
     -->
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
-        AIzaSyDFtSeblCKe3flmYJVYuFFjmeQq_yI-4ns
-        <!--AIzaSyAF51hxaHuFoR3IqsFRqWfZkW1t2zJ3ahQ-->
+        AIzaSyD2kOOcSjqoIWMG9NCE44i7wmLlR4XmdrQ
     </string>
 </resources>
