@@ -181,10 +181,12 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_recent_list) {
-            getFragmentManager()
+
+            //TODO:
+            /*getFragmentManager()
                     .beginTransaction()
                     .replace(R.id.main_page, mRecentTimeListFragment)
-                    .commit();
+                    .commit();*/
         } else if (id == R.id.nav_user_profile) {
             getFragmentManager()
                     .beginTransaction()
