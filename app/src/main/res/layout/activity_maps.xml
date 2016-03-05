@@ -1,3 +1,9 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="dartmouth.edu.dartreminder.NewScheduleActivity"
+    android:id="@+id/mineView">
 <LinearLayout
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,12 +20,11 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/map_search_text"
                 android:singleLine="true"
-                android:layout_margin="5dp"
                 android:layout_weight="6"
                 android:inputType="text"/>
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="15dp"
                 android:src="@drawable/search_icon"
                 android:id="@+id/map_search_button"
                 android:layout_weight="1"
@@ -29,7 +34,7 @@
 
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="175dp"
             android:id="@+id/locationList"
             android:layout_margin="5dp"/>
 
@@ -58,8 +63,8 @@
             android:layout_height="wrap_content">
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                       xmlns:tools="http://schemas.android.com/tools"
-                      android:layout_width="match_parent"
-                      android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
                       android:id="@+id/map"
                       tools:context=".MapsActivity"
                       android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -69,33 +74,40 @@
                       android:layout_marginRight="10dp"/>
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Radius: "
-                android:textSize="20dp"
+                android:textSize="15dp"
+                android:layout_marginLeft="10dp"
                 android:id="@+id/map_radius_text"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="bottom">
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="SAVE"
-                    android:id="@+id/map_save_button"
-                    android:background="#76EEC6"
-                    android:layout_weight="1"
-                    android:layout_margin="5dp"/>
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="CANCEL"
-                    android:id="@+id/map_cancel_button"
-                    android:background="#FFAEB9"
-                    android:layout_weight="1"
-                    android:layout_margin="5dp"/>
-            </LinearLayout>
         </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="bottom">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SAVE"
+            android:id="@+id/map_save_button"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:background="@color/fbutton_default_color"
+            android:textColor="@color/colorWhite"
+            android:layout_weight="1"
+            android:layout_margin="5dp"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CANCEL"
+            android:id="@+id/map_cancel_button"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:background="@color/fbutton_default_color"
+            android:textColor="@color/colorWhite"
+            android:layout_weight="1"
+            android:layout_margin="5dp"/>
+    </LinearLayout>
 </LinearLayout>
+
+</ScrollView>

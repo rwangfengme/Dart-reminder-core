@@ -88,17 +88,8 @@ public class NewScheduleActivity extends AppCompatActivity {
         if(savedInstanceState != null) {
             mDateAndTime.setTimeInMillis(savedInstanceState.getLong("mDateAndTime"));
             chooseDateAlert = savedInstanceState.getBoolean("chooseDateAlert");
-            if(chooseDateAlert) {
-                SimpleDateFormat format = new SimpleDateFormat("EEEE, MMM dd, yyyy");
-                mDatePicker.setText(format.format(mDateAndTime.getTime()));
-            }
-            chooseTimeAlert = savedInstanceState.getBoolean("chooseTimeAlert");
-            if(chooseTimeAlert) {
-                SimpleDateFormat format = new SimpleDateFormat("hh:mm aaa");
-                mTimePicker.setText(format.format(mDateAndTime.getTime()));
-            }
             chooseLocationAlert = savedInstanceState.getBoolean("chooseLocationAlert");
-
+            chooseTimeAlert = savedInstanceState.getBoolean("chooseTimeAlert");
             useLocation = savedInstanceState.getBoolean("useLocation");
             mArrive = savedInstanceState.getBoolean("Arrive");
             mLocationTitle = savedInstanceState.getString("Location_Title");
@@ -108,6 +99,16 @@ public class NewScheduleActivity extends AppCompatActivity {
         } else {
             mDateAndTime.setTimeInMillis(System.currentTimeMillis());
         }
+
+        //if(chooseDateAlert) {
+            SimpleDateFormat format = new SimpleDateFormat("EEEE, MMM dd, yyyy");
+            mDatePicker.setText(format.format(mDateAndTime.getTime()));
+        //}
+
+        //if(chooseTimeAlert) {
+            format = new SimpleDateFormat("hh:mm aaa");
+            mTimePicker.setText(format.format(mDateAndTime.getTime()));
+        //}
 
         mSwitchAllDay = (Switch) findViewById(R.id.Switch_AllDayReminder);
         mSwitchAllDay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

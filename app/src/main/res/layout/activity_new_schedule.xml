@@ -35,6 +35,11 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:id="@+id/EditText_NewScheduleTitle" />
+        
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -176,18 +181,25 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="1"
+                android:layout_marginRight="5dp"
                 android:text="Save"
                 android:onClick="onSaveClicked"
                 android:id="@+id/Button_SaveNewSchedule"
-                />
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:background="@color/fbutton_default_color"
+                android:textColor="@color/colorWhite"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="CANCEL"
+                android:layout_marginLeft="5dp"
                 android:onClick="onCancelClicked"
-                android:id="@+id/Button_CancelNewSchedule" />
+                android:id="@+id/Button_CancelNewSchedule"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:background="@color/fbutton_default_color"
+                android:textColor="@color/colorWhite"/>
         </LinearLayout>
 
     </LinearLayout>
