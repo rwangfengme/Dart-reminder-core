@@ -347,7 +347,7 @@ public class MainActivity extends AppCompatActivity
         super.onDestroy();
 
         if (isFinishing()) {
-            stopTrackingService();
+                stopTrackingService();
             // do stuff
         } else {
             //It's an orientation change.

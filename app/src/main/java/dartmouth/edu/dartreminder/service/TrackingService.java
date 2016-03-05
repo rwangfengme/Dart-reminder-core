@@ -142,8 +142,7 @@ public class TrackingService extends Service implements
     // send update to the activity
     private void sendUpdate(Schedule schedule, int i) {
         mScheduleList.remove(i);
-        dartReminderDBHelper.removeSchedule(schedule.getId());
-
+//        dartReminderDBHelper.removeSchedule(schedule.getId());
         Intent intent = new Intent(
                 MainActivity.ScheduleTriggeredReceiver.class.getName());
         intent.putExtra(MSG_ENTITY_UPDATE, true);
@@ -236,7 +235,8 @@ public class TrackingService extends Service implements
         sendLocationChange(loc);
         if (mScheduleList != null && mScheduleList.size() > 0) {
             // check whether condition has been fulfilled
-            for (int i = 0; i < mScheduleList.size(); i++){
+            int length = mScheduleList.size();
+            for (int i = 0; i < length; i++){
                 Schedule schedule = mScheduleList.get(i);
                 Location scheduleLocation = schedule.getLocation();
                 double distance = loc.distanceTo(scheduleLocation);
