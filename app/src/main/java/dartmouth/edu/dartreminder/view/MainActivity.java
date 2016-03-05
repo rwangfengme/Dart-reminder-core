@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity
         intent.putExtra(Globals.LOCATION_DETAIL, note);
         intent.putExtra(Globals.LOCATION_LAT, lat);
         intent.putExtra(Globals.LOCATION_LNG, lng);
-        //startActivity(intent);
+        startActivity(intent);
     }
 
     @Override
@@ -321,7 +321,7 @@ public class MainActivity extends AppCompatActivity
         super.onDestroy();
 
         if (isFinishing()) {
-            stopTrackingService();
+                stopTrackingService();
             // do stuff
         } else {
             //It's an orientation change.
