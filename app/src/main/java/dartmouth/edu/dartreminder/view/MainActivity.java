@@ -1,8 +1,10 @@
 package dartmouth.edu.dartreminder.view;
 
+import android.app.AlarmManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -35,6 +37,7 @@ import dartmouth.edu.dartreminder.R;
 import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.data.Schedule;
 //import dartmouth.edu.dartreminder.service.TimeReceiver;
+import dartmouth.edu.dartreminder.service.TimeReceiver;
 import dartmouth.edu.dartreminder.service.TrackingService;
 import dartmouth.edu.dartreminder.utils.Globals;
 
@@ -233,6 +236,7 @@ public class MainActivity extends AppCompatActivity
             slidingTabLayout.setVisibility(View.INVISIBLE);
             viewPager.setVisibility(View.INVISIBLE);
             mDartReminderDBHelper = new DartReminderDBHelper(this);
+            cancelAllPendingEvents();
             clearSharedPreferences();
             clearAllDataTable();
             unregisterReceiver(mScheduleTriggeredReceiver);
@@ -254,6 +258,28 @@ public class MainActivity extends AppCompatActivity
         editor.remove("USERNAME");
         editor.remove("PASSWORD");
         editor.apply();
+    }
+
+    private void clearAllDataTable() {
+        mDartReminderDBHelper.deleteTable(Globals.TABLE_NAME_SCHEDULES);
+        mDartReminderDBHelper.deleteTable(Globals.TABLE_NAME_CUSTOM_LOCATIONS);
+    }
+
+    private void cancelAllPendingEvents() {
+        AlarmManager mgrAlarm = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
+        Intent updateServiceIntent = new Intent(getApplicationContext(), TimeReceiver.class);
+        ArrayList<Schedule> list = mDartReminderDBHelper.fetchSchedulesByUseTime();
+        for(Schedule s : list) {
+            long id = s.getId();
+            PendingIntent pendingUpdateIntent = PendingIntent.getBroadcast(getApplicationContext(), (int)id, updateServiceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            try {
+                pendingUpdateIntent.cancel();
+                mgrAlarm.cancel(pendingUpdateIntent);
+                Log.e("Haha", "AlarmManager canceled! ");
+            } catch (Exception e) {
+                Log.e("Oops", "AlarmManager update was not canceled. " + e.toString());
+            }
+        }
     }
 
     //<-- Service Section-->
@@ -328,8 +354,4 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void clearAllDataTable() {
-        mDartReminderDBHelper.deleteTable(Globals.TABLE_NAME_SCHEDULES);
-        mDartReminderDBHelper.deleteTable(Globals.TABLE_NAME_CUSTOM_LOCATIONS);
-    }
 }

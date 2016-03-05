@@ -1,6 +1,8 @@
 package dartmouth.edu.dartreminder.view;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -25,6 +27,7 @@ import java.util.Calendar;
 import dartmouth.edu.dartreminder.R;
 import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.data.Schedule;
+import dartmouth.edu.dartreminder.service.TimeReceiver;
 import dartmouth.edu.dartreminder.utils.Globals;
 
 public class NewScheduleActivity extends AppCompatActivity {
@@ -69,14 +72,14 @@ public class NewScheduleActivity extends AppCompatActivity {
 
         mChoosePriority = (Spinner) findViewById(R.id.Spinner_Priority);
         ArrayAdapter<String> arrayAdapterPriorities = new ArrayAdapter<String>(
-                getApplicationContext(),
+                this,
                 android.R.layout.simple_list_item_1,
                 Globals.PRIORITIES );
         mChoosePriority.setAdapter(arrayAdapterPriorities);
 
         mChooseRepeat = (Spinner) findViewById(R.id.Spinner_Repeat);
         ArrayAdapter<String> arrayAdapterRepeat = new ArrayAdapter<String>(
-                getApplicationContext(),
+                this,
                 android.R.layout.simple_list_item_1,
                 Globals.REPEAT );
         mChooseRepeat.setAdapter(arrayAdapterRepeat);
@@ -252,6 +255,17 @@ public class NewScheduleActivity extends AppCompatActivity {
         protected Void doInBackground(Void... unused) {
             long id = mScheduleDBHelper.insertSchedule(schedule);
             publishProgress(Long.toString(id));
+
+            if(schedule.getUseTime() && !schedule.getCompleted()) {
+                AlarmManager mgrAlarm = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
+                Intent intent = new Intent(getApplicationContext(), TimeReceiver.class);
+                intent.putExtra("id", (int) id);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), (int) id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                mgrAlarm.set(AlarmManager.RTC_WAKEUP,
+                        mDateAndTime.getTimeInMillis(),
+                        pendingIntent);
+
+            }
             return null;
         }
 
