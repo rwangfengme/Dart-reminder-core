@@ -26,8 +26,8 @@ public class UserAccount {
         return this.username;
     }
 
-    public void setUsername(String email) {
-        this.username = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
