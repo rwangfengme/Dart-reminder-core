@@ -28,6 +28,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Title"
+            android:textColor="@color/colorBlack"
+            android:textSize="15dip"
             android:id="@+id/TextView_NewScheduleTitle" />
 
         <EditText
@@ -40,6 +42,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Notes"
+            android:textColor="@color/colorBlack"
+            android:textSize="15dip"
+            android:layout_marginTop="15dp"
             android:id="@+id/TextView_NewScheduleNotes"
             android:layout_gravity="center_vertical"
             android:gravity="center" />
@@ -53,12 +58,22 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="20dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_alarm_black_48dp"
+                android:id="@+id/map_search_button"
+                android:contentDescription="SearchIcon"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="All Day"
+                android:textColor="@color/colorBlack"
+                android:textSize="15dip"
                 android:id="@+id/TextView_AllDay" />
 
             <Switch
@@ -66,13 +81,15 @@
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:text=""
+                android:textSize="15dip"
                 android:id="@+id/Switch_AllDayReminder" />
         </LinearLayout>
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginLeft="25dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -80,6 +97,7 @@
                 android:padding="5dp"
                 android:text="Choose Event Time"
                 android:onClick="onTimePickerClicked"
+                android:textSize="15dip"
                 android:background="?android:attr/selectableItemBackground"
                 android:id="@+id/TextView_TimePicker" />
 
@@ -88,21 +106,38 @@
                 android:layout_height="wrap_content"
                 android:text="Choose Event Date"
                 android:padding="5dp"
+                android:textSize="15dip"
                 android:onClick="onDatePickerClicked"
                 android:background="?android:attr/selectableItemBackground"
                 android:id="@+id/TextView_DayPicker" />
 
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@android:color/darker_gray"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="5dp">
 
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_room_black_48dp"
+                android:contentDescription="SearchIcon"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Remind Me at a Location"
+                android:textColor="@color/colorBlack"
+                android:textSize="15dip"
                 android:id="@+id/TextView_LocationReminder" />
 
             <Switch
@@ -110,6 +145,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:text=""
+                android:textSize="15dip"
                 android:id="@+id/Switch_LocationReminder" />
         </LinearLayout>
 
@@ -119,8 +155,17 @@
             android:id="@+id/TextView_Location"
             android:text="Choose Your Location"
             android:padding="5dp"
+            android:textSize="15dip"
+            android:layout_marginLeft="25dp"
             android:background="?android:attr/selectableItemBackground"
             android:onClick="onLocationClicked"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@android:color/darker_gray"/>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -128,10 +173,19 @@
             android:layout_height="match_parent"
             android:layout_marginTop="5dp">
 
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_accessibility_black_48dp"
+                android:contentDescription="SearchIcon"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Remind Me When..."
+                android:textColor="@color/colorBlack"
+                android:textSize="15dip"
                 android:id="@+id/TextView_ActivityReminder" />
 
             <Switch
@@ -139,35 +193,91 @@
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:text=""
+                android:textSize="15dip"
                 android:id="@+id/Switch_ActivityReminder" />
         </LinearLayout>
 
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/Spinner_Activity" />
+            android:id="@+id/Spinner_Activity"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="25dp"/>
 
-        <TextView
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Repeat"
-            android:layout_marginTop="5dp"/>
+            android:layout_height="1dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@android:color/darker_gray"/>
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_cached_black_48dp"
+                android:contentDescription="SearchIcon"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Repeat"
+                android:textColor="@color/colorBlack"
+                android:textSize="15dip" />
+
+        </LinearLayout>
 
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/Spinner_Repeat" />
+            android:id="@+id/Spinner_Repeat"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="25dp"/>
 
-        <TextView
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Priority"
-            android:layout_marginTop="5dp"/>
+            android:layout_height="1dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@android:color/darker_gray"/>
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_report_problem_black_48dp"
+                android:contentDescription="SearchIcon"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Priority"
+                android:textColor="@color/colorBlack"
+                android:textSize="15dip"/>
+
+        </LinearLayout>
+
 
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/Spinner_Priority" />
+            android:id="@+id/Spinner_Priority"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="25dp"/>
 
         <LinearLayout
             android:orientation="horizontal"

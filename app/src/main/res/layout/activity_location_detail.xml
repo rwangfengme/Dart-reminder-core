@@ -1,3 +1,8 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="dartmouth.edu.dartreminder.NewScheduleActivity">
 <LinearLayout
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,13 +13,47 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/location_search_frame">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Search: "
+            android:textColor="@color/colorBlack"
+            android:textSize="15dip"
+            android:layout_margin="5dp"/>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/location_search_text"
+            android:singleLine="true"
+            android:layout_margin="5dp"
+            android:layout_weight="12"
+            android:inputType="text"/>
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_search_black_48dp"
+            android:id="@+id/location_search_button"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:contentDescription="SearchIcon"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Title: "
+            android:layout_marginRight="30dp"
+            android:textColor="@color/colorBlack"
+            android:textSize="15dip"
             android:id="@+id/location_title_view"
-            android:layout_margin="5dp"/>
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -30,6 +69,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Address: "
+            android:textColor="@color/colorBlack"
+            android:textSize="15dip"
             android:id="@+id/location_address_view"
             android:layout_margin="5dp"/>
         <EditText
@@ -39,33 +80,6 @@
             android:singleLine="true"
             android:layout_margin="5dp"/>
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/location_search_frame">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Search: "
-            android:layout_margin="5dp"/>
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/location_search_text"
-            android:singleLine="true"
-            android:layout_margin="5dp"
-            android:layout_weight="6"
-            android:inputType="text"/>
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/search_icon"
-            android:id="@+id/location_search_button"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:contentDescription="SearchIcon"/>
-    </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -73,7 +87,7 @@
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                   xmlns:tools="http://schemas.android.com/tools"
                   android:layout_width="match_parent"
-                  android:layout_height="match_parent"
+                  android:layout_height="325dp"
                   android:id="@+id/map"
                   tools:context=".MapsActivity"
                   android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -81,28 +95,34 @@
                   android:layout_marginBottom="5dp"
                   android:layout_marginLeft="10dp"
                   android:layout_marginRight="10dp"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="bottom">
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SAVE"
-                android:id="@+id/location_save_button"
-                android:background="#76EEC6"
-                android:layout_weight="1"
-                android:layout_margin="5dp"/>
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="CANCEL"
-                android:id="@+id/location_cancel_button"
-                android:background="#FFAEB9"
-                android:layout_weight="1"
-                android:layout_margin="5dp"/>
-        </LinearLayout>
     </FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="bottom"
+        android:layout_marginTop="5dp">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SAVE"
+            android:id="@+id/location_save_button"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:background="@color/fbutton_default_color"
+            android:textColor="@color/colorWhite"
+            android:layout_weight="1"
+            android:layout_margin="5dp"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CANCEL"
+            android:id="@+id/location_cancel_button"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:background="@color/fbutton_default_color"
+            android:textColor="@color/colorWhite"
+            android:layout_weight="1"
+            android:layout_margin="5dp"/>
+    </LinearLayout>
 </LinearLayout>
+
+</ScrollView>

@@ -5,7 +5,9 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorDeepRed">#C40000</color>
 
+    <color name="colorBlack">#000000</color>
     <color name="colorWhite">#FFFFFF</color>
+
     <color name="secondary">#ff752c5e</color>
     <color name="secondaryDark">#ff611c4b</color>
     <color name="primary">#2980b9</color>

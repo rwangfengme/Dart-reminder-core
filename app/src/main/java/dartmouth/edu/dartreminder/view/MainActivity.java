@@ -92,25 +92,31 @@ public class MainActivity extends AppCompatActivity
         public void onReceive(Context ctx, Intent intent) {
             Log.e("onReceive","onReceive");
             // obtain the schedule information
-            int id = intent.getIntExtra(Globals.SCHEDULE_ID, -1);
+//            int id = intent.getIntExtra(Globals.SCHEDULE_ID, -1);
             Intent i = new Intent(ctx, NotifyLocationReceivedActivity.class);
-            i.putExtra(Globals.SCHEDULE_ID, id);
-            i.putExtra(Globals.INTENT_TYPE, Globals.LOCATION_INTENT);
+//            i.putExtra(Globals.SCHEDULE_ID, id);
+//            i.putExtra(Globals.INTENT_TYPE, Globals.LOCATION_INTENT);
+
+            String title = intent.getStringExtra(Globals.SCHEDULE_TITLE);
+            String note = intent.getStringExtra(Globals.SCHEDULE_NOTE);
+            double lat = intent.getDoubleExtra(Globals.LOCATION_LAT, 0);
+            double lng = intent.getDoubleExtra(Globals.LOCATION_LNG, 0);
+            i.putExtra(Globals.MSG_LOCATION_ALARM, true);
+            i.putExtra(Globals.LOCATION_TITLE, title);
+            i.putExtra(Globals.LOCATION_DETAIL, note);
+            i.putExtra(Globals.LOCATION_LAT, lat);
+            i.putExtra(Globals.LOCATION_LNG, lng);
             startActivity(i);
-//            String title = intent.getStringExtra(Globals.SCHEDULE_TITLE);
-//            String note = intent.getStringExtra(Globals.SCHEDULE_NOTE);
-//            double lat = intent.getDoubleExtra(Globals.LOCATION_LAT, 0);
-//            double lng = intent.getDoubleExtra(Globals.LOCATION_LNG, 0);
-//
-//            // put schedule information into corresponding fields
-//            scheduleTriggerUpdate(id, title, note, lat, lng);
+
+            // put schedule information into corresponding fields
+            // scheduleTriggerUpdate(title, note, lat, lng);
         }
     }
 
-    public void scheduleTriggerUpdate(int id, String title, String note, double lat, double lng){
+    public void scheduleTriggerUpdate(String title, String note, double lat, double lng){
         Intent intent = new Intent(this, LocationDetailActivity.class);
         //Intent intent = new Intent(this, NotifyReceivedActivity.class);
-        intent.putExtra(Globals.SCHEDULE_ID, id);
+        //intent.putExtra(Globals.SCHEDULE_ID, id);
         intent.putExtra(Globals.MSG_LOCATION_ALARM, true);
         intent.putExtra(Globals.LOCATION_TITLE, title);
         intent.putExtra(Globals.LOCATION_DETAIL, note);
@@ -124,7 +130,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        new GcmRegistrationAsyncTask(this).execute();
+        // new GcmRegistrationAsyncTask(this).execute();
 
         slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tab);
         viewPager = (ViewPager) findViewById(R.id.viewpager);

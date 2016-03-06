@@ -75,7 +75,7 @@ public class NewScheduleActivity extends AppCompatActivity {
         mChooseActivity = (Spinner) findViewById(R.id.Spinner_Activity);
         ArrayAdapter<String> arrayAdapterActivities = new ArrayAdapter<String>(
                 this,
-                android.R.layout.simple_list_item_1,
+                R.layout.spinner_item_text,
                 Globals.ACTIVITIES);
         mChooseActivity.setAdapter(arrayAdapterActivities);
         mChooseActivity.setVisibility(View.GONE);
@@ -83,7 +83,7 @@ public class NewScheduleActivity extends AppCompatActivity {
         mChoosePriority = (Spinner) findViewById(R.id.Spinner_Priority);
         ArrayAdapter<String> arrayAdapterPriorities = new ArrayAdapter<String>(
                 this,
-                android.R.layout.simple_list_item_1,
+                R.layout.spinner_item_text,
                 Globals.PRIORITIES );
         mChoosePriority.setAdapter(arrayAdapterPriorities);
 
@@ -129,6 +129,8 @@ public class NewScheduleActivity extends AppCompatActivity {
                 if(isChecked) {
                     mNewScheduleDate.setVisibility(View.VISIBLE);
                     mNewScheduleTime.setVisibility(View.VISIBLE);
+                    chooseDateAlert = true;
+                    chooseTimeAlert = true;
                 } else {
                     mNewScheduleDate.setVisibility(View.GONE);
                     mNewScheduleTime.setVisibility(View.GONE);

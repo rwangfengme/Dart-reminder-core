@@ -20,7 +20,7 @@
             android:title="Sync" />
     </group>
 
-    <item android:title="">
+    <item android:title="DartReminder">
         <menu>
             <item
                 android:id="@+id/nav_settings"

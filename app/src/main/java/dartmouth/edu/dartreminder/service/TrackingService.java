@@ -167,8 +167,10 @@ public class TrackingService extends Service implements
         dartReminderDBHelper.updateSchedule(schedule);
         Intent intent = new Intent(
                 MainActivity.ScheduleTriggeredReceiver.class.getName());
-        long id = schedule.getId();
-        intent.putExtra(Globals.SCHEDULE_ID, (int)id);
+//        long id = -1;
+//        if(schedule.getId() != null)
+//            id = schedule.getId();
+//        intent.putExtra(Globals.SCHEDULE_ID, (int)id);
         intent.putExtra(MSG_ENTITY_UPDATE, true);
         intent.putExtra(Globals.SCHEDULE_TITLE, schedule.getTitle());
         intent.putExtra(Globals.SCHEDULE_NOTE, schedule.getNotes());

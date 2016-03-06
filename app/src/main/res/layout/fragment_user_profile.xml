@@ -4,18 +4,23 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_margin="5dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Profile Photo"
-            android:id="@+id/textView" />
+            android:id="@+id/textView"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/colorBlack"
+            android:textSize="15dip"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:baselineAligned="false" >
+            android:baselineAligned="false"
+            android:layout_margin="5dp">
 
             <ImageView
                 android:contentDescription="@string/accept"
@@ -37,7 +42,9 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Name" />
+            android:text="Name"
+            android:textColor="@color/colorBlack"
+            android:textSize="15dip"/>
 
         <EditText
             android:layout_width="match_parent"
@@ -50,7 +57,9 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Email" />
+            android:text="Email"
+            android:textColor="@color/colorBlack"
+            android:textSize="15dip"/>
 
         <EditText
             android:layout_width="match_parent"
@@ -63,7 +72,9 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Phone" />
+            android:text="Phone"
+            android:textColor="@color/colorBlack"
+            android:textSize="15dip"/>
 
         <EditText
             android:layout_width="match_parent"
@@ -76,7 +87,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="65dp"
+            android:layout_marginTop="60dp"
             >
 
             <Button
@@ -84,7 +95,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Save" >
+                android:text="Save"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:background="@color/fbutton_default_color"
+                android:textColor="@color/colorWhite">
             </Button>
 
             <Button
@@ -92,7 +108,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Cancel" >
+                android:text="Cancel"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:background="@color/fbutton_default_color"
+                android:textColor="@color/colorWhite">
             </Button>
         </LinearLayout>
     </LinearLayout>

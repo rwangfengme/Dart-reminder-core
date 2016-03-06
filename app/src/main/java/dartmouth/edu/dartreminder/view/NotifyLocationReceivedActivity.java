@@ -26,11 +26,13 @@ import dartmouth.edu.dartreminder.utils.Globals;
 
 public class NotifyLocationReceivedActivity extends Activity {
 
-    private DartReminderDBHelper mScheduleDBHelper;
-    private Schedule schedule;
     private Vibrator vibrator;
     private Context mContext;
-    private int row_id;
+    private boolean fromLocation = false;
+    private String title = "";
+    private String notes = "";
+    private double lat = 0;
+    private double lng = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,35 +40,37 @@ public class NotifyLocationReceivedActivity extends Activity {
 
         Intent intent = getIntent();
         mContext = getApplicationContext();
-        row_id = intent.getIntExtra(Globals.SCHEDULE_ID, -1);
-        mScheduleDBHelper = new DartReminderDBHelper(getApplicationContext());
-        schedule = mScheduleDBHelper.fetchScheduleByIndex(row_id);
+        fromLocation = intent.getBooleanExtra(Globals.MSG_LOCATION_ALARM, false);
+        title = intent.getStringExtra(Globals.LOCATION_TITLE);
+        notes = intent.getStringExtra(Globals.LOCATION_DETAIL);
+        lat = intent.getDoubleExtra(Globals.LOCATION_LAT, 0);
+        lng = intent.getDoubleExtra(Globals.LOCATION_LNG, 0);
+
         vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.vibrate(Globals.mVibratePattern, 1);
 
-        if(schedule != null) {
             // set notification
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(getApplicationContext())
                             .setSmallIcon(R.drawable.ic_launcher)
-                            .setContentTitle(schedule.getTitle())
-                            .setContentText(schedule.getNotes());
+                            .setContentTitle(title)
+                            .setContentText(notes);
             NotificationManager mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.notify(row_id, mBuilder.build());
+            mNotificationManager.notify((int)System.currentTimeMillis(), mBuilder.build());
 
             // set alert box
             AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Theme_Holo_Dialog_Alert));
-            builder.setTitle(schedule.getTitle())
-                    .setMessage(schedule.getNotes())
+            builder.setTitle(title)
+                    .setMessage(notes)
                     .setCancelable(false)
                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             Intent i = new Intent(mContext, LocationDetailActivity.class);
-                            i.putExtra(Globals.MSG_LOCATION_ALARM, true);
-                            i.putExtra(Globals.LOCATION_TITLE, schedule.getTitle());
-                            i.putExtra(Globals.LOCATION_DETAIL, schedule.getNotes());
-                            i.putExtra(Globals.LOCATION_LAT, schedule.getLat());
-                            i.putExtra(Globals.LOCATION_LNG, schedule.getLng());
+                            i.putExtra(Globals.MSG_LOCATION_ALARM, fromLocation);
+                            i.putExtra(Globals.LOCATION_TITLE, title);
+                            i.putExtra(Globals.LOCATION_DETAIL, notes);
+                            i.putExtra(Globals.LOCATION_LAT, lat);
+                            i.putExtra(Globals.LOCATION_LNG, lng);
                             startActivity(i);
                             dialog.cancel();
                             vibrator.cancel();
@@ -83,7 +87,4 @@ public class NotifyLocationReceivedActivity extends Activity {
             AlertDialog alert = builder.create();
             alert.show();
         }
-
-    }
-
 }
