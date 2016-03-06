@@ -230,9 +230,6 @@ public class NewScheduleActivity extends AppCompatActivity {
 
 
         // insert into uncompleted location based schedule if this schedule is location based
-        if (!schedule.getLocationName().isEmpty()){
-            MainActivity.unCompletedLocationScheduleList.add(schedule);
-        }
         task = new InsertDbTask();
         task.execute();
         this.finish();
@@ -283,6 +280,7 @@ public class NewScheduleActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... unused) {
             long id = mScheduleDBHelper.insertSchedule(schedule);
+            schedule.setId(id);
             publishProgress(Long.toString(id));
 
             if(schedule.getUseTime() && !schedule.getCompleted()) {
@@ -305,6 +303,9 @@ public class NewScheduleActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void unused) {
+            if (!schedule.getLocationName().isEmpty()){
+                MainActivity.unCompletedLocationScheduleList.add(schedule);
+            }
             task = null;
         }
     }

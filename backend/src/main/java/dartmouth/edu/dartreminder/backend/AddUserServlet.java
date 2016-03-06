@@ -5,7 +5,9 @@ import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,24 +27,22 @@ public class AddUserServlet extends HttpServlet {
 
         if (userName == null || userName.equals("")) {
             req.setAttribute("_retStr", "invalid input");
-            getServletContext().getRequestDispatcher("/query_result.jsp")
+            getServletContext().getRequestDispatcher("/user_query_result.jsp")
                     .forward(req, resp);
             return;
         }
 
         UserAccount userAccount = new UserAccount(userName, pwd);
-        boolean success = Datastore.addUser(userAccount);
+        int success = Datastore.addUser(userAccount);
 
-        if (success) {
+        if (success == 2) {
             req.setAttribute("_retStr", "Add contact " + userName + " success");
             MessagingEndpoint msg = new MessagingEndpoint();
             msg.sendMessage("SignedIn");
-        } else {
-            req.setAttribute("_retStr", userName + " exists");
         }
 
-		getServletContext().getRequestDispatcher("/user_query_result.jsp").forward(
-				req, resp);
+        PrintWriter writer = resp.getWriter();
+        writer.write(success + "");
 	}
 
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)

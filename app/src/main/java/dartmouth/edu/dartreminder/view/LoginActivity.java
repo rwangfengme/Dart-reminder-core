@@ -394,7 +394,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 map.put("userName", params[0]);
                 map.put("pwd", params[1]);
 
-                ServerUtilities.post(Globals.SERVER_ADDR+"/addUser.do", map);
+                String response = ServerUtilities.post(Globals.SERVER_ADDR+"/addUser.do", map);
+                Log.e("TAGG", "sign up response " + response);
             } catch (IOException e1) {
                 uploadState = "Sign in failed: " + e1.getCause();
                 Log.e("TAGG", "data posting error " + e1);

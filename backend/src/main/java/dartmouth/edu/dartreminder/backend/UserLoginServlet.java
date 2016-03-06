@@ -1,6 +1,7 @@
 package dartmouth.edu.dartreminder.backend;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,10 +22,10 @@ public class UserLoginServlet extends HttpServlet {
 			throws IOException, ServletException {
 		String userName = req.getParameter("user_name");
         String pwd = req.getParameter("pwd");
-		boolean result = Datastore.userLogin(userName, pwd);
-		req.setAttribute("result", result);
-		getServletContext().getRequestDispatcher("/query_result.jsp").forward(
-				req, resp);
+		int result = Datastore.userLogin(userName, pwd);
+
+        PrintWriter writer = resp.getWriter();
+        writer.write(result + "");
 	}
 
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)

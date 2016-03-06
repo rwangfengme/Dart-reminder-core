@@ -34,10 +34,10 @@ public class Datastore {
                                         User Account Section
       ---------------------------------------------------------------------------------------------*/
     //add elements into data store
-	public static boolean addUser(UserAccount userAccount) {
+	public static int addUser(UserAccount userAccount) {
 		if (getUserAccountByUserName(userAccount.getUsername(), null) != null) {
 			mLogger.log(Level.INFO, "contact exists");
-			return false;
+			return 0;
 		}
 
 		Key parentKey = getKey();
@@ -48,7 +48,7 @@ public class Datastore {
 		entity.setProperty(UserAccount.FIELD_NAME_PASSWORD, userAccount.getPassword());
 		mDatastore.put(entity);
 
-		return true;
+		return 1;
 	}
 
     //query elements in the data store
@@ -73,18 +73,20 @@ public class Datastore {
 		return resultList;
 	}
 
-    public static boolean userLogin(String userName, String pwd){
+    public static int userLogin(String userName, String pwd){
         if (userName == null || userName == "" || pwd == null || userName == ""){
-            return false;
+            return 0;
         }
         UserAccount userAccount = getUserAccountByUserName(userName, null);
         if (userAccount != null) {
             if (pwd.equals(userAccount.getPassword())){
-                return true;
+                return 2;
             }
+        }else{
+            return 0;
         }
 
-        return false;
+        return 1;
     }
 
     //get exercise element from data store by id
