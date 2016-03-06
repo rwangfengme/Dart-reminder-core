@@ -90,7 +90,7 @@ public class NewScheduleActivity extends AppCompatActivity {
         mChooseRepeat = (Spinner) findViewById(R.id.Spinner_Repeat);
         ArrayAdapter<String> arrayAdapterRepeat = new ArrayAdapter<String>(
                 this,
-                android.R.layout.simple_list_item_1,
+                R.layout.spinner_item_text,
                 Globals.REPEAT );
         mChooseRepeat.setAdapter(arrayAdapterRepeat);
 
