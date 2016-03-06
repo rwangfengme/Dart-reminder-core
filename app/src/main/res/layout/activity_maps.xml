@@ -1,9 +1,4 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="dartmouth.edu.dartreminder.NewScheduleActivity"
-    android:id="@+id/mineView">
+
 <LinearLayout
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -42,6 +37,7 @@
                 android:layout_gravity="center"
                 android:contentDescription="SearchIcon"/>
         </LinearLayout>
+
 
         <ListView
             android:layout_width="match_parent"
@@ -125,4 +121,3 @@
     </LinearLayout>
 </LinearLayout>
 
-</ScrollView>
