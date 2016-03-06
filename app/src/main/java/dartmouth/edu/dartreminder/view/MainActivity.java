@@ -16,8 +16,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
-import android.os.SystemClock;
-import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -61,16 +59,17 @@ public class MainActivity extends AppCompatActivity
 
     private ArrayList<Fragment> fragments;
     private ViewPageAdapter mViewPagerAdapter;
-    private RecentActivityListFragment recentActivityListFragment;
+
+    private RecentListFragment recentListFragment;
     private RecentLocationListFragment recentLocationListFragment;
-    private RecentTimeListFragment recentTimeListFragment;
+    private RecentListFragment recentActivityListFragment;
 
 
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
 
 //    private final RecentListFragment mRecentListFragment = new RecentListFragment();
-    private final RecentTimeListFragment mRecentTimeListFragment = new RecentTimeListFragment();
+//    private final RecentListFragment mRecentListFragment = new RecentListFragment();
     private final UserProfileFragment mUserProfileFragment = new UserProfileFragment();
     private final LocationFragment mLocationFragment = new LocationFragment();
 
@@ -110,13 +109,13 @@ public class MainActivity extends AppCompatActivity
         slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tab);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
 
-        recentTimeListFragment = new RecentTimeListFragment();
+        recentListFragment = new RecentListFragment("Time");
         recentLocationListFragment = new RecentLocationListFragment();
-        recentActivityListFragment = new RecentActivityListFragment();
+        recentActivityListFragment = new RecentListFragment("Act");
 
 
         fragments = new ArrayList<Fragment>();
-        fragments.add(recentTimeListFragment);
+        fragments.add(recentListFragment);
         fragments.add(recentLocationListFragment);
         fragments.add(recentActivityListFragment);
 
@@ -212,7 +211,7 @@ public class MainActivity extends AppCompatActivity
             //TODO:
             /*getFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.main_page, mRecentTimeListFragment)
+                    .replace(R.id.main_page, mRecentListFragment)
                     .commit();*/
         } else if (id == R.id.nav_user_profile) {
             slidingTabLayout.setVisibility(View.INVISIBLE);

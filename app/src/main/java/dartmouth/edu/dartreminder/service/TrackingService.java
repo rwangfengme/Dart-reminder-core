@@ -13,9 +13,13 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -38,7 +42,7 @@ import dartmouth.edu.dartreminder.view.MapsActivity;
 
 public class TrackingService extends Service implements
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener, ResultCallback<Status> {
 
     public static final String EXTRA_MESSENGER = "EXTRA_MESSENGER";
     public static final String EXTRA_TRACKING = "EXTRA_TRACKING";
@@ -64,7 +68,23 @@ public class TrackingService extends Service implements
     private boolean mIsStarted;
 
     private DartReminderDBHelper dartReminderDBHelper;
-    private LatLng mCurretnLatLng;
+    private LatLng mCurrentLatLng;
+
+    @Override
+    public void onResult(Status status) {
+        if (status.isSuccess()) {
+            // Toggle the status of activity updates requested, and save in shared preferences.
+
+        }
+    }
+
+    private PendingIntent getActivityDetectionPendingIntent() {
+        Intent intent = new Intent(this, ActivityRecognitionService.class);
+
+        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
+        // requestActivityUpdates() and removeActivityUpdates().
+        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
 
     // set up the MyRunsBinder
     public class TrackingServiceBinder extends Binder {
@@ -77,7 +97,7 @@ public class TrackingService extends Service implements
         }
 
         public LatLng getCurrentLatLng() {
-            return mCurretnLatLng;
+            return mCurrentLatLng;
         }
     }
 
@@ -86,6 +106,7 @@ public class TrackingService extends Service implements
         mIsStarted = false;
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
+                .addApi(ActivityRecognition.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
@@ -225,13 +246,19 @@ public class TrackingService extends Service implements
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, this);
+
+        ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(
+                mGoogleApiClient,
+                Globals.DETECTION_INTERVAL_IN_MILLISECONDS,
+                getActivityDetectionPendingIntent()
+        ).setResultCallback(this);
     }
 
 
 
     // handle location updates
     public void onLocationChanged(Location loc) {
-        mCurretnLatLng = new LatLng(loc.getLatitude(), loc.getLongitude());
+        mCurrentLatLng = new LatLng(loc.getLatitude(), loc.getLongitude());
         sendLocationChange(loc);
         if (mScheduleList != null && mScheduleList.size() > 0) {
             // check whether condition has been fulfilled
