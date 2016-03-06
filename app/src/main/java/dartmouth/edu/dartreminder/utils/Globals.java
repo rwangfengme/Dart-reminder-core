@@ -15,8 +15,16 @@ public abstract class Globals {
     public static final String[] REPEAT = {"Never", "Every Day", "Every Week", "Every Month", "Every Year"};
     public static final int[] LOCATION_LIST = {R.drawable.ic_add_location_black_48dp, R.drawable.arraw_icon, R.drawable.arraw_icon,
                                             R.drawable.arraw_icon, R.drawable.arraw_icon, R.drawable.arraw_icon};
+    public static final String[] ACTIVITIES = {"Standing", "Walking", "Running"};
 
     public static final String SAVE = "save";
+    public static final String SCHEDULE_ID = "id";
+    public static final String INTENT_TYPE = "type";
+    public static final int TIME_INTENT = 0;
+    public static final int LOCATION_INTENT = 1;
+    public static final int ACTIVITY_INTENT = 2;
+
+
     public static final String LOCATION_NAME = "location_name";
     public static final String ARRIVE = "arrive";
     public static final String RADIUS = "radius";
@@ -43,4 +51,5 @@ public abstract class Globals {
     public static final String GCM_AR = "Activity Recognition";
     public static final String AR_BROADCAST = "AR_BROADCAST";
     public static final int DETECTION_INTERVAL_IN_MILLISECONDS = 0;
+    public static final long[] mVibratePattern = new long[]{0, 500, 500};
 }

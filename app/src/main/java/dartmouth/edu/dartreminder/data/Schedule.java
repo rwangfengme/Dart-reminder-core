@@ -16,6 +16,7 @@ public class Schedule {
     private double Lng;
     private boolean Arrive;
     private double Radius;
+    private int Activity;
     private int Priority;
     private int Repeat;
     private boolean isCompleted;
@@ -30,6 +31,7 @@ public class Schedule {
         this.Lng = 0;
         this.Arrive = true;
         this.Radius = 0;
+        this.Activity = -1;
         this.Priority = 0;
         this.Repeat = 0;
         this.isCompleted = false;
@@ -113,6 +115,14 @@ public class Schedule {
 
     public void setRadius(double radius) {
         this.Radius = radius;
+    }
+
+    public int getActivity() {
+        return this.Activity;
+    }
+
+    public void setActivity (int activity) {
+        this.Activity = activity;
     }
 
     public int getPriority() {

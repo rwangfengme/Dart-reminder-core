@@ -42,13 +42,15 @@ public class NewScheduleActivity extends AppCompatActivity {
     private TextView mTimePicker;
     private Spinner mChoosePriority;
     private Spinner mChooseRepeat;
+    private Spinner mChooseActivity;
 
     private Calendar mDateAndTime;
     private boolean useLocation = false;
     private String mLocationTitle = "";
     private boolean mArrive = true;
     private double mRadius = 0.0, mLat = 0.0, mLng = 0.0;
-    private boolean chooseDateAlert = false, chooseTimeAlert = false, chooseLocationAlert = false;
+    private boolean chooseDateAlert = false, chooseTimeAlert = false,
+            chooseLocationAlert = false, chooseActivityAlert = false;
 
     private Schedule schedule;
     private DartReminderDBHelper mScheduleDBHelper;
@@ -70,6 +72,14 @@ public class NewScheduleActivity extends AppCompatActivity {
         mChooseLocation = (TextView) findViewById(R.id.TextView_Location);
         mChooseLocation.setVisibility(View.GONE);
 
+        mChooseActivity = (Spinner) findViewById(R.id.Spinner_Activity);
+        ArrayAdapter<String> arrayAdapterActivities = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                Globals.ACTIVITIES);
+        mChooseActivity.setAdapter(arrayAdapterActivities);
+        mChooseActivity.setVisibility(View.GONE);
+
         mChoosePriority = (Spinner) findViewById(R.id.Spinner_Priority);
         ArrayAdapter<String> arrayAdapterPriorities = new ArrayAdapter<String>(
                 this,
@@ -88,17 +98,9 @@ public class NewScheduleActivity extends AppCompatActivity {
         if(savedInstanceState != null) {
             mDateAndTime.setTimeInMillis(savedInstanceState.getLong("mDateAndTime"));
             chooseDateAlert = savedInstanceState.getBoolean("chooseDateAlert");
-            if(chooseDateAlert) {
-                SimpleDateFormat format = new SimpleDateFormat("EEEE, MMM dd, yyyy");
-                mDatePicker.setText(format.format(mDateAndTime.getTime()));
-            }
-            chooseTimeAlert = savedInstanceState.getBoolean("chooseTimeAlert");
-            if(chooseTimeAlert) {
-                SimpleDateFormat format = new SimpleDateFormat("hh:mm aaa");
-                mTimePicker.setText(format.format(mDateAndTime.getTime()));
-            }
             chooseLocationAlert = savedInstanceState.getBoolean("chooseLocationAlert");
-
+            chooseTimeAlert = savedInstanceState.getBoolean("chooseTimeAlert");
+            chooseActivityAlert = savedInstanceState.getBoolean("chooseActivityAlert");
             useLocation = savedInstanceState.getBoolean("useLocation");
             mArrive = savedInstanceState.getBoolean("Arrive");
             mLocationTitle = savedInstanceState.getString("Location_Title");
@@ -108,6 +110,16 @@ public class NewScheduleActivity extends AppCompatActivity {
         } else {
             mDateAndTime.setTimeInMillis(System.currentTimeMillis());
         }
+
+        //if(chooseDateAlert) {
+            SimpleDateFormat format = new SimpleDateFormat("EEEE, MMM dd, yyyy");
+            mDatePicker.setText(format.format(mDateAndTime.getTime()));
+        //}
+
+        //if(chooseTimeAlert) {
+            format = new SimpleDateFormat("hh:mm aaa");
+            mTimePicker.setText(format.format(mDateAndTime.getTime()));
+        //}
 
         mSwitchAllDay = (Switch) findViewById(R.id.Switch_AllDayReminder);
         mSwitchAllDay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -141,6 +153,18 @@ public class NewScheduleActivity extends AppCompatActivity {
         });
 
         mSwitchActivity = (Switch) findViewById(R.id.Switch_ActivityReminder);
+        mSwitchActivity.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    mChooseActivity.setVisibility(View.VISIBLE);
+                    chooseActivityAlert = true;
+                } else {
+                    mChooseActivity.setVisibility(View.GONE);
+                    chooseActivityAlert = false;
+                }
+            }
+        });
 
         schedule = new Schedule();
         mScheduleDBHelper = new DartReminderDBHelper(this);
@@ -167,6 +191,7 @@ public class NewScheduleActivity extends AppCompatActivity {
         outState.putBoolean("chooseDateAlert", chooseDateAlert);
         outState.putBoolean("chooseTimeAlert", chooseTimeAlert);
         outState.putBoolean("chooseLocationAlert", chooseLocationAlert);
+        outState.putBoolean("chooseActivityAlert", chooseActivityAlert);
         outState.putBoolean("useLocation", useLocation);
         outState.putString("Location_Title", mLocationTitle);
         outState.putBoolean("Arrive", mArrive);
@@ -193,6 +218,8 @@ public class NewScheduleActivity extends AppCompatActivity {
             schedule.setLng(mLng);
         }
 
+        if(chooseActivityAlert)
+            schedule.setActivity(mChooseActivity.getSelectedItemPosition());
         schedule.setRepeat(mChooseRepeat.getSelectedItemPosition());
         schedule.setPriority(mChoosePriority.getSelectedItemPosition());
 
