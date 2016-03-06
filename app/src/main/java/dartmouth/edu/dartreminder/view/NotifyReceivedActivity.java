@@ -17,6 +17,7 @@ import dartmouth.edu.dartreminder.R;
 import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.data.Schedule;
 import dartmouth.edu.dartreminder.service.TimeReceiver;
+import dartmouth.edu.dartreminder.utils.Globals;
 
 /**
  * Created by gejing on 3/4/16.
@@ -27,8 +28,9 @@ public class NotifyReceivedActivity extends Activity {
     private Schedule schedule;
     private Vibrator vibrator;
     private Context mContext;
-    int row_id;
-    private static final long[] mVibratePattern = new long[]{0, 500, 500};
+
+    private int row_id;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,65 +38,61 @@ public class NotifyReceivedActivity extends Activity {
 
         Intent intent = getIntent();
         mContext = getApplicationContext();
-        row_id = intent.getIntExtra("id", -1);
+        row_id = intent.getIntExtra(Globals.SCHEDULE_ID, -1);
         mScheduleDBHelper = new DartReminderDBHelper(getApplicationContext());
         schedule = mScheduleDBHelper.fetchScheduleByIndex(row_id);
         vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-
-//        if(schedule == null || schedule.getCompleted()) {
-//            finish();
-//            return;
-//        }
-
-        vibrator.vibrate(mVibratePattern, 1);
+        vibrator.vibrate(Globals.mVibratePattern, 1);
 
         if(schedule != null && !schedule.getCompleted()){
-            // set notification
-            NotificationCompat.Builder mBuilder =
-                    new NotificationCompat.Builder(getApplicationContext())
-                            .setSmallIcon(R.drawable.ic_launcher)
-                            .setContentTitle(schedule.getTitle())
-                            .setContentText(schedule.getNotes());
-            NotificationManager mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.notify(row_id, mBuilder.build());
+                // set notification
+                NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(getApplicationContext())
+                                .setSmallIcon(R.drawable.ic_launcher)
+                                .setContentTitle(schedule.getTitle())
+                                .setContentText(schedule.getNotes());
+                NotificationManager mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.notify(row_id, mBuilder.build());
 
-            // set alert box
-            AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Theme_Holo_Dialog_Alert));
-            builder.setTitle(schedule.getTitle())
-                    .setMessage(schedule.getNotes())
-                    .setCancelable(false)
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // set this schedule as complete
-                            schedule.setCompleted(true);
-                            mScheduleDBHelper.updateSchedule(schedule);
+                // set alert box
+                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Theme_Holo_Dialog_Alert));
+                builder.setTitle(schedule.getTitle())
+                        .setMessage(schedule.getNotes())
+                        .setCancelable(false)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // set this schedule as complete
+                                schedule.setCompleted(true);
+                                mScheduleDBHelper.updateSchedule(schedule);
 
-                            dialog.cancel();
-                            vibrator.cancel();
-                            finish();
-                        }
-                    })
-                    .setNegativeButton("Snooze", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // update schedule with 5 minutes later
-                            schedule.setTime(schedule.getTime() + 60000 * 5);
-                            mScheduleDBHelper.updateSchedule(schedule);
+                                dialog.cancel();
+                                vibrator.cancel();
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("Snooze", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // update schedule with 5 minutes later
+                                schedule.setTime(schedule.getTime() + 60000 * 5);
+                                mScheduleDBHelper.updateSchedule(schedule);
 
-                            AlarmManager mgrAlarm = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
-                            Intent intent = new Intent(getApplicationContext(), TimeReceiver.class);
-                            intent.putExtra("id", row_id);
-                            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), row_id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                            mgrAlarm.set(AlarmManager.RTC_WAKEUP,
-                                    schedule.getTime(),
-                                    pendingIntent);
+                                AlarmManager mgrAlarm = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
+                                Intent intent = new Intent(getApplicationContext(), TimeReceiver.class);
+                                intent.putExtra("id", row_id);
+                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), row_id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                mgrAlarm.set(AlarmManager.RTC_WAKEUP,
+                                        schedule.getTime(),
+                                        pendingIntent);
 
-                            dialog.cancel();
-                            vibrator.cancel();
-                            finish();
-                        }
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
+                                dialog.cancel();
+                                vibrator.cancel();
+                                finish();
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+
+
         }
     }
 }
