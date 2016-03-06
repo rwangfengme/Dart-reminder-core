@@ -20,12 +20,12 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/map_search_text"
                 android:singleLine="true"
-                android:layout_weight="6"
+                android:layout_weight="12"
                 android:inputType="text"/>
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="15dp"
-                android:src="@drawable/search_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_search_black_48dp"
                 android:id="@+id/map_search_button"
                 android:layout_weight="1"
                 android:layout_gravity="center"
@@ -78,7 +78,8 @@
                 android:layout_height="wrap_content"
                 android:text="Radius: "
                 android:textSize="15dp"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="5dp"
                 android:id="@+id/map_radius_text"/>
         </FrameLayout>
 

@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:id="@+id/EditText_NewScheduleTitle" />
-        
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

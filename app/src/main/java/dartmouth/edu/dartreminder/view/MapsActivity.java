@@ -490,9 +490,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 detailView.setText(entry.getDetail());
             }
             if (position == 0){
-                imageView.setImageResource(R.drawable.arraw_icon);
+                imageView.setImageResource(R.drawable.ic_room_black_48dp);
             }else{
-                imageView.setImageResource(R.drawable.mark_icon);
+                imageView.setImageResource(R.drawable.ic_add_location_black_48dp);
             }
 
             return listItemView;

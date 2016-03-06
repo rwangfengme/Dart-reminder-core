@@ -343,6 +343,10 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
             mLatLng = latLng;
             setMarker(latLng);
             mAddressText.setText(fromLatLng2Address(latLng));
+            if (registered){
+                registered = false;
+                unregisterReceiver(locationChangedReceiver);
+            }
         }
     }
 

@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
@@ -27,13 +28,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.extensions.android.json.AndroidJsonFactory;
+import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
+import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import dartmouth.edu.dartreminder.R;
+import dartmouth.edu.dartreminder.backend.registration.Registration;
 import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.data.Schedule;
 //import dartmouth.edu.dartreminder.service.TimeReceiver;
@@ -82,18 +93,25 @@ public class MainActivity extends AppCompatActivity
         public void onReceive(Context ctx, Intent intent) {
             Log.e("onReceive","onReceive");
             // obtain the schedule information
-            String title = intent.getStringExtra(Globals.SCHEDULE_TITLE);
-            String note = intent.getStringExtra(Globals.SCHEDULE_NOTE);
-            double lat = intent.getDoubleExtra(Globals.LOCATION_LAT, 0);
-            double lng = intent.getDoubleExtra(Globals.LOCATION_LNG, 0);
-
-            // put schedule information into corresponding fields
-            scheduleTriggerUpdate(title, note, lat, lng);
+            int id = intent.getIntExtra(Globals.SCHEDULE_ID, -1);
+            Intent i = new Intent(ctx, NotifyLocationReceivedActivity.class);
+            i.putExtra(Globals.SCHEDULE_ID, id);
+            i.putExtra(Globals.INTENT_TYPE, Globals.LOCATION_INTENT);
+            startActivity(i);
+//            String title = intent.getStringExtra(Globals.SCHEDULE_TITLE);
+//            String note = intent.getStringExtra(Globals.SCHEDULE_NOTE);
+//            double lat = intent.getDoubleExtra(Globals.LOCATION_LAT, 0);
+//            double lng = intent.getDoubleExtra(Globals.LOCATION_LNG, 0);
+//
+//            // put schedule information into corresponding fields
+//            scheduleTriggerUpdate(id, title, note, lat, lng);
         }
     }
 
-    public void scheduleTriggerUpdate(String title, String note, double lat, double lng){
+    public void scheduleTriggerUpdate(int id, String title, String note, double lat, double lng){
         Intent intent = new Intent(this, LocationDetailActivity.class);
+        //Intent intent = new Intent(this, NotifyReceivedActivity.class);
+        intent.putExtra(Globals.SCHEDULE_ID, id);
         intent.putExtra(Globals.MSG_LOCATION_ALARM, true);
         intent.putExtra(Globals.LOCATION_TITLE, title);
         intent.putExtra(Globals.LOCATION_DETAIL, note);
@@ -353,5 +371,4 @@ public class MainActivity extends AppCompatActivity
             //It's an orientation change.
         }
     }
-
 }

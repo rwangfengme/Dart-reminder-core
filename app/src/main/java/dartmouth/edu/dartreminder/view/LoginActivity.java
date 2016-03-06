@@ -3,6 +3,7 @@ package dartmouth.edu.dartreminder.view;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.SQLException;
@@ -19,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,13 +30,31 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.extensions.android.json.AndroidJsonFactory;
+import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
+import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import dartmouth.edu.dartreminder.R;
+import dartmouth.edu.dartreminder.backend.registration.Registration;
 import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.data.UserAccount;
+import dartmouth.edu.dartreminder.server.ServerUtilities;
+import dartmouth.edu.dartreminder.utils.Globals;
 
 /**
  * A login screen that offers login via email/password.
@@ -60,6 +80,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        new GcmRegistrationAsyncTask(this).execute();
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -97,8 +120,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             public void onClick(View view) {
                 fromSignIn = false;
                 attemptLogin();
+
+                //Renjie Zhu
+                SignUpTask signUpTask = new SignUpTask();
+                signUpTask.execute(mEmailView.getText().toString(),
+                        mPasswordView.getText().toString());
             }
         });
+
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -352,6 +381,100 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onCancelled() {
             mAuthTask = null;
             showProgress(false);
+        }
+    }
+
+    public class SignUpTask extends AsyncTask<String,Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            // Upload the history of all entries using upload().
+            String uploadState="";
+            try {
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("userName", params[0]);
+                map.put("pwd", params[1]);
+
+                ServerUtilities.post(Globals.SERVER_ADDR+"/addUser.do", map);
+            } catch (IOException e1) {
+                uploadState = "Sign in failed: " + e1.getCause();
+                Log.e("TAGG", "data posting error " + e1);
+            }
+
+            return uploadState;
+        }
+
+        @Override
+        protected void onPostExecute(String errString) {
+            String resultString;
+            if(errString.equals("")) {
+                resultString =  "Successfully signed in.";
+            } else {
+                resultString = errString;
+            }
+
+            Toast.makeText(getApplicationContext(), resultString,
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    class GcmRegistrationAsyncTask extends AsyncTask<Void, Void, String> {
+        private Registration regService = null;
+        private GoogleCloudMessaging gcm;
+        private Context context;
+
+        // TODO: change to your own sender ID to Google Developers Console project number, as per instructions above
+        private static final String SENDER_ID = "446820804524";
+
+        public GcmRegistrationAsyncTask(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            if (regService == null) {
+                Registration.Builder builder = new Registration.Builder(AndroidHttp.newCompatibleTransport(),
+                        new AndroidJsonFactory(), null)
+                        // Need setRootUrl and setGoogleClientRequestInitializer only for local testing,
+                        // otherwise they can be skipped
+                        .setRootUrl(Globals.SERVER_ADDR + "/_ah/api/")
+                        .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
+                            @Override
+                            public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest)
+                                    throws IOException {
+                                abstractGoogleClientRequest.setDisableGZipContent(true);
+                            }
+                        });
+                // end of optional local run code
+
+                regService = builder.build();
+            }
+
+            String msg = "";
+            try {
+                if (gcm == null) {
+                    gcm = GoogleCloudMessaging.getInstance(context);
+                }
+                String regId = gcm.register(SENDER_ID);
+                msg = "Device registered, registration ID=" + regId;
+
+                // You should send the registration ID to your server over HTTP,
+                // so it can use GCM/HTTP or CCS to send messages to your app.
+                // The request to your server should be authenticated if your app
+                // is using accounts.
+                regService.register(regId).execute();
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                msg = "Error: " + ex.getMessage();
+            }
+            return msg;
+        }
+
+        @Override
+        protected void onPostExecute(String msg) {
+            Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+            Logger.getLogger("REGISTRATION").log(Level.INFO, msg);
         }
     }
 }

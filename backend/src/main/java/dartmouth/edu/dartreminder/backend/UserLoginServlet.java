@@ -1,0 +1,34 @@
+package dartmouth.edu.dartreminder.backend;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import dartmouth.edu.dartreminder.backend.data.Datastore;
+
+public class UserLoginServlet extends HttpServlet {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+    //query elements in the data store
+	public void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException, ServletException {
+		String userName = req.getParameter("user_name");
+        String pwd = req.getParameter("pwd");
+		boolean result = Datastore.userLogin(userName, pwd);
+		req.setAttribute("result", result);
+		getServletContext().getRequestDispatcher("/query_result.jsp").forward(
+				req, resp);
+	}
+
+	public void doPost(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException, ServletException {
+		doGet(req, resp);
+	}
+}
