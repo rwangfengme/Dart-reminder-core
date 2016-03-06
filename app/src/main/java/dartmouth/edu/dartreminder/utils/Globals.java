@@ -48,5 +48,8 @@ public abstract class Globals {
     public static final String MSG_LOCATION_CHANGE = "location_changed";
     public static final String MSG_LOCATION_ALARM = "location_alarm";
 
+    public static final String GCM_AR = "Activity Recognition";
+    public static final String AR_BROADCAST = "AR_BROADCAST";
+    public static final int DETECTION_INTERVAL_IN_MILLISECONDS = 0;
     public static final long[] mVibratePattern = new long[]{0, 500, 500};
 }
