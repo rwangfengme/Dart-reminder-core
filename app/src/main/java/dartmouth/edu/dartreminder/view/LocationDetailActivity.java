@@ -112,10 +112,10 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
             setMarker(mLatLng);
 
             mTitleView.setText("Title: ");
-            mTitleText.setText("Note: ");
+            mTitleText.setText("");
 
             mSaveButton.setVisibility(View.GONE);
-            mCancelButton.setVisibility(View.GONE);
+            //mCancelButton.setVisibility(View.GONE);
             mSearchLayout.setVisibility(View.GONE);
             mTitleText.setEnabled(false);
             mAddressText.setEnabled(false);
@@ -221,7 +221,7 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
                     customLocation.setDetail(address);
                     customLocation.setLatitude(mLatLng.latitude);
                     customLocation.setLongtitude(mLatLng.longitude);
-                    customLocation.setIcon(R.drawable.arraw_icon);
+                    customLocation.setIcon(R.drawable.ic_add_location_black_48dp);
 
                     addCustomLocationTask = new AddCustomLocationTask();
                     addCustomLocationTask.execute(customLocation);
@@ -233,7 +233,8 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Location Entry Discarded.", Toast.LENGTH_SHORT).show();
+                if(!isAlarm)
+                    Toast.makeText(getApplicationContext(), "Location Entry Discarded.", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });

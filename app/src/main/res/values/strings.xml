@@ -34,4 +34,5 @@
     <string name="title_activity_maps_test">Map</string>
     <string name="title_activity_notify_location_received">NotifyLocationReceivedActivity</string>
     <string name="title_activity_notify_time_received">NotifyTimeReceivedActivity</string>
+    <string name="title_activity_notify_activity_received">NotifyActivityReceivedActivity</string>
 </resources>

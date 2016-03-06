@@ -1,28 +1,35 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              tools:context="dartmouth.edu.dartreminder.view.LocationFragment"
             android:orientation="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Where?"
-        android:textSize="20dip"
-        android:textStyle="bold"/>
-
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/GridView_Location_History"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
         android:columnWidth="90dp"
+        android:layout_below="@+id/use_to_label"
         android:numColumns="3"
         android:horizontalSpacing="15dp"
         android:stretchMode="columnWidth"
         android:gravity="center_horizontal"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:gravity="center"
+        android:text="Where?"
+        android:layout_marginTop="0dp"
+        android:textColor="@color/colorBlack"
+        android:textSize="25dip"
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"
+        android:id="@+id/use_to_label"
+
+        />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,4 +43,5 @@
             android:src="@drawable/white_cross"
             android:layout_margin="10dp"/>
     </LinearLayout>
-</LinearLayout>
+
+</RelativeLayout>

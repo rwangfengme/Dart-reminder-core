@@ -14,7 +14,9 @@ import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import dartmouth.edu.dartreminder.R;
 import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
@@ -22,14 +24,16 @@ import dartmouth.edu.dartreminder.data.Schedule;
 
 public class ListViewAdapter extends BaseSwipeAdapter {
 
-    private Context mContext;private
-    DartReminderDBHelper mScheduleDBHelper;
+    private Context mContext;
+    private String type;
+    private DartReminderDBHelper mScheduleDBHelper;
     private DelScheduleTask task = null;
     private ArrayList<Schedule> dataScource;
 
     private SwipeLayout swipeLayout;
 
-    public ListViewAdapter(Context mContext, ArrayList dataSource) {
+    public ListViewAdapter(Context mContext, String type, ArrayList dataSource) {
+        this.type = type;
         this.mContext = mContext;
         this.dataScource = dataSource;
     }
@@ -53,8 +57,6 @@ public class ListViewAdapter extends BaseSwipeAdapter {
             @Override
             public void onClick(View view) {
                 //TODO: Del DB
-
-
 
                 mScheduleDBHelper = new DartReminderDBHelper(mContext);
                 task = new DelScheduleTask();
@@ -88,9 +90,17 @@ public class ListViewAdapter extends BaseSwipeAdapter {
         Schedule singleSchedule = dataScource.get(position);
 
         TextView t = (TextView)convertView.findViewById(R.id.position);
-        t.setText(singleSchedule.getTitle());
         TextView text_data = (TextView)convertView.findViewById(R.id.text_data);
-        text_data.setText(singleSchedule.getNotes());
+
+        if(type.equals("Time")){
+            Date date = new Date(singleSchedule.getTime());
+            String formattedDate = new SimpleDateFormat("yyyy-MM-dd hh:mm").format(date);
+            t.setText("Event: " + singleSchedule.getTitle() + " Time: " + formattedDate);
+            text_data.setText("Detail: " + singleSchedule.getNotes());
+        }else{
+
+        }
+
     }
 
     @Override

@@ -22,18 +22,11 @@ import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.data.Schedule;
 import dartmouth.edu.dartreminder.utils.ListViewAdapter;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RecentTimeListFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link RecentTimeListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class RecentTimeListFragment extends Fragment {
+public class RecentListFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
+
+    private String type;
 
     private ListView mListView;
     private ListViewAdapter mAdapter;
@@ -43,23 +36,11 @@ public class RecentTimeListFragment extends Fragment {
     private DartReminderDBHelper mScheduleDBHelper;
     private getAllFromDBTask task = null;
 
-    public RecentTimeListFragment() {
+    public RecentListFragment(String type) {
         // Required empty public constructor
+        this.type = type;
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment RecentTimeListFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static RecentTimeListFragment newInstance(String param1, String param2) {
-        RecentTimeListFragment fragment = new RecentTimeListFragment();
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,18 +76,12 @@ public class RecentTimeListFragment extends Fragment {
     private void initialRecentList(ArrayList<Schedule> schedules){
         mContext = getActivity();
         mListView = (ListView) view.findViewById(R.id.recent_listview);
-        mAdapter = new ListViewAdapter(mContext, schedules);
+        mAdapter = new ListViewAdapter(mContext, type, schedules);
 
         mListView.setAdapter(mAdapter);
         mAdapter.setMode(Attributes.Mode.Single);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -146,7 +121,12 @@ public class RecentTimeListFragment extends Fragment {
 
         @Override
         protected ArrayList doInBackground(Void... unused) {
-            ArrayList<Schedule> allSchedule = mScheduleDBHelper.fetchSchedulesByTime();
+            ArrayList<Schedule> allSchedule;
+            //if(type.equals("Time")) {
+                allSchedule = mScheduleDBHelper.fetchSchedulesByTime();
+            /*}else{
+                allSchedule = mScheduleDBHelper.fetchSchedulesByAct();
+            }*/
 
             return allSchedule;
         }
