@@ -2,8 +2,10 @@ package dartmouth.edu.dartreminder.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +16,17 @@ import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import dartmouth.edu.dartreminder.R;
 import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.data.Schedule;
+import dartmouth.edu.dartreminder.server.ServerUtilities;
 
 public class ListViewAdapter extends BaseSwipeAdapter {
 
@@ -60,7 +66,9 @@ public class ListViewAdapter extends BaseSwipeAdapter {
 
                 mScheduleDBHelper = new DartReminderDBHelper(mContext);
                 task = new DelScheduleTask();
-                task.execute(dataScource.get(position).getId(), new Long(position));
+//                task.execute(dataScource.get(position).getId(), new Long(position));
+                task.execute(dataScource.get(position));
+
 
                 dataScource.remove(position);
                 ListViewAdapter.this.notifyDataSetChanged();
@@ -126,21 +134,37 @@ public class ListViewAdapter extends BaseSwipeAdapter {
         swipeLayout.close(false);
     }*/
 
-    class DelScheduleTask extends AsyncTask<Long, String, Long> {
+    class DelScheduleTask extends AsyncTask<Schedule, Void, Void> {
 
+        private String userName;
         @Override
-        protected Long doInBackground(Long... rowId) {
-            mScheduleDBHelper.removeSchedule(rowId[0]);
-            return rowId[1];
+        protected void onPreExecute(){
+            SharedPreferences userProfile = mContext.getApplicationContext()
+                    .getSharedPreferences("userProfile", mContext.MODE_PRIVATE);
+            userName = userProfile.getString("USERNAME",null);
         }
 
         @Override
-        protected void onProgressUpdate(String... name) {
-            //Toast.makeText(NewScheduleActivity.this, "Entry #" + name[0] + " saved", Toast.LENGTH_SHORT).show();
+        protected Void doInBackground(Schedule... schedules) {
+            Long id = schedules[0].getId();
+            mScheduleDBHelper.removeSchedule(id);
+            String server_id = userName + "," + schedules[0].getTime();
+            Map<String, String> map = new HashMap<>();
+            map.put("id", server_id);
+
+            // Upload the history of all entries using upload().
+            String uploadState="";
+            try {
+                ServerUtilities.post(Globals.SERVER_ADDR + "/deleteSchedule.do", map);
+            } catch (IOException e1) {
+                uploadState = "Sync failed: " + e1.getCause();
+                Log.e("TAG", "data posting error " + e1);
+            }
+            return null;
         }
 
         @Override
-        protected void onPostExecute(Long pos) {
+        protected void onPostExecute(Void pos) {
             //updateAfterDel(pos);
             Toast.makeText(mContext, "delete success", Toast.LENGTH_SHORT).show();
         }

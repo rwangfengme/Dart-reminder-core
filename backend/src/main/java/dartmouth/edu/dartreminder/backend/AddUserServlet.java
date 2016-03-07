@@ -35,7 +35,7 @@ public class AddUserServlet extends HttpServlet {
         UserAccount userAccount = new UserAccount(userName, pwd);
         int success = Datastore.addUser(userAccount);
 
-        if (success == 2) {
+        if (success == 0) {
             req.setAttribute("_retStr", "Add contact " + userName + " success");
             MessagingEndpoint msg = new MessagingEndpoint();
             msg.sendMessage("SignedIn");
