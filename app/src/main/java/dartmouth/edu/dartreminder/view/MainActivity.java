@@ -100,11 +100,13 @@ public class MainActivity extends AppCompatActivity
 
             String title = intent.getStringExtra(Globals.SCHEDULE_TITLE);
             String note = intent.getStringExtra(Globals.SCHEDULE_NOTE);
+            String location = intent.getStringExtra(Globals.LOCATION_TITLE);
             double lat = intent.getDoubleExtra(Globals.LOCATION_LAT, 0);
             double lng = intent.getDoubleExtra(Globals.LOCATION_LNG, 0);
             i.putExtra(Globals.MSG_LOCATION_ALARM, true);
-            i.putExtra(Globals.LOCATION_TITLE, title);
-            i.putExtra(Globals.LOCATION_DETAIL, note);
+            i.putExtra(Globals.SCHEDULE_TITLE, title);
+            i.putExtra(Globals.SCHEDULE_NOTE, note);
+            i.putExtra(Globals.LOCATION_TITLE, location);
             i.putExtra(Globals.LOCATION_LAT, lat);
             i.putExtra(Globals.LOCATION_LNG, lng);
             startActivity(i);

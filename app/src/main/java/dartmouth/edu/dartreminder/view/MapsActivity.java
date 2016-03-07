@@ -122,6 +122,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mArrive.setChecked(true);
                     locationName = locationEntry.getTitle();
                 }
+                lat = locationEntry.getLatitude();
+                lng = locationEntry.getLongitude();
                 updateMap(locationEntry.getLatitude(), locationEntry.getLongitude(), true);
             }
         });
@@ -150,8 +152,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if (addressList != null) {
                         Address address = addressList.get(0);
                         mMap.clear();
+                        lat = address.getLatitude();
+                        lng = address.getLongitude();
                         updateMap(address.getLatitude(), address.getLongitude(), true);
                         mSearchText.setText(fromAddressToString(address));
+                        locationName = mSearchText.getText().toString();
                     } else {
                         Toast.makeText(getApplicationContext(), "No Location Found", Toast.LENGTH_SHORT).show();
                     }
@@ -165,7 +170,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Intent i = new Intent();
                 i.putExtra(Globals.SAVE, true);
                 i.putExtra(Globals.LOCATION_NAME, locationName);
-
                 if (mArrive.isChecked()){
                     i.putExtra(Globals.ARRIVE, true);
                 }else{

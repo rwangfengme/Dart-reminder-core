@@ -29,7 +29,7 @@
 	<h1>User Account List</h1>
 	<table border="1">
 	<tr>
-		<td>User Name</td> 
+		<td>Id</td>
 		<td>Password</td>
 	</tr>
 		---------------------------------------------------------------------<br>

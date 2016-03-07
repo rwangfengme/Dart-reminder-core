@@ -81,13 +81,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        new GcmRegistrationAsyncTask(this).execute();
+        //new GcmRegistrationAsyncTask(this).execute();
 
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
-        if(user_login_check()){
+        if(true){ //user_login_check()
             Intent myIntent = new Intent(LoginActivity.this,MainActivity.class);
             LoginActivity.this.startActivity(myIntent);
             finish();
@@ -134,7 +134,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean user_login_check() {
         SharedPreferences userProfile = this.getSharedPreferences("userProfile", MODE_PRIVATE);
-        String username = userProfile.getString("USERNAME",null);
+        String username = userProfile.getString("USERNAME", null);
         if(username != null)
             return true;
         return false;

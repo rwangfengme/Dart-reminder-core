@@ -82,11 +82,10 @@ public class Datastore {
             if (pwd.equals(userAccount.getPassword())){
                 return 0;
             }
+            return 2;
         }else{
             return 1;
         }
-
-        return 2;
     }
 
     //get exercise element from data store by id
@@ -116,4 +115,200 @@ public class Datastore {
 /*    ---------------------------------------------------------------------------------------------
                                         Schedule Section
       ---------------------------------------------------------------------------------------------*/
+    //add elements into data store
+    public static int addSchedule(Schedule schedule) {
+        if (getScheduleById(schedule.getId()) != null) {
+            mLogger.log(Level.INFO, "schedule exists");
+            return 0;
+        }
+
+        Key parentKey = getKey();
+
+        Entity entity = new Entity(Schedule.SCHEDULE_ENTRY_ENTITY_NAME, schedule.getId(),
+                parentKey);
+        entity.setProperty(Schedule.FIELD_NAME_ID, schedule.getId());
+        entity.setProperty(Schedule.FIELD_NAME_TITLE, schedule.getTitle());
+        entity.setProperty(Schedule.FIELD_NAME_NOTES, schedule.getNotes());
+        entity.setProperty(Schedule.FIELD_NAME_USE_TIME, schedule.getUseTime());
+        entity.setProperty(Schedule.FIELD_NAME_TIME, schedule.getTime());
+        entity.setProperty(Schedule.FIELD_NAME_LOCATION_NAME, schedule.getLocationName());
+        entity.setProperty(Schedule.FIELD_NAME_LAT, schedule.getLat());
+        entity.setProperty(Schedule.FIELD_NAME_LNG, schedule.getLng());
+        entity.setProperty(Schedule.FIELD_NAME_ARRIVE, schedule.getArrive());
+        entity.setProperty(Schedule.FIELD_NAME_RADIUS, schedule.getRadius());
+        entity.setProperty(Schedule.FIELD_NAME_PRIORITY, schedule.getPriority());
+        entity.setProperty(Schedule.FIELD_NAME_REPEAT, schedule.getRepeat());
+        entity.setProperty(Schedule.FIELD_NAME_IS_COMPLETED, schedule.getCompleted());
+        entity.setProperty(Schedule.FIELD_NAME_USER_NAME, schedule.getUserName());
+        entity.setProperty(Schedule.FIELD_NAME_SENDER, schedule.getSender());
+
+        mDatastore.put(entity);
+        return 1;
+    }
+
+    //query elements in the data store
+    public static ArrayList<Schedule> queryAllSchedule() {
+        ArrayList<Schedule> resultList = new ArrayList<Schedule>();
+
+        Query query = new Query(Schedule.SCHEDULE_ENTRY_ENTITY_NAME);
+        // get every record from datastore, no filter
+        query.setFilter(null);
+        // set query's ancestor to get strong consistency
+        query.setAncestor(getKey());
+
+        PreparedQuery pq = mDatastore.prepare(query);
+
+        for (Entity entity : pq.asIterable()) {
+            Schedule schedule = getScheduleFromEntity(entity);
+            if (schedule != null) {
+                resultList.add(schedule);
+            }
+        }
+
+        return resultList;
+    }
+
+    //query elements in the data store
+    public static ArrayList<Schedule> fetchScheduleByUserName(String userName) {
+        ArrayList<Schedule> resultList = new ArrayList<Schedule>();
+
+        Filter filter = new FilterPredicate(Schedule.FIELD_NAME_USER_NAME,
+                FilterOperator.EQUAL, userName);
+
+        Query query = new Query(Schedule.SCHEDULE_ENTRY_ENTITY_NAME);
+        // get every record from datastore, set user name as filter
+        query.setFilter(filter);
+        // set query's ancestor to get strong consistency
+        query.setAncestor(getKey());
+
+
+        PreparedQuery pq = mDatastore.prepare(query);
+
+        for (Entity entity : pq.asIterable()) {
+            Schedule schedule = getScheduleFromEntity(entity);
+            if (schedule != null) {
+                resultList.add(schedule);
+            }
+        }
+
+        return resultList;
+    }
+
+//    //query schedule in the data store by id
+//    public static ArrayList<Schedule> fetchScheduleById(String id) {
+//        ArrayList<Schedule> resultList = new ArrayList<Schedule>();
+//
+//        Filter filter = new FilterPredicate(Schedule.FIELD_NAME_ID,
+//                FilterOperator.EQUAL, id);
+//
+//        Query query = new Query(Schedule.SCHEDULE_ENTRY_ENTITY_NAME);
+//        // get every record from datastore, set id as filter
+//        query.setFilter(filter);
+//        // set query's ancestor to get strong consistency
+//        query.setAncestor(getKey());
+//
+//
+//        PreparedQuery pq = mDatastore.prepare(query);
+//
+//        for (Entity entity : pq.asIterable()) {
+//            Schedule schedule = getScheduleFromEntity(entity);
+//            if (schedule != null) {
+//                resultList.add(schedule);
+//            }
+//        }
+//
+//        return resultList;
+//    }
+
+    public static int updateSchedule(Schedule schedule) {
+        Entity entity = null;
+        try {
+            entity = mDatastore.get(KeyFactory.createKey(getKey(),
+                    Schedule.SCHEDULE_ENTRY_ENTITY_NAME, schedule.getId()));
+
+            entity.setProperty(Schedule.FIELD_NAME_ID, schedule.getId());
+            entity.setProperty(Schedule.FIELD_NAME_TITLE, schedule.getTitle());
+            entity.setProperty(Schedule.FIELD_NAME_NOTES, schedule.getNotes());
+            entity.setProperty(Schedule.FIELD_NAME_USE_TIME, schedule.getUseTime());
+            entity.setProperty(Schedule.FIELD_NAME_TIME, schedule.getTime());
+            entity.setProperty(Schedule.FIELD_NAME_LOCATION_NAME, schedule.getLocationName());
+            entity.setProperty(Schedule.FIELD_NAME_LAT, schedule.getLat());
+            entity.setProperty(Schedule.FIELD_NAME_LNG, schedule.getLng());
+            entity.setProperty(Schedule.FIELD_NAME_ARRIVE, schedule.getArrive());
+            entity.setProperty(Schedule.FIELD_NAME_RADIUS, schedule.getRadius());
+            entity.setProperty(Schedule.FIELD_NAME_PRIORITY, schedule.getPriority());
+            entity.setProperty(Schedule.FIELD_NAME_REPEAT, schedule.getRepeat());
+            entity.setProperty(Schedule.FIELD_NAME_IS_COMPLETED, schedule.getCompleted());
+            entity.setProperty(Schedule.FIELD_NAME_USER_NAME, schedule.getUserName());
+            entity.setProperty(Schedule.FIELD_NAME_SENDER, schedule.getSender());
+
+            mDatastore.put(entity);
+            return 0;
+        } catch (Exception ex) {
+
+        }
+        return 1;
+    }
+
+    public static boolean deleteSchedule(String id) {
+        // you can also use name to get key, then use the key to delete the
+        // entity from datastore directly
+        // because name is also the entity's key
+
+        // query
+        Filter filter = new FilterPredicate(Schedule.FIELD_NAME_ID,
+                FilterOperator.EQUAL, id);
+
+        Query query = new Query(Schedule.SCHEDULE_ENTRY_ENTITY_NAME);
+        query.setFilter(filter);
+
+        // Use PreparedQuery interface to retrieve results
+        PreparedQuery pq = mDatastore.prepare(query);
+
+        Entity result = pq.asSingleEntity();
+        boolean ret = false;
+        if (result != null) {
+            // delete
+            mDatastore.delete(result.getKey());
+            ret = true;
+        }
+
+        return ret;
+    }
+
+    //get exercise element from data store by id
+    public static Schedule getScheduleById(String id) {
+        Entity result = null;
+        try {
+            result = mDatastore.get(KeyFactory.createKey(getKey(),
+                    Schedule.SCHEDULE_ENTRY_ENTITY_NAME, id));
+        } catch (Exception ex) {
+
+        }
+
+        return getScheduleFromEntity(result);
+    }
+
+    //transform entity into exercise entry
+    private static Schedule getScheduleFromEntity(Entity entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        return new Schedule((String) entity.getProperty(Schedule.FIELD_NAME_ID),
+                (String) entity.getProperty(Schedule.FIELD_NAME_TITLE),
+                (String) entity.getProperty(Schedule.FIELD_NAME_NOTES),
+                (Boolean) entity.getProperty(Schedule.FIELD_NAME_USE_TIME),
+                (String) entity.getProperty(Schedule.FIELD_NAME_TIME),
+                (String) entity.getProperty(Schedule.FIELD_NAME_LOCATION_NAME),
+                (Double) entity.getProperty(Schedule.FIELD_NAME_LAT),
+                (Double) entity.getProperty(Schedule.FIELD_NAME_LNG),
+                (Boolean) entity.getProperty(Schedule.FIELD_NAME_ARRIVE),
+                (Double) entity.getProperty(Schedule.FIELD_NAME_RADIUS),
+                (String) entity.getProperty(Schedule.FIELD_NAME_PRIORITY),
+                (String) entity.getProperty(Schedule.FIELD_NAME_REPEAT),
+                (Boolean) entity.getProperty(Schedule.FIELD_NAME_IS_COMPLETED),
+                (String) entity.getProperty(Schedule.FIELD_NAME_USER_NAME),
+                (String) entity.getProperty(Schedule.FIELD_NAME_SENDER));
+    }
 }

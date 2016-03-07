@@ -173,6 +173,7 @@ public class TrackingService extends Service implements
         intent.putExtra(MSG_ENTITY_UPDATE, true);
         intent.putExtra(Globals.SCHEDULE_TITLE, schedule.getTitle());
         intent.putExtra(Globals.SCHEDULE_NOTE, schedule.getNotes());
+        intent.putExtra(Globals.LOCATION_TITLE, schedule.getLocationName());
         intent.putExtra(Globals.LOCATION_LAT, schedule.getLat());
         intent.putExtra(Globals.LOCATION_LNG, schedule.getLng());
         this.sendBroadcast(intent);

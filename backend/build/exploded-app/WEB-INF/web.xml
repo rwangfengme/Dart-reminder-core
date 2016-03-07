@@ -10,6 +10,51 @@
     </filter-mapping>
 
     <servlet>
+        <servlet-name>addSchedule</servlet-name>
+        <servlet-class>dartmouth.edu.dartreminder.backend.AddScheduleServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>addSchedule</servlet-name>
+        <url-pattern>/addSchedule.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>deleteSchedule</servlet-name>
+        <servlet-class>dartmouth.edu.dartreminder.backend.ScheduleDeleteServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>deleteSchedule</servlet-name>
+        <url-pattern>/deleteSchedule.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>fetchSchedule</servlet-name>
+        <servlet-class>dartmouth.edu.dartreminder.backend.ScheduleFetchServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>fetchSchedule</servlet-name>
+        <url-pattern>/fetchSchedule.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>querySchedule</servlet-name>
+        <servlet-class>dartmouth.edu.dartreminder.backend.ScheduleQueryServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>querySchedule</servlet-name>
+        <url-pattern>/querySchedule.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>updateSchedule</servlet-name>
+        <servlet-class>dartmouth.edu.dartreminder.backend.ScheduleUpdateServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>updateSchedule</servlet-name>
+        <url-pattern>/updateSchedule.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>addUser</servlet-name>
         <servlet-class>dartmouth.edu.dartreminder.backend.AddUserServlet</servlet-class>
     </servlet>

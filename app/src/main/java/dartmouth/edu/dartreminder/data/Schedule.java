@@ -6,6 +6,23 @@ import android.location.Location;
  * Created by gejing on 2/28/16.
  */
 public class Schedule {
+    public static final String FIELD_NAME_ID = "Id";
+    public static final String FIELD_NAME_TITLE= "Title";
+    public static final String FIELD_NAME_NOTES = "Notes";
+    public static final String FIELD_NAME_USE_TIME = "UseTime";
+    public static final String FIELD_NAME_TIME = "Time";
+    public static final String FIELD_NAME_LOCATION_NAME = "LocationName";
+    public static final String FIELD_NAME_LAT = "Lat";
+    public static final String FIELD_NAME_LNG = "Lng";
+    public static final String FIELD_NAME_ARRIVE = "Arrive";
+    public static final String FIELD_NAME_RADIUS = "Radius";
+    public static final String FIELD_NAME_PRIORITY = "Priority";
+    public static final String FIELD_NAME_REPEAT = "Repeat";
+    public static final String FIELD_NAME_IS_COMPLETED = "isCompleted";
+    public static final String FIELD_NAME_USER_NAME = "userName";
+    public static final String FIELD_NAME_SENDER = "sender";
+
+
     private Long Id;
     private String Title;
     private String Notes;
