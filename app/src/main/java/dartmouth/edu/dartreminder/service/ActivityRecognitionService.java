@@ -85,7 +85,7 @@ public class ActivityRecognitionService extends IntentService{
             }
 
             count++;
-            if (count == 5) {
+            if (count == 2) {
                 int actNum = classifier.indexOf(Collections.max(classifier));
                 if(ACT_COUNTER.get(actNum) != 0) {
                     String stageActivity = Globals.ACTIVITIES[actNum];
