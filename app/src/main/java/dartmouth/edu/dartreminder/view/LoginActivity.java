@@ -81,13 +81,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        new GcmRegistrationAsyncTask(this).execute();
+        //new GcmRegistrationAsyncTask(this).execute();
 
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
-        if(user_login_check()){
+        if(true){ //user_login_check()
             Intent myIntent = new Intent(LoginActivity.this,MainActivity.class);
             LoginActivity.this.startActivity(myIntent);
             finish();
