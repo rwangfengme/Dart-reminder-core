@@ -229,8 +229,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     response = ServerUtilities.post(Globals.SERVER_ADDR + "/login.do", map);
                     if(response.equals("0\n")){
                         Map<String, String> userMap = new HashMap<String, String>();
-                        map.put("userName", mEmail);
-                        response = ServerUtilities.post(Globals.SERVER_ADDR + "/fetchSchedule.do", map);
+                        userMap.put("userName", mEmail);
+                        response = ServerUtilities.post(Globals.SERVER_ADDR + "/fetchSchedule.do", userMap);
 
                         com.google.appengine.labs.repackaged.org.json.JSONArray resultSet =
                                 new com.google.appengine.labs.repackaged.org.json.JSONArray(response);
@@ -415,7 +415,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         private Context context;
 
         // TODO: change to your own sender ID to Google Developers Console project number, as per instructions above
-        private static final String SENDER_ID = "446820804524";
+        private static final String SENDER_ID = "1003206961633";
 
         public GcmRegistrationAsyncTask(Context context) {
             this.context = context;

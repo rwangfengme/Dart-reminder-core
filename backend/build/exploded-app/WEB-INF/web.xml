@@ -19,12 +19,30 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>addScheduleByName</servlet-name>
+        <servlet-class>dartmouth.edu.dartreminder.backend.ScheduleAddByNameServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>addScheduleByName</servlet-name>
+        <url-pattern>/addScheduleByName.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>deleteSchedule</servlet-name>
         <servlet-class>dartmouth.edu.dartreminder.backend.ScheduleDeleteServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>deleteSchedule</servlet-name>
         <url-pattern>/deleteSchedule.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>deleteScheduleByName</servlet-name>
+        <servlet-class>dartmouth.edu.dartreminder.backend.ScheduleDeleteByNameServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>deleteScheduleByName</servlet-name>
+        <url-pattern>/deleteScheduleByName.do</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -43,6 +61,15 @@
     <servlet-mapping>
         <servlet-name>querySchedule</servlet-name>
         <url-pattern>/querySchedule.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>fetchScheduleById</servlet-name>
+        <servlet-class>dartmouth.edu.dartreminder.backend.ScheduleFetchByIdServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>fetchScheduleById</servlet-name>
+        <url-pattern>/fetchScheduleById.do</url-pattern>
     </servlet-mapping>
 
     <servlet>

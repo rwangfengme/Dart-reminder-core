@@ -1,11 +1,16 @@
 package dartmouth.edu.dartreminder.view;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -13,13 +18,23 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.appengine.labs.repackaged.org.json.JSONArray;
+import com.google.appengine.labs.repackaged.org.json.JSONException;
+
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import dartmouth.edu.dartreminder.R;
 import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.data.Schedule;
+import dartmouth.edu.dartreminder.server.ServerUtilities;
+import dartmouth.edu.dartreminder.service.TimeReceiver;
 import dartmouth.edu.dartreminder.utils.Globals;
+import dartmouth.edu.dartreminder.utils.Utils;
 
 public class ShareScheduleActivity extends AppCompatActivity {
 
@@ -156,7 +171,14 @@ public class ShareScheduleActivity extends AppCompatActivity {
     }
 
     public void onSaveClicked(View v) {
+        String sender = mEditEmail.getText().toString();
+        if (sender == null || sender.isEmpty()){
+            Toast.makeText(getApplicationContext(), "Error: Sender Email is Empty", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
+        ShareScheduleTask shareScheduleTask = new ShareScheduleTask();
+        shareScheduleTask.execute();
         this.finish();
     }
 
@@ -164,4 +186,44 @@ public class ShareScheduleActivity extends AppCompatActivity {
         finish();
     }
 
+
+    public class ShareScheduleTask extends AsyncTask<Void, String, String> {
+        private String userName;
+        private String sender;
+        @Override
+        protected void onPreExecute(){
+            SharedPreferences userProfile = getApplicationContext().getSharedPreferences("userProfile", MODE_PRIVATE);
+            sender = userProfile.getString("USERNAME",null);
+            userName = mEditEmail.getText().toString();
+        }
+
+        @Override
+        protected String doInBackground(Void... unused) {
+            //sync schedule onto GAE
+            JSONArray resultSet = new JSONArray();
+            resultSet.put(Utils.scheduleToJson(schedule, userName, sender));
+
+            //put JsonArray into a map
+            Map<String, String> map = new HashMap<>();
+            map.put("ScheduleKey", resultSet.toString());
+
+            // Upload the history of all entries using upload().
+            String uploadState="";
+            try {
+                ServerUtilities.post(Globals.SERVER_ADDR + "/addSchedule.do", map);
+            } catch (IOException e1) {
+                uploadState = "Sync failed: " + e1.getCause();
+                Log.e("TAG", "data posting error " + e1);
+                return uploadState;
+            }
+
+            Log.d("TAG_NAME", resultSet.toString());
+            return uploadState;
+        }
+
+        @Override
+        protected void onPostExecute(String uploadState) {
+            Toast.makeText(getApplicationContext(), uploadState, Toast.LENGTH_SHORT).show();
+        }
+    }
 }

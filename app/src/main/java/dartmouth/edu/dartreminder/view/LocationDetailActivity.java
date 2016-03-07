@@ -75,7 +75,7 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
 
             double lat = intent.getDoubleExtra(Globals.LOCATION_LAT, 0);
             double lng = intent.getDoubleExtra(Globals.LOCATION_LNG, 0);
-
+            mLatLng = new LatLng(lat, lng);
             setMarker(new LatLng(lat, lng));
         }
     }

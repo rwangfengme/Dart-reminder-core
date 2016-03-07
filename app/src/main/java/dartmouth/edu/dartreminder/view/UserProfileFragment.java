@@ -1,18 +1,37 @@
 package dartmouth.edu.dartreminder.view;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.appengine.labs.repackaged.org.json.JSONArray;
+
+import java.io.IOException;
+import java.security.PublicKey;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import dartmouth.edu.dartreminder.R;
+import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
+import dartmouth.edu.dartreminder.data.Schedule;
+import dartmouth.edu.dartreminder.server.ServerUtilities;
+import dartmouth.edu.dartreminder.service.TimeReceiver;
+import dartmouth.edu.dartreminder.utils.Globals;
+import dartmouth.edu.dartreminder.utils.Utils;
 
 public class UserProfileFragment extends Fragment {
 
@@ -55,6 +74,7 @@ public class UserProfileFragment extends Fragment {
                         .beginTransaction()
                         .replace(R.id.main_page, mRecentListFragment)
                         .commit();*/
+
                 startActivity(new Intent(getActivity(), MainActivity.class));
                 getActivity().finish();
                 //getActivity().getFragmentManager().beginTransaction().remove(UserProfileFragment.this).commit();
@@ -96,5 +116,4 @@ public class UserProfileFragment extends Fragment {
         editor.putString("USERPHONE", mUserPhone.getText().toString());
         editor.apply();
     }
-
 }

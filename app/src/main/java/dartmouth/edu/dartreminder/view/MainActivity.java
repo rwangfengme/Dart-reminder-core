@@ -34,10 +34,13 @@ import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
 import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
+import com.google.appengine.labs.repackaged.org.json.JSONArray;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,9 +49,11 @@ import dartmouth.edu.dartreminder.backend.registration.Registration;
 import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.data.Schedule;
 //import dartmouth.edu.dartreminder.service.TimeReceiver;
+import dartmouth.edu.dartreminder.server.ServerUtilities;
 import dartmouth.edu.dartreminder.service.TimeReceiver;
 import dartmouth.edu.dartreminder.service.TrackingService;
 import dartmouth.edu.dartreminder.utils.Globals;
+import dartmouth.edu.dartreminder.utils.Utils;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -79,7 +84,7 @@ public class MainActivity extends AppCompatActivity
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
 
-//    private final RecentListFragment mRecentListFragment = new RecentListFragment();
+    //    private final RecentListFragment mRecentListFragment = new RecentListFragment();
 //    private final RecentListFragment mRecentListFragment = new RecentListFragment();
     private final UserProfileFragment mUserProfileFragment = new UserProfileFragment();
     private final LocationFragment mLocationFragment = new LocationFragment();
@@ -90,7 +95,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public void onReceive(Context ctx, Intent intent) {
-            Log.e("onReceive","onReceive");
+            Log.e("onReceive", "onReceive");
             // obtain the schedule information
 
 //            int id = intent.getIntExtra(Globals.SCHEDULE_ID, -1);
@@ -116,7 +121,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void scheduleTriggerUpdate(int id, String title, String note, double lat, double lng){
+    public void scheduleTriggerUpdate(int id, String title, String note, double lat, double lng) {
         Intent intent = new Intent(this, LocationDetailActivity.class);
         //Intent intent = new Intent(this, NotifyReceivedActivity.class);
 
@@ -149,7 +154,7 @@ public class MainActivity extends AppCompatActivity
         fragments.add(recentLocationListFragment);
         fragments.add(recentActivityListFragment);
 
-        mViewPagerAdapter =new ViewPageAdapter(getFragmentManager(),
+        mViewPagerAdapter = new ViewPageAdapter(getFragmentManager(),
                 fragments);
         viewPager.setAdapter(mViewPagerAdapter);
 
@@ -258,7 +263,8 @@ public class MainActivity extends AppCompatActivity
                     .replace(R.id.main_page, mLocationFragment)
                     .commit();
         } else if (id == R.id.nav_sync) {
-
+            SyncTask syncTask = new SyncTask();
+            syncTask.execute();
         } else if (id == R.id.nav_settings) {
 
         } else if (id == R.id.nav_sign_out) {
@@ -298,9 +304,9 @@ public class MainActivity extends AppCompatActivity
         AlarmManager mgrAlarm = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
         Intent updateServiceIntent = new Intent(getApplicationContext(), TimeReceiver.class);
         ArrayList<Schedule> list = mDartReminderDBHelper.fetchSchedulesByUseTime();
-        for(Schedule s : list) {
+        for (Schedule s : list) {
             long id = s.getId();
-            PendingIntent pendingUpdateIntent = PendingIntent.getBroadcast(getApplicationContext(), (int)id, updateServiceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            PendingIntent pendingUpdateIntent = PendingIntent.getBroadcast(getApplicationContext(), (int) id, updateServiceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             try {
                 pendingUpdateIntent.cancel();
                 mgrAlarm.cancel(pendingUpdateIntent);
@@ -372,14 +378,70 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onDestroy () {
+    protected void onDestroy() {
         super.onDestroy();
 
         if (isFinishing()) {
-                stopTrackingService();
+            stopTrackingService();
             // do stuff
         } else {
             //It's an orientation change.
+        }
+    }
+
+    public class SyncTask extends AsyncTask<Void, String, String> {
+        private String userName;
+
+        @Override
+        protected void onPreExecute() {
+            SharedPreferences userProfile = getApplicationContext().getApplicationContext().
+                    getSharedPreferences("userProfile", getApplicationContext().MODE_PRIVATE);
+            userName = userProfile.getString("USERNAME", null);
+        }
+
+        @Override
+        protected String doInBackground(Void... unused) {
+            //put JsonArray into a map
+            Map<String, String> map = new HashMap<>();
+            map.put("userName", userName);
+            try {
+                ServerUtilities.post(Globals.SERVER_ADDR + "/deleteScheduleByName.do", map);
+            } catch (IOException e) {
+
+            }
+
+            DartReminderDBHelper dbHelper = new DartReminderDBHelper(getApplicationContext());
+            ArrayList<Schedule> schedules = dbHelper.fetchSchedules();
+            if (schedules == null) return "Empty Database";
+
+            //sync schedule onto GAE
+            JSONArray resultSet = new JSONArray();
+
+            for (int i = 0; i < schedules.size(); i++) {
+                resultSet.put(Utils.scheduleToJson(schedules.get(i), userName, userName));
+            }
+
+            //put JsonArray into a map
+            Map<String, String> jsonMap = new HashMap<>();
+            jsonMap.put("ScheduleKey", resultSet.toString());
+
+            // Upload the history of all entries using upload().
+            String uploadState = "";
+            try {
+                ServerUtilities.post(Globals.SERVER_ADDR + "/addScheduleByName.do", jsonMap);
+            } catch (IOException e1) {
+                uploadState = "Sync failed: " + e1.getCause();
+                Log.e("TAG", "data posting error " + e1);
+                return uploadState;
+            }
+
+            Log.d("TAG_NAME", resultSet.toString());
+            return "Sync Succeed.";
+        }
+
+        @Override
+        protected void onPostExecute(String uploadState) {
+            Toast.makeText(getApplicationContext(), uploadState, Toast.LENGTH_SHORT).show();
         }
     }
 }

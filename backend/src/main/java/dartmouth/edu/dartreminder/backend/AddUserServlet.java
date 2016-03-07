@@ -1,13 +1,7 @@
 package dartmouth.edu.dartreminder.backend;
 
-import com.google.appengine.labs.repackaged.org.json.JSONArray;
-import com.google.appengine.labs.repackaged.org.json.JSONException;
-import com.google.appengine.labs.repackaged.org.json.JSONObject;
-
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Calendar;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

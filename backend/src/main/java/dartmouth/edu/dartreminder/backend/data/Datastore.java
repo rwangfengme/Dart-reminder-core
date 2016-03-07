@@ -194,32 +194,6 @@ public class Datastore {
         return resultList;
     }
 
-//    //query schedule in the data store by id
-//    public static ArrayList<Schedule> fetchScheduleById(String id) {
-//        ArrayList<Schedule> resultList = new ArrayList<Schedule>();
-//
-//        Filter filter = new FilterPredicate(Schedule.FIELD_NAME_ID,
-//                FilterOperator.EQUAL, id);
-//
-//        Query query = new Query(Schedule.SCHEDULE_ENTRY_ENTITY_NAME);
-//        // get every record from datastore, set id as filter
-//        query.setFilter(filter);
-//        // set query's ancestor to get strong consistency
-//        query.setAncestor(getKey());
-//
-//
-//        PreparedQuery pq = mDatastore.prepare(query);
-//
-//        for (Entity entity : pq.asIterable()) {
-//            Schedule schedule = getScheduleFromEntity(entity);
-//            if (schedule != null) {
-//                resultList.add(schedule);
-//            }
-//        }
-//
-//        return resultList;
-//    }
-
     public static int updateSchedule(Schedule schedule) {
         Entity entity = null;
         try {
@@ -274,6 +248,29 @@ public class Datastore {
         }
 
         return ret;
+    }
+
+    public static void deleteScheduleByName(String userName) {
+        // you can also use name to get key, then use the key to delete the
+        // entity from datastore directly
+        // because name is also the entity's key
+
+        // query
+        Filter filter = new FilterPredicate(Schedule.FIELD_NAME_USER_NAME,
+                FilterOperator.EQUAL, userName);
+
+        Query query = new Query(Schedule.SCHEDULE_ENTRY_ENTITY_NAME);
+        query.setFilter(filter);
+
+        // Use PreparedQuery interface to retrieve results
+        PreparedQuery pq = mDatastore.prepare(query);
+
+        Iterator iterator = pq.asIterator();
+        while (iterator.hasNext()) {
+            // delete
+            Entity result = (Entity)iterator.next();
+            mDatastore.delete(result.getKey());
+        }
     }
 
     //get exercise element from data store by id
