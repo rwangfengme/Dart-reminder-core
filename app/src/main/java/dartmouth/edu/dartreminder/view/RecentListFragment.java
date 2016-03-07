@@ -122,11 +122,11 @@ public class RecentListFragment extends Fragment {
         @Override
         protected ArrayList doInBackground(Void... unused) {
             ArrayList<Schedule> allSchedule;
-            //if(type.equals("Time")) {
+            if(type.equals("Time")) {
                 allSchedule = mScheduleDBHelper.fetchSchedulesByTime();
-            /*}else{
-                allSchedule = mScheduleDBHelper.fetchSchedulesByAct();
-            }*/
+            }else{
+                allSchedule = mScheduleDBHelper.fetchSchedulesByActivity();
+            }
 
             return allSchedule;
         }

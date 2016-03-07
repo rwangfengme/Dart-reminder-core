@@ -106,7 +106,8 @@ public class ListViewAdapter extends BaseSwipeAdapter {
             t.setText("Event: " + singleSchedule.getTitle() + " Time: " + formattedDate);
             text_data.setText("Detail: " + singleSchedule.getNotes());
         }else{
-
+            t.setText("Event: " + singleSchedule.getTitle() + Globals.ACTIVITIES[singleSchedule.getActivity()]);
+            text_data.setText("Detail:" + singleSchedule.getNotes());
         }
 
     }

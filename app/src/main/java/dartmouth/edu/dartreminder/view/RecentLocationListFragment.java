@@ -10,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -32,15 +33,17 @@ import dartmouth.edu.dartreminder.utils.MarkerWindowAdapter;
 /**
  * A fragment that launches other parts of the demo application.
  */
-public class RecentLocationListFragment extends Fragment {
+public class RecentLocationListFragment extends Fragment implements GoogleMap.OnMarkerClickListener{
 
     private DartReminderDBHelper mScheduleDBHelper;
     private Context mContext;
     private GetAllLocBasedTask task = null;
+    private ArrayList LocationList;
 
     MapView mMapView;
     private GoogleMap googleMap;
-    private HashMap<Marker, Schedule> eventMarkerMap;
+    private TextView historyTitle;
+    private TextView historyNote;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,6 +61,9 @@ public class RecentLocationListFragment extends Fragment {
                 startActivity(new Intent(getActivity(), NewScheduleActivity.class));
             }
         });
+
+        historyTitle = (TextView) v.findViewById(R.id.TextView_title_from_recent_history);
+        historyNote = (TextView) v.findViewById(R.id.TextView_notes_from_recent_history);
 
         mMapView = (MapView) v.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
@@ -82,7 +88,7 @@ public class RecentLocationListFragment extends Fragment {
         if (googleMap != null) {
             MarkerWindowAdapter markerWindowAdapter = new MarkerWindowAdapter(locArr, mContext);
             googleMap.setInfoWindowAdapter(markerWindowAdapter);
-
+            googleMap.setOnMarkerClickListener(this);
             for(int i=locArr.size()-1; i >=0 ; i--){
                 Schedule singleSchedule = (Schedule) locArr.get(i);
                 MarkerOptions marker = new MarkerOptions().position(
@@ -94,7 +100,7 @@ public class RecentLocationListFragment extends Fragment {
                         .defaultMarker(BitmapDescriptorFactory.HUE_RED));
 
                 // adding marker
-                googleMap.addMarker(marker);
+                Marker addedMarker = googleMap.addMarker(marker);
 
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(new LatLng(singleSchedule.getLat(), singleSchedule.getLng())).zoom(12).build();
@@ -134,6 +140,15 @@ public class RecentLocationListFragment extends Fragment {
         mMapView.onLowMemory();
     }
 
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        Schedule schedule = (Schedule)LocationList.get(Integer.parseInt(marker.getTitle()));
+        historyTitle.setText("Title: " + schedule.getTitle());
+        historyNote.setText("Note: " + schedule.getNotes());
+        marker.showInfoWindow();
+        return true;
+    }
+
     class GetAllLocBasedTask extends AsyncTask<Void, String, ArrayList> {
 
         @Override
@@ -149,6 +164,7 @@ public class RecentLocationListFragment extends Fragment {
 
         @Override
         protected void onPostExecute(ArrayList arrayList) {
+            LocationList = arrayList;
             setUpLocation(arrayList);
         }
     }
