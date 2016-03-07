@@ -21,6 +21,8 @@ public class ActivityRecognitionService extends IntentService{
     private int running = 0;
     private int actType;
 
+    private ArrayList<Integer> classifier = new ArrayList<>();
+
     public ActivityRecognitionService() {
         super(Globals.GCM_AR);
     }
@@ -28,6 +30,9 @@ public class ActivityRecognitionService extends IntentService{
     @Override
     public void onCreate() {
         super.onCreate();
+        classifier.add(0);
+        classifier.add(0);
+        classifier.add(0);
     }
 
     @Override
@@ -61,11 +66,21 @@ public class ActivityRecognitionService extends IntentService{
 
         if(still > walking+running){
             actType = 0;
+            classifier.set(0, classifier.get(0)+1);
         }else if(walking >= running){
             actType = 1;
+            classifier.set(1, classifier.get(0)+1);
         }else if(walking < running){
             actType = 2;
+            classifier.set(2, classifier.get(0)+1);
         }
+        String listString = "";
         Log.d(Globals.GCM_AR, actType+"|"+still+"/"+walking+"/"+running);
+
+        for (int i : classifier)
+        {
+            listString += i + "|";
+        }
+        Log.d(Globals.GCM_AR, listString);
     }
 }
