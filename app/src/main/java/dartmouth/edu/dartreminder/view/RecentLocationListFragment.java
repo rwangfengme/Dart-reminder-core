@@ -142,10 +142,12 @@ public class RecentLocationListFragment extends Fragment implements GoogleMap.On
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Schedule schedule = (Schedule)LocationList.get(Integer.parseInt(marker.getTitle()));
-        historyTitle.setText("Title: " + schedule.getTitle());
-        historyNote.setText("Note: " + schedule.getNotes());
-        marker.showInfoWindow();
+        if (LocationList != null && LocationList.size() > 0){
+            Schedule schedule = (Schedule)LocationList.get(Integer.parseInt(marker.getTitle()));
+            historyTitle.setText("Title: " + schedule.getTitle());
+            historyNote.setText("Note: " + schedule.getNotes());
+            marker.showInfoWindow();
+        }
         return true;
     }
 
