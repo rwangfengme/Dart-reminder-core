@@ -141,6 +141,7 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase dbObj = getWritableDatabase();
         dbObj.update(TABLE_NAME_SCHEDULES, value, "_id=" + schedule.getId(), null);
+        dbObj.close();
     }
 
     public void removeSchedule(long rowIndex) {
@@ -178,10 +179,26 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
         return schedule;
     }
 
+    public ArrayList<Schedule> fetchAllHistorySchedulesByTime(){
+        SQLiteDatabase dbObj = getReadableDatabase();
+        ArrayList<Schedule> list = new ArrayList<Schedule>();
+        Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_COMPLETED + " = 1 ORDER BY " + KEY_TIME + " DESC", null);
+        while (cursor.moveToNext()) {
+            Schedule schedule = cursorToSchedule(cursor, false);
+            list.add(schedule);
+            Log.d("TAG", "Got data");
+        }
+
+        cursor.close();
+        dbObj.close();
+
+        return list;
+    }
+
     public ArrayList<Schedule> fetchSchedulesByTime(){
         SQLiteDatabase dbObj = getReadableDatabase();
         ArrayList<Schedule> list = new ArrayList<Schedule>();
-        Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_USE_TIME + " = 1 " + KEY_COMPLETED + " = 0 ORDER BY " + KEY_TIME + " DESC", null);
+        Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_USE_TIME + " = 1 AND " + KEY_COMPLETED + " = 0 ORDER BY " + KEY_TIME + " DESC", null);
         while (cursor.moveToNext()) {
             Schedule schedule = cursorToSchedule(cursor, false);
             list.add(schedule);
@@ -197,7 +214,7 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
     public ArrayList<Schedule> fetchSchedulesByLocation(){
         SQLiteDatabase dbObj = getReadableDatabase();
         ArrayList<Schedule> list = new ArrayList<Schedule>();
-        Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_LOCATION_NAME + " <> '' "+ KEY_COMPLETED + " = 0 ", null);
+        Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_LOCATION_NAME + " <> \'\' AND "+ KEY_COMPLETED + " = 0 ", null);
         while (cursor.moveToNext()) {
             Schedule schedule = cursorToSchedule(cursor, false);
             list.add(schedule);
@@ -213,7 +230,7 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
     public ArrayList<Schedule> fetchSchedulesByActivity(){
         SQLiteDatabase dbObj = getReadableDatabase();
         ArrayList<Schedule> list = new ArrayList<Schedule>();
-        Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_ACTIVITY + " <> -1 "+ KEY_COMPLETED + " = 0", null);
+        Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_ACTIVITY + " <> -1 AND "+ KEY_COMPLETED + " = 0", null);
         ActivityRecognitionService.UNCOMPLETED_ACT_NUM = cursor.getCount();
         while (cursor.moveToNext()) {
             Schedule schedule = cursorToSchedule(cursor, false);

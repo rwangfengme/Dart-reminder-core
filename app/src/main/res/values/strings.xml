@@ -36,4 +36,6 @@
     <string name="title_activity_notify_time_received">NotifyTimeReceivedActivity</string>
     <string name="title_activity_notify_activity_received">NotifyActivityReceivedActivity</string>
     <string name="title_activity_share_schedule">ShareScheduleActivity</string>
+    <string name="title_activity_detailed_information">DetailedInformationActivity</string>
+    <string name="title_activity_showprogress">Showprogress</string>
 </resources>

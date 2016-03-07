@@ -11,10 +11,31 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="#FF5534"
+        android:background="#ff3493c8"
         android:gravity="center"
         android:tag="Bottom3"
-        android:weightSum="10">
+        android:weightSum="15">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/detail_information"
+            android:layout_weight="4">
+            <ImageView
+                android:id="@+id/detail_ico"
+                android:layout_width="27dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_description_white_48dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Detail"
+                android:layout_weight="3"
+                android:textColor="#fff"
+                android:textSize="17sp" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -26,7 +47,7 @@
                 android:layout_width="27dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
-                android:src="@android:drawable/ic_menu_delete" />
+                android:src="@drawable/ic_delete_forever_white_48dp" />
 
             <TextView
                 android:layout_width="0dp"
@@ -47,7 +68,7 @@
                 android:layout_width="27dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
-                android:src="@android:drawable/ic_menu_share" />
+                android:src="@drawable/ic_mail_outline_white_48dp" />
 
             <TextView
                 android:layout_width="0dp"
@@ -66,18 +87,33 @@
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
 
-        <TextView
-            android:id="@+id/position"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:textColor="@android:color/black"/>
+            android:layout_marginTop="10dp">
+            <TextView
+                android:id="@+id/recent_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginRight="40dp"
+                android:textColor="@color/colorBlack"
+                android:textSize="15dip"/>
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/text_data"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textSize="14dp"
-            android:textColor="@android:color/black"/>
+            android:id="@+id/recent_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorBlack"
+            android:textSize="15dip"/>
+
+        <TextView
+            android:id="@+id/recent_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorBlack"
+            android:textSize="15dip"/>
     </LinearLayout>
 </com.daimajia.swipe.SwipeLayout>

@@ -191,7 +191,7 @@ public class TrackingService extends Service implements
     private void setupNotification() {
         // ----------------------Skeleton--------------------------
         // Setup the intent to fire MapDisplayActivity for the PendingIntent
-        Intent i = new Intent(this, MapsActivity.class);
+        Intent i = new Intent(this, MainActivity.class);
 
         // ----------------------Skeleton--------------------------
         // Set flags to avoid re-invent activity.

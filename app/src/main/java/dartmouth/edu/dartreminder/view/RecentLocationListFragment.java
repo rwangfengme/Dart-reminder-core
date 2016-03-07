@@ -54,7 +54,7 @@ public class RecentLocationListFragment extends Fragment implements GoogleMap.On
         mContext = getActivity();
 
         FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fab);
-        fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorDeepRed)));
+        fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.fbutton_color_silver)));
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
