@@ -44,6 +44,11 @@ public class NotifyReceivedActivity extends Activity {
         vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.vibrate(Globals.mVibratePattern, 1);
 
+        if(schedule == null) {
+            vibrator.cancel();
+            finish();
+        }
+
         if(schedule != null && !schedule.getCompleted()){
                 // set notification
                 NotificationCompat.Builder mBuilder =
@@ -91,8 +96,6 @@ public class NotifyReceivedActivity extends Activity {
                         });
                 AlertDialog alert = builder.create();
                 alert.show();
-
-
         }
     }
 }

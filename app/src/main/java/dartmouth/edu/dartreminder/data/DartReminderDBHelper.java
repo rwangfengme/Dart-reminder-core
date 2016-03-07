@@ -166,6 +166,23 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
         return list;
     }
 
+    public ArrayList<Schedule> fetchAllHistorySchedulesByTime(){
+        SQLiteDatabase dbObj = getReadableDatabase();
+        ArrayList<Schedule> list = new ArrayList<Schedule>();
+        Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_COMPLETED + " = 1 ORDER BY " + KEY_TIME + " DESC", null);
+        while (cursor.moveToNext()) {
+            Schedule schedule = cursorToSchedule(cursor, false);
+            list.add(schedule);
+            Log.d("TAG", "Got data");
+        }
+
+        cursor.close();
+        dbObj.close();
+
+        return list;
+    }
+
+
     public Schedule fetchScheduleByIndex(long rowId) throws SQLException {
         SQLiteDatabase dbObj = getReadableDatabase();
         Schedule schedule = null;

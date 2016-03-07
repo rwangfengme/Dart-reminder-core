@@ -1,5 +1,8 @@
 package dartmouth.edu.dartreminder.view;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -13,6 +16,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
@@ -83,11 +87,15 @@ public class MainActivity extends AppCompatActivity
 
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
+    private View mProgressView;
+    private View mdrawer;
+    private View mMainFormView;
 
     //    private final RecentListFragment mRecentListFragment = new RecentListFragment();
 //    private final RecentListFragment mRecentListFragment = new RecentListFragment();
     private final UserProfileFragment mUserProfileFragment = new UserProfileFragment();
     private final LocationFragment mLocationFragment = new LocationFragment();
+    private final HistoryEventsFragment mHistoryFragment = new HistoryEventsFragment("Time");
 
     private DartReminderDBHelper mDartReminderDBHelper;
 
@@ -138,8 +146,6 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // new GcmRegistrationAsyncTask(this).execute();
 
         slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tab);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -265,8 +271,13 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_sync) {
             SyncTask syncTask = new SyncTask();
             syncTask.execute();
-        } else if (id == R.id.nav_settings) {
-
+        } else if (id == R.id.nav_historys) {
+            slidingTabLayout.setVisibility(View.INVISIBLE);
+            viewPager.setVisibility(View.INVISIBLE);
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_page, mHistoryFragment)
+                    .commit();
         } else if (id == R.id.nav_sign_out) {
             slidingTabLayout.setVisibility(View.INVISIBLE);
             viewPager.setVisibility(View.INVISIBLE);

@@ -1,5 +1,6 @@
 package dartmouth.edu.dartreminder.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -22,7 +23,15 @@ import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.data.Schedule;
 import dartmouth.edu.dartreminder.utils.ListViewAdapter;
 
-public class RecentListFragment extends Fragment {
+/**
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link HistoryEventsFragment.OnFragmentInteractionListener} interface
+ * to handle interaction events.
+ * Use the {@link HistoryEventsFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class HistoryEventsFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
@@ -36,7 +45,7 @@ public class RecentListFragment extends Fragment {
     private DartReminderDBHelper mScheduleDBHelper;
     private getAllFromDBTask task = null;
 
-    public RecentListFragment(String type) {
+    public HistoryEventsFragment(String type) {
         // Required empty public constructor
         this.type = type;
     }
@@ -122,12 +131,7 @@ public class RecentListFragment extends Fragment {
         @Override
         protected ArrayList doInBackground(Void... unused) {
             ArrayList<Schedule> allSchedule;
-            if(type.equals("Time")) {
-                allSchedule = mScheduleDBHelper.fetchSchedulesByTime();
-            }else{
-                allSchedule = mScheduleDBHelper.fetchSchedulesByActivity();
-            }
-
+            allSchedule = mScheduleDBHelper.fetchAllHistorySchedulesByTime();
             return allSchedule;
         }
 

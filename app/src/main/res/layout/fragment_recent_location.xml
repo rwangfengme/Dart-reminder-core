@@ -17,7 +17,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Title: the title of the event"
+        android:text="Manage your schedules based on location"
         android:layout_marginTop="15dp"
         android:layout_marginLeft="5dp"
         android:layout_alignParentTop="true"
@@ -28,13 +28,24 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Notes: the detail of event"
+        android:text="Enjoy the map :)"
         android:layout_marginTop="15dp"
         android:layout_marginLeft="5dp"
         android:textColor="@color/colorBlack"
         android:layout_below="@+id/TextView_title_from_recent_history"
         android:textSize="15dip"
         android:id="@+id/TextView_notes_from_recent_history" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enjoy the map :)"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="5dp"
+        android:textColor="@color/colorBlack"
+        android:layout_below="@+id/TextView_notes_from_recent_history"
+        android:textSize="15dip"
+        android:id="@+id/TextView_location_from_recent_history" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -47,6 +58,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/white_cross"
-            android:layout_margin="10dp"/>
+            android:layout_margin="10dp" />
     </LinearLayout>
 </RelativeLayout>
