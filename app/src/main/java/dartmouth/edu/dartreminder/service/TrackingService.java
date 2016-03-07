@@ -74,7 +74,6 @@ public class TrackingService extends Service implements
     public void onResult(Status status) {
         if (status.isSuccess()) {
             // Toggle the status of activity updates requested, and save in shared preferences.
-
         }
     }
 

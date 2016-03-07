@@ -1,55 +1,76 @@
 package dartmouth.edu.dartreminder.backend.data;
 
 public class Schedule {
+    public static final String SCHEDULE_ENTRY_ENTITY_NAME = "Schedule_Entry";
+
+    public static final String FIELD_NAME_ID = "Id";
+    public static final String FIELD_NAME_TITLE= "Title";
+    public static final String FIELD_NAME_NOTES = "Notes";
+    public static final String FIELD_NAME_USE_TIME = "UseTime";
+    public static final String FIELD_NAME_TIME = "Time";
+    public static final String FIELD_NAME_LOCATION_NAME = "LocationName";
+    public static final String FIELD_NAME_LAT = "Lat";
+    public static final String FIELD_NAME_LNG = "Lng";
+    public static final String FIELD_NAME_ARRIVE = "Arrive";
+    public static final String FIELD_NAME_RADIUS = "Radius";
+    public static final String FIELD_NAME_PRIORITY = "Priority";
+    public static final String FIELD_NAME_REPEAT = "Repeat";
+    public static final String FIELD_NAME_IS_COMPLETED = "isCompleted";
+    public static final String FIELD_NAME_USER_NAME = "userName";
+    public static final String FIELD_NAME_SENDER = "sender";
+
     private String Id;
     private String Title;
     private String Notes;
     private boolean UseTime;
-    private Long Time;
+    private String Time;
     private String LocationName;
     private double Lat;
     private double Lng;
     private boolean Arrive;
     private double Radius;
-    private int Priority;
-    private int Repeat;
+    private String Priority;
+    private String Repeat;
     private boolean isCompleted;
     private String userName;
+    private String sender;
 
     public Schedule() {
         this.Id = "";
         this.Title = "";
         this.Notes = "";
         this.UseTime = false;
-        this.Time = System.currentTimeMillis();
+        this.Time = "";
         this.LocationName = "";
         this.Lat = 0;
         this.Lng = 0;
         this.Arrive = true;
         this.Radius = 0;
-        this.Priority = 0;
-        this.Repeat = 0;
+        this.Priority = "0";
+        this.Repeat = "0";
         this.isCompleted = false;
         this.userName = "";
+        this.sender = "";
     }
 
-    public Schedule(String title, String notes, String useTime, String time,
-                    String locationName, String lat, String lng, String arrive, String radius,
-                    String priority, String repeat, String isCompleted, String userName){
-        this.Id = userName + "," + time;
+    public Schedule(String id, String title, String notes, boolean useTime, String time,
+                    String locationName, double lat, double lng, boolean arrive, double radius,
+                    String priority, String repeat, boolean isCompleted, String userName, String sender){
+        this.Id = id;
         this.Title = title;
         this.Notes = notes;
-        this.UseTime = Boolean.parseBoolean(useTime);
-        this.Time = Long.parseLong(time);
+        this.UseTime = useTime;
+        this.Time = time;
         this.LocationName = locationName;
-        this.Lat = Double.parseDouble(lat);
-        this.Lng = Double.parseDouble(lng);
-        this.Arrive = Boolean.parseBoolean(arrive);
-        this.Radius = Double.parseDouble(radius);
-        this.Priority = Integer.parseInt(priority);
-        this.Repeat = Integer.parseInt(repeat);
-        this.isCompleted = Boolean.parseBoolean(isCompleted);
+        this.Lat = lat;
+        this.Lng = lng;
+        this.Arrive = arrive;
+        this.Radius = radius;
+        this.Priority = priority;
+        this.Repeat = repeat;
+        this.isCompleted = isCompleted;
         this.userName = userName;
+        this.sender = sender;
     }
 
     public String getId() {
@@ -84,11 +105,11 @@ public class Schedule {
         this.UseTime = usetime;
     }
 
-    public Long getTime() {
+    public String getTime() {
         return this.Time;
     }
 
-    public void setTime(Long time) {
+    public void setTime(String time) {
         this.Time = time;
     }
 
@@ -132,19 +153,19 @@ public class Schedule {
         this.Radius = radius;
     }
 
-    public int getPriority() {
+    public String getPriority() {
         return this.Priority;
     }
 
-    public void setPriority(int priority) {
+    public void setPriority(String priority) {
         this.Priority = priority;
     }
 
-    public int getRepeat() {
+    public String getRepeat() {
         return this.Repeat;
     }
 
-    public void setRepeat(int repeat) {
+    public void setRepeat(String repeat) {
         this.Repeat = repeat;
     }
 
@@ -162,6 +183,14 @@ public class Schedule {
 
     public void setUserName(String userName){
         this.userName = userName;
+    }
+
+    public String getSender(){
+        return this.sender;
+    }
+
+    public void setSender(String sender){
+        this.sender = sender;
     }
 }
 
