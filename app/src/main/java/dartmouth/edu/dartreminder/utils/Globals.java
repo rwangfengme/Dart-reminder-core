@@ -51,8 +51,8 @@ public abstract class Globals {
     public static final String MSG_LOCATION_CHANGE = "location_changed";
     public static final String MSG_LOCATION_ALARM = "location_alarm";
 
-
-    public static final String SERVER_ADDR = "http://10.31.181.11:8080";
+    public static final String SERVER_ADDR = "https://4-dot-lexical-micron-124201.appspot.com";
+//    public static final String SERVER_ADDR = "http://10.31.181.11:8080";
 
     public static final String GCM_AR = "Activity Recognition";
     public static final String AR_BROADCAST = "AR_BROADCAST";

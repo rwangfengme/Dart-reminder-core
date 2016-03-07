@@ -71,6 +71,7 @@ public class HistoryEventsFragment extends Fragment {
             }
         });
 
+        fab.setVisibility(View.GONE);
         return view;
     }
 
