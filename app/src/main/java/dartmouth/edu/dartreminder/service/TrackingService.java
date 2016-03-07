@@ -118,7 +118,7 @@ public class TrackingService extends Service implements
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         start(intent);
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     @Override
@@ -252,11 +252,11 @@ public class TrackingService extends Service implements
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, this);
 
-        ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(
+        /*ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(
                 mGoogleApiClient,
                 Globals.DETECTION_INTERVAL_IN_MILLISECONDS,
                 getActivityDetectionPendingIntent()
-        ).setResultCallback(this);
+        ).setResultCallback(this);*/
     }
 
 

@@ -116,6 +116,7 @@
         </receiver>
 
         <service android:name=".server.GcmIntentService" />
+        <service android:name=".service.SensorService" />
 
         <activity
             android:name=".view.NotifyActivityReceivedActivity"

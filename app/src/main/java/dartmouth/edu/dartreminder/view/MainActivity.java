@@ -46,6 +46,7 @@ import dartmouth.edu.dartreminder.backend.registration.Registration;
 import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.data.Schedule;
 //import dartmouth.edu.dartreminder.service.TimeReceiver;
+import dartmouth.edu.dartreminder.service.SensorService;
 import dartmouth.edu.dartreminder.service.TimeReceiver;
 import dartmouth.edu.dartreminder.service.TrackingService;
 import dartmouth.edu.dartreminder.utils.Globals;
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity
 
     // Tracking Service based on location
     private TrackingService mTrackingService;
+    private Intent mSensorServiceIntent;
     private Intent mServiceIntent;
     private ScheduleTriggeredReceiver mScheduleTriggeredReceiver;
     // For keeping if the service bound already
@@ -342,6 +344,9 @@ public class MainActivity extends AppCompatActivity
 
         // start the service first
         startService(mServiceIntent);
+
+        mSensorServiceIntent = new Intent(this, SensorService.class);
+        startService(mSensorServiceIntent);
         // Establish a connection with the service. We use an explicit
         // class name because we want a specific service implementation that
         // we know will be running in our own process (and thus won't be
@@ -359,6 +364,7 @@ public class MainActivity extends AppCompatActivity
         if (mTrackingService != null) {
             doUnbindService();
             stopService(mServiceIntent);
+            stopService(mSensorServiceIntent);
         }
     }
 
