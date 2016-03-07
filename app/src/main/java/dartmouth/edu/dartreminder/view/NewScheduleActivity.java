@@ -43,6 +43,8 @@ public class NewScheduleActivity extends AppCompatActivity {
     private Switch mSwitchAllDay;
     private Switch mSwitchLocation;
     private Switch mSwitchActivity;
+    private TextView mSendto;
+    private EditText mEditEmail;
     private TextView mNewScheduleDate;
     private TextView mNewScheduleTime;
     private TextView mChooseLocation;
@@ -68,6 +70,11 @@ public class NewScheduleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_schedule);
+
+        mSendto = (TextView) findViewById(R.id.TextView_SendTo);
+        mEditEmail = (EditText) findViewById(R.id.EditText_EditEmail);
+        mSendto.setVisibility(View.GONE);
+        mEditEmail.setVisibility(View.GONE);
 
         mDatePicker = (TextView) findViewById(R.id.TextView_DayPicker);
         mTimePicker = (TextView) findViewById(R.id.TextView_TimePicker);
@@ -115,6 +122,8 @@ public class NewScheduleActivity extends AppCompatActivity {
             mRadius = savedInstanceState.getDouble("Radius");
             mLat = savedInstanceState.getDouble("Lat");
             mLng = savedInstanceState.getDouble("Lng");
+            if(useLocation)
+                mChooseLocation.setText(mLocationTitle);
         } else {
             mDateAndTime.setTimeInMillis(System.currentTimeMillis());
         }
@@ -191,6 +200,7 @@ public class NewScheduleActivity extends AppCompatActivity {
             mRadius = data.getDoubleExtra(Globals.RADIUS, 0.0);
             mLat = data.getDoubleExtra(Globals.LAT, 0.0);
             mLng = data.getDoubleExtra(Globals.LNG, 0.0);
+            mChooseLocation.setText(mLocationTitle);
         }
     }
 
@@ -235,7 +245,6 @@ public class NewScheduleActivity extends AppCompatActivity {
 
         // write your own check function
         schedule.setCompleted(false);
-
 
         // insert into uncompleted location based schedule if this schedule is location based
         task = new InsertDbTask();
