@@ -1,3 +1,5 @@
+
+
 package dartmouth.edu.dartreminder.view;
 
 import android.animation.Animator;
@@ -61,8 +63,6 @@ import dartmouth.edu.dartreminder.utils.Globals;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-    private UserAccount user;
-    private DartReminderDBHelper mUserAccountDBHelper;
     private boolean fromSignIn = true;
 
     /**
@@ -120,11 +120,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             public void onClick(View view) {
                 fromSignIn = false;
                 attemptLogin();
-
-                //Renjie Zhu
-                SignUpTask signUpTask = new SignUpTask();
-                signUpTask.execute(mEmailView.getText().toString(),
-                        mPasswordView.getText().toString());
             }
         });
 
@@ -192,10 +187,101 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
+
             showProgress(true);
-            mUserAccountDBHelper = new DartReminderDBHelper(getApplicationContext());
+
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute();
+        }
+    }
+
+    /**
+     * Represents an asynchronous login/registration task used to authenticate
+     * the user.
+     */
+    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+
+        private boolean noUser = true;
+        private String mEmail = "";
+        private String mPassword = "";
+
+        UserLoginTask(String email, String password) {
+            mEmail = email;
+            mPassword = password;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            // TODO: attempt authentication against a network service.
+
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("userName", mEmail);
+            map.put("pwd", mPassword);
+            String response = "";
+
+            try {
+                if(fromSignIn){
+                    response = ServerUtilities.post(Globals.SERVER_ADDR + "/login.do", map);
+                    if(response.equals("0\n")){
+                        return true;
+                    } else if (response.equals("1\n")){
+                        noUser = true;
+                        return false;
+                    } else {
+                        noUser = false;
+                        return false;
+                    }
+                } else {
+                    response = ServerUtilities.post(Globals.SERVER_ADDR + "/addUser.do", map);
+                    Log.e("TAGG", "sign up response " + response);
+
+                    if(response.equals("0\n")){
+                        response = "a";
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            } catch (IOException e) {
+                Log.e("TAGG", "data posting error " + e);
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mAuthTask = null;
+            showProgress(false);
+
+            if (success) {
+                SharedPreferences prefs = getSharedPreferences("userProfile", MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("USERNAME", mEmail);
+                editor.putString("PASSWORD", mPassword);
+                editor.apply();
+                Intent myIntent = new Intent(LoginActivity.this,MainActivity.class);
+                LoginActivity.this.startActivity(myIntent);
+                finish();
+            } else {
+                if (fromSignIn) {
+                    if(noUser) {
+                        mEmailView.setError("No such user");
+                        mEmailView.requestFocus();
+                    } else {
+                        mPasswordView.setError(getString(R.string.error_incorrect_password));
+                        mPasswordView.requestFocus();
+                    }
+                } else {
+                    mEmailView.setError("A user is already registered with this e-mail address");
+                    mEmailView.requestFocus();
+                }
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAuthTask = null;
+            showProgress(false);
         }
     }
 
@@ -298,126 +384,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mEmailView.setAdapter(adapter);
     }
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-            try {
-                // Simulate network access.
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-            try {
-                user = mUserAccountDBHelper.fetchUserByName(mEmail);
-                if(user.getUserId() > 0) {
-                    if(user.getPassword().equals(mPassword) && fromSignIn) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                } else {
-                    user.setPassword(mPassword);
-                    return false;
-                }
-                // Simulate network access.
-            } catch (SQLException e) {
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                SharedPreferences prefs = getSharedPreferences("userProfile", MODE_PRIVATE);
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putString("USERNAME", user.getUsername());
-                editor.putString("PASSWORD", user.getPassword());
-                editor.apply();
-                Intent myIntent = new Intent(LoginActivity.this,MainActivity.class);
-                LoginActivity.this.startActivity(myIntent);
-                finish();
-            } else {
-                if(user.getUserId() > 0) {
-                    if(fromSignIn) {
-                        mPasswordView.setError(getString(R.string.error_incorrect_password));
-                        mPasswordView.requestFocus();
-                    } else {
-                        mEmailView.setError("A user is already registered with this e-mail address");
-                        mEmailView.requestFocus();
-                    }
-                } else {
-                    if(fromSignIn){
-                        mEmailView.setError("No such user");
-                        mEmailView.requestFocus();
-                    } else {
-                        mUserAccountDBHelper.insertUser(user);
-                        finish();
-                        Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
-                        LoginActivity.this.startActivity(myIntent);
-                    }
-                }
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
-    }
-
-    public class SignUpTask extends AsyncTask<String,Void, String> {
-        @Override
-        protected String doInBackground(String... params) {
-            // Upload the history of all entries using upload().
-            String uploadState="";
-            try {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put("userName", params[0]);
-                map.put("pwd", params[1]);
-
-                String response = ServerUtilities.post(Globals.SERVER_ADDR+"/addUser.do", map);
-                Log.e("TAGG", "sign up response " + response);
-            } catch (IOException e1) {
-                uploadState = "Sign in failed: " + e1.getCause();
-                Log.e("TAGG", "data posting error " + e1);
-            }
-
-            return uploadState;
-        }
-
-        @Override
-        protected void onPostExecute(String errString) {
-            String resultString;
-            if(errString.equals("")) {
-                resultString =  "Successfully signed in.";
-            } else {
-                resultString = errString;
-            }
-
-            Toast.makeText(getApplicationContext(), resultString,
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
 
     class GcmRegistrationAsyncTask extends AsyncTask<Void, Void, String> {
         private Registration regService = null;
