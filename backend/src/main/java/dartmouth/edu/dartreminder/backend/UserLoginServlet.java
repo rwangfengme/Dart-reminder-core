@@ -20,7 +20,7 @@ public class UserLoginServlet extends HttpServlet {
     //query elements in the data store
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException, ServletException {
-		String userName = req.getParameter("user_name");
+		String userName = req.getParameter("userName");
         String pwd = req.getParameter("pwd");
 		int result = Datastore.userLogin(userName, pwd);
 
