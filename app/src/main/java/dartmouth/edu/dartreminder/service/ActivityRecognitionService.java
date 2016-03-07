@@ -9,6 +9,7 @@ import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import dartmouth.edu.dartreminder.utils.Globals;
 
@@ -21,7 +22,7 @@ public class ActivityRecognitionService extends IntentService{
     private int running = 0;
     private int actType;
 
-    private ArrayList<Integer> classifier = new ArrayList<>();
+    private static ArrayList<Integer> classifier = new ArrayList<>(Arrays.asList(0, 0, 0));
 
     public ActivityRecognitionService() {
         super(Globals.GCM_AR);
@@ -30,9 +31,6 @@ public class ActivityRecognitionService extends IntentService{
     @Override
     public void onCreate() {
         super.onCreate();
-        classifier.add(0);
-        classifier.add(0);
-        classifier.add(0);
     }
 
     @Override
@@ -69,10 +67,10 @@ public class ActivityRecognitionService extends IntentService{
             classifier.set(0, classifier.get(0)+1);
         }else if(walking >= running){
             actType = 1;
-            classifier.set(1, classifier.get(0)+1);
+            classifier.set(1, classifier.get(1)+1);
         }else if(walking < running){
             actType = 2;
-            classifier.set(2, classifier.get(0)+1);
+            classifier.set(2, classifier.get(2)+1);
         }
         String listString = "";
         Log.d(Globals.GCM_AR, actType+"|"+still+"/"+walking+"/"+running);
