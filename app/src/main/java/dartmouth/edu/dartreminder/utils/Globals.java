@@ -32,7 +32,7 @@ public abstract class Globals {
     public static final String LNG = "lng";
     public static final String DEFAULT_LOCATION_NAME = "User Selected Location";
 
-    public static final String UI_TAB_TIME = "Time";
+    public static final String UI_TAB_ALL = "ALL";
     public static final String UI_TAB_MAP = "Location";
     public static final String UI_TAB_ACTIVITY = "Activity";
 

@@ -31,7 +31,7 @@ public class ViewPageAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case START:
-                return Globals.UI_TAB_TIME;
+                return Globals.UI_TAB_ALL;
             case HISTORY:
                 return Globals.UI_TAB_MAP;
             case SETTINGS:

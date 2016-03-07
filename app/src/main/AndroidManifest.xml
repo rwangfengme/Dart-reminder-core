@@ -125,7 +125,11 @@
         </activity>
         <activity
             android:name=".view.ShareScheduleActivity"
-            android:label="Share Your Schedule">
+            android:label="Share Your Schedule" >
+        </activity>
+        <activity
+            android:name=".view.DetailedInformationActivity"
+            android:label="Details" >
         </activity>
     </application>
 

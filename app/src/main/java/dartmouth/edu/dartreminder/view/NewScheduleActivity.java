@@ -325,14 +325,14 @@ public class NewScheduleActivity extends AppCompatActivity {
             map.put("ScheduleKey", resultSet.toString());
 
             // Upload the history of all entries using upload().
-            String uploadState="";
-            try {
-                ServerUtilities.post(Globals.SERVER_ADDR + "/addSchedule.do", map);
-            } catch (IOException e1) {
-                uploadState = "Sync failed: " + e1.getCause();
-                Log.e("TAG", "data posting error " + e1);
-                return uploadState;
-            }
+//            String uploadState="";
+//            try {
+//                ServerUtilities.post(Globals.SERVER_ADDR + "/addSchedule.do", map);
+//            } catch (IOException e1) {
+//                uploadState = "Sync failed: " + e1.getCause();
+//                Log.e("TAG", "data posting error " + e1);
+//                return uploadState;
+//            }
 
             Log.d("TAG_NAME", resultSet.toString());
             return "";

@@ -1,5 +1,7 @@
 package dartmouth.edu.dartreminder.utils;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,6 +29,8 @@ import dartmouth.edu.dartreminder.R;
 import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.data.Schedule;
 import dartmouth.edu.dartreminder.server.ServerUtilities;
+import dartmouth.edu.dartreminder.service.TimeReceiver;
+import dartmouth.edu.dartreminder.view.DetailedInformationActivity;
 import dartmouth.edu.dartreminder.view.ShareScheduleActivity;
 
 public class ListViewAdapter extends BaseSwipeAdapter {
@@ -58,6 +62,15 @@ public class ListViewAdapter extends BaseSwipeAdapter {
             @Override
             public void onOpen(SwipeLayout layout) {
                 //YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.trash));
+            }
+        });
+        v.findViewById(R.id.detail_information).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent i = new Intent(mContext.getApplicationContext(), DetailedInformationActivity.class);
+                i.putExtra(Globals.SCHEDULE_ID, dataScource.get(position).getId());
+                mContext.startActivity(i);
             }
         });
         v.findViewById(R.id.delete).setOnClickListener(new View.OnClickListener() {
@@ -102,17 +115,20 @@ public class ListViewAdapter extends BaseSwipeAdapter {
     public void fillValues(int position, View convertView) {
         Schedule singleSchedule = dataScource.get(position);
 
-        TextView t = (TextView)convertView.findViewById(R.id.position);
-        TextView text_data = (TextView)convertView.findViewById(R.id.text_data);
+        TextView text_title = (TextView)convertView.findViewById(R.id.recent_title);
+        TextView text_note = (TextView)convertView.findViewById(R.id.recent_note);
+        TextView text_time = (TextView)convertView.findViewById(R.id.recent_time);
 
         if(type.equals("Time")){
             Date date = new Date(singleSchedule.getTime());
-            String formattedDate = new SimpleDateFormat("yyyy-MM-dd hh:mm").format(date);
-            t.setText("Event: " + singleSchedule.getTitle() + " Time: " + formattedDate);
-            text_data.setText("Detail: " + singleSchedule.getNotes());
+            String formattedDate = new SimpleDateFormat("EEEE, MMM dd, yyyy hh:mm").format(date);
+            text_title.setText("Title: " + singleSchedule.getTitle());
+            text_note.setText("Detail: " + singleSchedule.getNotes());
+            text_time.setText("Time: " + formattedDate);
         }else{
-            t.setText("Event: " + singleSchedule.getTitle() + Globals.ACTIVITIES[singleSchedule.getActivity()]);
-            text_data.setText("Detail:" + singleSchedule.getNotes());
+            text_title.setText("Title: " + singleSchedule.getTitle() + Globals.ACTIVITIES[singleSchedule.getActivity()]);
+            text_note.setText("Detail:" + singleSchedule.getNotes());
+            text_time.setText("Activity: " + Globals.ACTIVITIES[singleSchedule.getActivity()]);
         }
 
     }
@@ -165,6 +181,19 @@ public class ListViewAdapter extends BaseSwipeAdapter {
             } catch (IOException e1) {
                 uploadState = "Sync failed: " + e1.getCause();
                 Log.e("TAG", "data posting error " + e1);
+            }
+
+            AlarmManager mgrAlarm = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+            Intent updateServiceIntent = new Intent(mContext, TimeReceiver.class);
+            long iid = id;
+            PendingIntent pendingUpdateIntent = PendingIntent.getBroadcast(mContext, (int)iid,
+                    updateServiceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            try {
+                pendingUpdateIntent.cancel();
+                mgrAlarm.cancel(pendingUpdateIntent);
+                Log.e("Haha", "AlarmManager canceled! ");
+            } catch (Exception e) {
+                Log.e("Oops", "AlarmManager update was not canceled. " + e.toString());
             }
             return null;
         }
