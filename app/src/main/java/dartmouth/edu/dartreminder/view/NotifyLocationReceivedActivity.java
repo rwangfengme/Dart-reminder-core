@@ -31,6 +31,7 @@ public class NotifyLocationReceivedActivity extends Activity {
     private boolean fromLocation = false;
     private String title = "";
     private String notes = "";
+    private String location = "";
     private double lat = 0;
     private double lng = 0;
 
@@ -41,8 +42,9 @@ public class NotifyLocationReceivedActivity extends Activity {
         Intent intent = getIntent();
         mContext = getApplicationContext();
         fromLocation = intent.getBooleanExtra(Globals.MSG_LOCATION_ALARM, false);
-        title = intent.getStringExtra(Globals.LOCATION_TITLE);
-        notes = intent.getStringExtra(Globals.LOCATION_DETAIL);
+        title = intent.getStringExtra(Globals.SCHEDULE_TITLE);
+        notes = intent.getStringExtra(Globals.SCHEDULE_NOTE);
+        location = intent.getStringExtra(Globals.LOCATION_TITLE);
         lat = intent.getDoubleExtra(Globals.LOCATION_LAT, 0);
         lng = intent.getDoubleExtra(Globals.LOCATION_LNG, 0);
 
@@ -67,8 +69,9 @@ public class NotifyLocationReceivedActivity extends Activity {
                         public void onClick(DialogInterface dialog, int id) {
                             Intent i = new Intent(mContext, LocationDetailActivity.class);
                             i.putExtra(Globals.MSG_LOCATION_ALARM, fromLocation);
-                            i.putExtra(Globals.LOCATION_TITLE, title);
-                            i.putExtra(Globals.LOCATION_DETAIL, notes);
+                            i.putExtra(Globals.SCHEDULE_TITLE, title);
+                            i.putExtra(Globals.SCHEDULE_NOTE, notes);
+                            i.putExtra(Globals.LOCATION_TITLE, location);
                             i.putExtra(Globals.LOCATION_LAT, lat);
                             i.putExtra(Globals.LOCATION_LNG, lng);
                             startActivity(i);

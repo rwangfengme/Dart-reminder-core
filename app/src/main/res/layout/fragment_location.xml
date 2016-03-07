@@ -13,6 +13,7 @@
         android:layout_below="@+id/use_to_label"
         android:numColumns="3"
         android:horizontalSpacing="15dp"
+        android:verticalSpacing="10dp"
         android:stretchMode="columnWidth"
         android:gravity="center_horizontal"/>
 
