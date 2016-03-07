@@ -64,17 +64,13 @@ public class NewScheduleActivity extends AppCompatActivity {
     private Schedule schedule;
     private DartReminderDBHelper mScheduleDBHelper;
     private InsertDbTask task = null;
-    private SharedScheduleReceiver sharedScheduleReceiver;
-    private IntentFilter intentFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_schedule);
 
-        sharedScheduleReceiver = new SharedScheduleReceiver();
-        intentFilter = new IntentFilter("ScheduleUpdate");
-        registerReceiver(sharedScheduleReceiver, intentFilter);
+
 
         mSendto = (TextView) findViewById(R.id.TextView_SendTo);
         mEditEmail = (EditText) findViewById(R.id.EditText_EditEmail);
@@ -255,7 +251,7 @@ public class NewScheduleActivity extends AppCompatActivity {
 //        task = new InsertDbTask();
 //        task.execute(true);
         InsertDbTask insertDbTask = new InsertDbTask();
-        insertDbTask.execute(true);
+        insertDbTask.execute();
         this.finish();
     }
 
@@ -299,7 +295,7 @@ public class NewScheduleActivity extends AppCompatActivity {
         chooseTimeAlert = true;
     }
 
-    class InsertDbTask extends AsyncTask<Boolean, String, String> {
+    class InsertDbTask extends AsyncTask<Void, String, String> {
         private String userName;
         @Override
         protected void onPreExecute(){
@@ -308,7 +304,7 @@ public class NewScheduleActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(Boolean... params) {
+        protected String doInBackground(Void... params) {
             long id = mScheduleDBHelper.insertSchedule(schedule);
             schedule.setId(id);
             publishProgress(Long.toString(id));
@@ -326,25 +322,22 @@ public class NewScheduleActivity extends AppCompatActivity {
             // Upload the history of all entries using upload().
             String uploadState="Schedule Insertion Succeed.";
 
-            if (params[0]){
-                //sync schedule onto GAE
-                JSONArray resultSet = new JSONArray();
-                resultSet.put(Utils.scheduleToJson(schedule, userName, userName));
+            //sync schedule onto GAE
+            JSONArray resultSet = new JSONArray();
+            resultSet.put(Utils.scheduleToJson(schedule, userName, userName));
+            //put JsonArray into a map
+            Map<String, String> map = new HashMap<>();
+            map.put("ScheduleKey", resultSet.toString());
 
-                //put JsonArray into a map
-                Map<String, String> map = new HashMap<>();
-                map.put("ScheduleKey", resultSet.toString());
-
-                try {
-                    ServerUtilities.post(Globals.SERVER_ADDR + "/addSchedule.do", map);
-                } catch (IOException e1) {
-                    uploadState = "Sync failed: " + e1.getCause();
-                    Log.e("TAG", "data posting error " + e1);
-                    return uploadState;
-                }
-
-                Log.d("TAG_NAME", resultSet.toString());
+            try {
+                ServerUtilities.post(Globals.SERVER_ADDR + "/addSchedule.do", map);
+            } catch (IOException e1) {
+                uploadState = "Sync failed: " + e1.getCause();
+                Log.e("TAG", "data posting error " + e1);
+                return uploadState;
             }
+            Log.d("TAG_NAME", resultSet.toString());
+
             return uploadState;
         }
 
@@ -365,23 +358,9 @@ public class NewScheduleActivity extends AppCompatActivity {
         }
     }
 
-    //update the track and text views
-    public class SharedScheduleReceiver extends BroadcastReceiver
-    {
-        public SharedScheduleReceiver() {}
-        public void onReceive(Context context, Intent intent){
-            long id = intent.getLongExtra("id", 0);
-            DartReminderDBHelper dbHelper = new DartReminderDBHelper(getApplicationContext());
-            schedule = dbHelper.fetchScheduleByIndex(id);
-
-            InsertDbTask insertDbTask = new InsertDbTask();
-            insertDbTask.execute(false);
-        }
-    }
 
     @Override
     public void onDestroy(){
-        unregisterReceiver(sharedScheduleReceiver);
         super.onDestroy();
     }
 }

@@ -46,8 +46,10 @@ public class ScheduleFetchByIdServlet extends HttpServlet {
         } catch (Exception e) {
 
         }
-
         resultSet.put(rowObject);
+
+        PrintWriter writer = resp.getWriter();
+        writer.write(resultSet.toString());
     }
 
     public void doPost(HttpServletRequest req, HttpServletResponse resp)

@@ -84,6 +84,9 @@ public class MainActivity extends AppCompatActivity
     private RecentLocationListFragment recentLocationListFragment;
     private RecentListFragment recentActivityListFragment;
 
+    private SharedScheduleReceiver sharedScheduleReceiver;
+    private IntentFilter intentFilter;
+
 
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
@@ -146,6 +149,10 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sharedScheduleReceiver = new SharedScheduleReceiver();
+        intentFilter = new IntentFilter("ScheduleUpdate");
+        registerReceiver(sharedScheduleReceiver, intentFilter);
 
         slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tab);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -392,6 +399,8 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
 
+        unregisterReceiver(sharedScheduleReceiver);
+
         if (isFinishing()) {
             stopTrackingService();
             // do stuff
@@ -453,6 +462,56 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(String uploadState) {
             Toast.makeText(getApplicationContext(), uploadState, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    class ShareTask extends AsyncTask<Schedule, String, String> {
+        private String userName;
+        private Schedule schedule;
+        @Override
+        protected void onPreExecute(){
+            SharedPreferences userProfile = getApplicationContext().getSharedPreferences("userProfile", MODE_PRIVATE);
+            userName = userProfile.getString("USERNAME",null);
+        }
+
+        @Override
+        protected String doInBackground(Schedule... params) {
+            schedule = params[0];
+            long id = schedule.getId();
+            if(schedule.getUseTime() && !schedule.getCompleted()) {
+                AlarmManager mgrAlarm = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
+                Intent intent = new Intent(getApplicationContext(), TimeReceiver.class);
+                intent.putExtra("id", (int) id);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), (int) id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                mgrAlarm.set(AlarmManager.RTC_WAKEUP,
+                        schedule.getTime(),
+                        pendingIntent);
+            }
+            return "Share Success";
+        }
+
+
+        @Override
+        protected void onPostExecute(String uploadState) {
+            if (!schedule.getLocationName().isEmpty()){
+                MainActivity.unCompletedLocationScheduleList.add(schedule);
+            }
+
+            Toast.makeText(MainActivity.this, uploadState, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    //update the track and text views
+    public class SharedScheduleReceiver extends BroadcastReceiver
+    {
+        public SharedScheduleReceiver() {}
+        public void onReceive(Context context, Intent intent){
+            long id = intent.getLongExtra("id", 0);
+            DartReminderDBHelper dbHelper = new DartReminderDBHelper(getApplicationContext());
+            Schedule schedule = dbHelper.fetchScheduleByIndex(id);
+
+            ShareTask insertDbTask = new ShareTask();
+            insertDbTask.execute(schedule);
         }
     }
 }
