@@ -10,6 +10,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import dartmouth.edu.dartreminder.service.ActivityRecognitionService;
 import dartmouth.edu.dartreminder.utils.Globals;
 
 /**
@@ -180,7 +181,7 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
     public ArrayList<Schedule> fetchSchedulesByTime(){
         SQLiteDatabase dbObj = getReadableDatabase();
         ArrayList<Schedule> list = new ArrayList<Schedule>();
-        Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_USE_TIME + " = 1 ORDER BY " + KEY_TIME + " DESC", null);
+        Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_USE_TIME + " = 1 " + KEY_COMPLETED + " = 0 ORDER BY " + KEY_TIME + " DESC", null);
         while (cursor.moveToNext()) {
             Schedule schedule = cursorToSchedule(cursor, false);
             list.add(schedule);
@@ -196,7 +197,7 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
     public ArrayList<Schedule> fetchSchedulesByLocation(){
         SQLiteDatabase dbObj = getReadableDatabase();
         ArrayList<Schedule> list = new ArrayList<Schedule>();
-        Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_LOCATION_NAME + " <> '' ", null);
+        Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_LOCATION_NAME + " <> '' "+ KEY_COMPLETED + " = 0 ", null);
         while (cursor.moveToNext()) {
             Schedule schedule = cursorToSchedule(cursor, false);
             list.add(schedule);
@@ -212,9 +213,13 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
     public ArrayList<Schedule> fetchSchedulesByActivity(){
         SQLiteDatabase dbObj = getReadableDatabase();
         ArrayList<Schedule> list = new ArrayList<Schedule>();
-        Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_ACTIVITY + " <> -1 ", null);
+        Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_ACTIVITY + " <> -1 "+ KEY_COMPLETED + " = 0", null);
+        ActivityRecognitionService.UNCOMPLETED_ACT_NUM = cursor.getCount();
         while (cursor.moveToNext()) {
             Schedule schedule = cursorToSchedule(cursor, false);
+            int counter = ActivityRecognitionService.ACT_COUNTER.get(schedule.getActivity());
+            ActivityRecognitionService.ACT_COUNTER.set(schedule.getActivity(), counter);
+
             list.add(schedule);
             Log.d("TAG", "Got data");
         }
