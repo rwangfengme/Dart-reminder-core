@@ -27,6 +27,7 @@ import dartmouth.edu.dartreminder.R;
 import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.data.Schedule;
 import dartmouth.edu.dartreminder.server.ServerUtilities;
+import dartmouth.edu.dartreminder.view.ShareScheduleActivity;
 
 public class ListViewAdapter extends BaseSwipeAdapter {
 
@@ -81,13 +82,17 @@ public class ListViewAdapter extends BaseSwipeAdapter {
             public void onClick(View view) {
                 Toast.makeText(mContext, "share", Toast.LENGTH_SHORT).show();
 
-                //Send Email
-                Uri uri = Uri.parse("mailto:");
-                //String[] email = {"rwangfengdev@gmail.com"};
-                Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
-                intent.putExtra(Intent.EXTRA_SUBJECT, "Shared Event");
-                intent.putExtra(Intent.EXTRA_TEXT, "Event Notes");
-                mContext.startActivity(Intent.createChooser(intent, "Please select Email App"));
+//                //Send Email
+//                Uri uri = Uri.parse("mailto:");
+//                //String[] email = {"rwangfengdev@gmail.com"};
+//                Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
+//                intent.putExtra(Intent.EXTRA_SUBJECT, "Shared Event");
+//                intent.putExtra(Intent.EXTRA_TEXT, "Event Notes");
+//                mContext.startActivity(Intent.createChooser(intent, "Please select Email App"));
+
+                Intent i = new Intent(mContext.getApplicationContext(), ShareScheduleActivity.class);
+                i.putExtra(Globals.SCHEDULE_ID, dataScource.get(position).getId());
+                mContext.startActivity(i);
             }
         });
         return v;

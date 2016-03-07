@@ -72,6 +72,7 @@ public class LocationFragment extends Fragment implements LoaderManager.LoaderCa
                 Intent i = new Intent(getActivity(), LocationDetailActivity.class);
                 i.putExtra(Globals.ADD_LOCATION, true);
                 startActivity(i);
+
             }
         });
 

@@ -27,7 +27,21 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Title"
+            android:text="Send to: "
+            android:textColor="@color/colorBlack"
+            android:textSize="15dip"
+            android:id="@+id/TextView_SendTo" />
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:id="@+id/EditText_EditEmail" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Title: "
             android:textColor="@color/colorBlack"
             android:textSize="15dip"
             android:id="@+id/TextView_NewScheduleTitle" />
@@ -41,7 +55,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Notes"
+            android:text="Notes: "
             android:textColor="@color/colorBlack"
             android:textSize="15dip"
             android:layout_marginTop="15dp"

@@ -62,7 +62,7 @@
             android:name=".view.MapsActivity"
             android:label="@string/title_activity_maps"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".view.LocationDetailActivity"
             android:label="@string/title_activity_location_detail" >
@@ -104,20 +104,27 @@
             android:label="@string/title_activity_notify_location_received"
             android:theme="@style/Theme.Transparent" >
         </activity>
+
         <receiver
             android:name=".server.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
                 <category android:name="dartmouth.edu.dartreminder.server" />
             </intent-filter>
         </receiver>
+
         <service android:name=".server.GcmIntentService" />
 
         <activity
             android:name=".view.NotifyActivityReceivedActivity"
             android:label="@string/title_activity_notify_activity_received"
-            android:theme="@style/Theme.Transparent">
+            android:theme="@style/Theme.Transparent" >
+        </activity>
+        <activity
+            android:name=".view.ShareScheduleActivity"
+            android:label="Share Your Schedule">
         </activity>
     </application>
 
