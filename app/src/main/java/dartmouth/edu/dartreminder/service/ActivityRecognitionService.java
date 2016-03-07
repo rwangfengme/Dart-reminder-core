@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
+import dartmouth.edu.dartreminder.data.Schedule;
 import dartmouth.edu.dartreminder.utils.Globals;
 import dartmouth.edu.dartreminder.view.NotifyActivityReceivedActivity;
 
@@ -22,6 +24,7 @@ public class ActivityRecognitionService extends IntentService{
 
     public static int UNCOMPLETED_ACT_NUM = 0;
     public static ArrayList<Integer> ACT_COUNTER = new ArrayList<>(Arrays.asList(0, 0, 0));
+    public static ArrayList<Schedule> list = new ArrayList<>();
 
     private int still = 0;
     private int walking = 0;
@@ -95,8 +98,17 @@ public class ActivityRecognitionService extends IntentService{
                     classifier.set(0, 0);
                     classifier.set(1, 0);
                     classifier.set(2, 0);
-                    ACT_COUNTER.set(actNum, ACT_COUNTER.get(actNum)-1);
+                    ACT_COUNTER.set(actNum, 0);
+                    DartReminderDBHelper mScheduleDBHelper = new DartReminderDBHelper(getApplicationContext());
+                    for(Schedule s : list){
+                        if(s.getActivity() == actNum){
+                            s.setCompleted(true);
+                            mScheduleDBHelper.updateSchedule(s);
+                        }
+                    }
+
                 }
+                count = 0;
             }
         }
         //NotifyActivityReceivedActivity
