@@ -309,7 +309,7 @@ public class NewScheduleActivity extends AppCompatActivity {
 
             //sync schedule onto GAE
             JSONArray resultSet = new JSONArray();
-            resultSet.put(Utils.scheduleToJson(schedule, userName));
+            resultSet.put(Utils.scheduleToJson(schedule, userName, userName));
 
             //put JsonArray into a map
             Map<String, String> map = new HashMap<>();

@@ -8,7 +8,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.SQLException;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -39,6 +38,7 @@ import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
 import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
+import com.google.appengine.labs.repackaged.org.json.JSONException;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -54,9 +54,11 @@ import java.util.logging.Logger;
 import dartmouth.edu.dartreminder.R;
 import dartmouth.edu.dartreminder.backend.registration.Registration;
 import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
+import dartmouth.edu.dartreminder.data.Schedule;
 import dartmouth.edu.dartreminder.data.UserAccount;
 import dartmouth.edu.dartreminder.server.ServerUtilities;
 import dartmouth.edu.dartreminder.utils.Globals;
+import dartmouth.edu.dartreminder.utils.Utils;
 
 /**
  * A login screen that offers login via email/password.
@@ -75,6 +77,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,10 +207,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         private boolean noUser = true;
         private String mEmail = "";
         private String mPassword = "";
+        private DartReminderDBHelper dartReminderDBHelper;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
+            dartReminderDBHelper = new DartReminderDBHelper(getApplicationContext());
         }
 
         @Override
@@ -223,6 +228,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 if(fromSignIn){
                     response = ServerUtilities.post(Globals.SERVER_ADDR + "/login.do", map);
                     if(response.equals("0\n")){
+                        Map<String, String> userMap = new HashMap<String, String>();
+                        map.put("userName", mEmail);
+                        response = ServerUtilities.post(Globals.SERVER_ADDR + "/fetchSchedule.do", map);
+
+                        com.google.appengine.labs.repackaged.org.json.JSONArray resultSet =
+                                new com.google.appengine.labs.repackaged.org.json.JSONArray(response);
+                        int length = resultSet.length();
+                        for (int i = 0; i < length; i++){
+                            Schedule schedule;
+                            com.google.appengine.labs.repackaged.org.json.JSONObject scheduleElement =
+                                    resultSet.getJSONObject(i);
+                            if (scheduleElement != null){
+                                schedule = Utils.JsonToSchedule(scheduleElement);
+                                dartReminderDBHelper.insertSchedule(schedule);
+                            }
+                        }
+
                         return true;
                     } else if (response.equals("1\n")){
                         noUser = true;
@@ -236,13 +258,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     Log.e("TAGG", "sign up response " + response);
 
                     if(response.equals("0\n")){
-                        response = "a";
                         return true;
                     } else {
                         return false;
                     }
                 }
             } catch (IOException e) {
+                Log.e("TAGG", "data posting error " + e);
+                return false;
+            } catch (JSONException e){
                 Log.e("TAGG", "data posting error " + e);
                 return false;
             }

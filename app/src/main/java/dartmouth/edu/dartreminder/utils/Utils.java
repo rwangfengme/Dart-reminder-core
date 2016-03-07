@@ -1,6 +1,8 @@
 package dartmouth.edu.dartreminder.utils;
-import org.json.JSONException;
-import org.json.JSONObject;
+
+
+import com.google.appengine.labs.repackaged.org.json.JSONException;
+import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
 import dartmouth.edu.dartreminder.data.Schedule;
 
@@ -8,7 +10,7 @@ import dartmouth.edu.dartreminder.data.Schedule;
  * Created by LeoZhu on 3/6/16.
  */
 public class Utils {
-    public static JSONObject scheduleToJson(Schedule schedule, String userName){
+    public static JSONObject scheduleToJson(Schedule schedule, String userName, String sender){
             JSONObject rowObject = new JSONObject();
             try {
                 rowObject.put(Schedule.FIELD_NAME_ID, userName + "," + schedule.getTime());
@@ -25,7 +27,7 @@ public class Utils {
                 rowObject.put(Schedule.FIELD_NAME_REPEAT, schedule.getRepeat());
                 rowObject.put(Schedule.FIELD_NAME_IS_COMPLETED, schedule.getCompleted());
                 rowObject.put(Schedule.FIELD_NAME_USER_NAME, userName);
-                rowObject.put(Schedule.FIELD_NAME_SENDER, "");
+                rowObject.put(Schedule.FIELD_NAME_SENDER, sender);
             } catch (Exception e) {
 
             }

@@ -58,6 +58,12 @@ public class AddScheduleServlet extends HttpServlet {
                         req.setAttribute("_retStr", "Add schedule " + id + " success");
                         result.add(schedule);
                         req.setAttribute("result", result);
+                        if (!userName.isEmpty() && !sender.isEmpty() && !userName.equals(sender)){
+                            String message = userName + "," + id;
+
+                            MessagingEndpoint msg = new MessagingEndpoint();
+                            msg.sendMessage(message);
+                        }
                     }else{
                         req.setAttribute("_retStr", id + " exists");
                     }

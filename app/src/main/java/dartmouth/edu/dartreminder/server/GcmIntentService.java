@@ -2,6 +2,7 @@ package dartmouth.edu.dartreminder.server;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -12,9 +13,6 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Created by Varun on 2/18/16.
- */
 public class GcmIntentService extends IntentService {
 
     public GcmIntentService() {
@@ -34,7 +32,21 @@ public class GcmIntentService extends IntentService {
             if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 Logger.getLogger("GCM_RECEIVED").log(Level.INFO, extras.toString());
 
-                showToast(extras.getString("message"));
+                String msg = extras.getString("message");
+
+                if (msg != null && !msg.isEmpty()){
+                    SharedPreferences userProfile = getApplicationContext().
+                            getSharedPreferences("userProfile", MODE_PRIVATE);
+                    String currentUserName = userProfile.getString("USERNAME", null);
+                    String[] words = msg.split(",");
+
+                    if (words[0].equals(currentUserName)){
+                        //set broadcast to history fragment
+                        Intent i = new Intent("Schedule");
+                        i.putExtra("id", words[1] + "," + words[2]);
+                        sendBroadcast(i);
+                    }
+                }
             }
         }
         GcmBroadcastReceiver.completeWakefulIntent(intent);
