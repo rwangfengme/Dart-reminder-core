@@ -149,7 +149,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             e.printStackTrace();
                         }
                     }
-                    if (addressList != null) {
+                    if (addressList != null && addressList.size() > 0) {
                         Address address = addressList.get(0);
                         mMap.clear();
                         lat = address.getLatitude();
