@@ -215,12 +215,12 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
         SQLiteDatabase dbObj = getReadableDatabase();
         ArrayList<Schedule> list = new ArrayList<Schedule>();
         Cursor cursor = dbObj.rawQuery("SELECT * FROM " + TABLE_NAME_SCHEDULES + " WHERE " + KEY_ACTIVITY + " <> -1 AND "+ KEY_COMPLETED + " = 0", null);
+        ActivityRecognitionService.list = list;
         ActivityRecognitionService.UNCOMPLETED_ACT_NUM = cursor.getCount();
         while (cursor.moveToNext()) {
             Schedule schedule = cursorToSchedule(cursor, false);
             int counter = ActivityRecognitionService.ACT_COUNTER.get(schedule.getActivity());
-            ActivityRecognitionService.ACT_COUNTER.set(schedule.getActivity(), counter);
-
+            ActivityRecognitionService.ACT_COUNTER.set(schedule.getActivity(), counter+1);
             list.add(schedule);
             Log.d("TAG", "Got data");
         }
@@ -230,7 +230,6 @@ public class DartReminderDBHelper extends SQLiteOpenHelper {
 
         return list;
     }
-
 
 
     public ArrayList<Schedule> fetchSchedules() {
