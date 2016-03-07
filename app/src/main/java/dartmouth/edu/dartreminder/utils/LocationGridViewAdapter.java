@@ -28,7 +28,7 @@ public class LocationGridViewAdapter extends BaseAdapter {
     }
 
     public int getCount() {
-        return mThumbIds.length;
+        return customLocationList == null ? 0 : customLocationList.size();
     }
 
     public Object getItem(int position) {

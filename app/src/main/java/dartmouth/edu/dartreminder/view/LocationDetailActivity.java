@@ -52,6 +52,8 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
     private Button mSaveButton;
     private Button mCancelButton;
     private LinearLayout mSearchLayout;
+    private TextView mDetailView;
+    private EditText mDetailText;
     private GoogleMap mMap;
 
     private Marker mMarker;
@@ -92,6 +94,8 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
         mSaveButton = (Button) findViewById(R.id.location_save_button);
         mCancelButton = (Button) findViewById(R.id.location_cancel_button);
         mSearchLayout = (LinearLayout) findViewById(R.id.location_search_frame);
+        mDetailView = (TextView) findViewById(R.id.location_title_view_detail);
+        mDetailText = (EditText) findViewById(R.id.location_title_view_detail_text);
 
         datasource = new DartReminderDBHelper(getApplicationContext());
         locationChangedReceiver = new LocationChangedReceiver();
@@ -101,25 +105,28 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
 
         isAlarm = data.getBooleanExtra(Globals.MSG_LOCATION_ALARM, false);
         if (isAlarm){
-            String title = data.getStringExtra(Globals.LOCATION_TITLE);
-            String detail = data.getStringExtra(Globals.LOCATION_DETAIL);
+            String title = data.getStringExtra(Globals.SCHEDULE_TITLE);
+            String detail = data.getStringExtra(Globals.SCHEDULE_NOTE);
+            String location = data.getStringExtra(Globals.LOCATION_TITLE);
             double lat = data.getDoubleExtra(Globals.LOCATION_LAT, 0);
             double lng = data.getDoubleExtra(Globals.LOCATION_LNG, 0);
 
             mTitleText.setText(title);
-            mAddressText.setText(detail);
+            mDetailText.setText(detail);
+            mAddressText.setText(location);
             mLatLng = new LatLng(lat, lng);
             setMarker(mLatLng);
 
             mTitleView.setText("Title: ");
-            mTitleText.setText("");
 
             mSaveButton.setVisibility(View.GONE);
             //mCancelButton.setVisibility(View.GONE);
             mSearchLayout.setVisibility(View.GONE);
-            mTitleText.setEnabled(false);
-            mAddressText.setEnabled(false);
+            //mTitleText.setEnabled(false);
+            //mAddressText.setEnabled(false);
         }else{
+            mDetailView.setVisibility(View.GONE);
+            mDetailText.setVisibility(View.GONE);
             isAdd = data.getBooleanExtra(Globals.ADD_LOCATION, false);
             if (!isAdd){
                 String title = data.getStringExtra(Globals.LOCATION_TITLE);
@@ -132,10 +139,12 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
                 setMarker(mLatLng);
 
                 mSaveButton.setVisibility(View.GONE);
-                mCancelButton.setVisibility(View.GONE);
-                mSearchLayout.setVisibility(View.GONE);
-                mTitleText.setEnabled(false);
-                mAddressText.setEnabled(false);
+                //mCancelButton.setVisibility(View.GONE);
+                //mSearchLayout.setVisibility(View.GONE);
+                //mSearchText.setEnabled(false);
+                mSearchIcon.setEnabled(false);
+                //mTitleText.setEnabled(false);
+                //mAddressText.setEnabled(false);
             }else{
                 IntentFilter intentFilter = new IntentFilter(
                         LocationChangedReceiver.class.getName());
@@ -233,7 +242,7 @@ public class LocationDetailActivity extends FragmentActivity implements OnMapRea
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isAlarm)
+                if(!isAlarm && isAdd)
                     Toast.makeText(getApplicationContext(), "Location Entry Discarded.", Toast.LENGTH_SHORT).show();
                 finish();
             }

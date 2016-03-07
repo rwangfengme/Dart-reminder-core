@@ -134,7 +134,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean user_login_check() {
         SharedPreferences userProfile = this.getSharedPreferences("userProfile", MODE_PRIVATE);
-        String username = userProfile.getString("USERNAME",null);
+        String username = userProfile.getString("USERNAME", null);
         if(username != null)
             return true;
         return false;
