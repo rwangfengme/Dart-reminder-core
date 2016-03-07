@@ -57,6 +57,7 @@ import dartmouth.edu.dartreminder.data.DartReminderDBHelper;
 import dartmouth.edu.dartreminder.data.Schedule;
 import dartmouth.edu.dartreminder.data.UserAccount;
 import dartmouth.edu.dartreminder.server.ServerUtilities;
+import dartmouth.edu.dartreminder.service.TrackingService;
 import dartmouth.edu.dartreminder.utils.Globals;
 import dartmouth.edu.dartreminder.utils.Utils;
 
@@ -285,6 +286,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 editor.apply();
                 Intent myIntent = new Intent(LoginActivity.this,MainActivity.class);
                 LoginActivity.this.startActivity(myIntent);
+
+                /*Intent mServiceIntent = new Intent(LoginActivity.this, TrackingService.class);
+
+                // start the service first
+                startService(mServiceIntent);*/
                 finish();
             } else {
                 if (fromSignIn) {

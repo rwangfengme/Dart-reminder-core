@@ -56,6 +56,25 @@ public abstract class Globals {
 
     public static final String GCM_AR = "Activity Recognition";
     public static final String AR_BROADCAST = "AR_BROADCAST";
-    public static final int DETECTION_INTERVAL_IN_MILLISECONDS = 0;
+    public static final int DETECTION_INTERVAL_IN_MILLISECONDS = 1000;
     public static final long[] mVibratePattern = new long[]{0, 500, 500};
+
+    public static final int ACCELEROMETER_BUFFER_CAPACITY = 2048;
+    public static final int ACCELEROMETER_BLOCK_CAPACITY = 64;
+
+
+    public static final String CLASS_LABEL_KEY = "label";
+    public static final String CLASS_LABEL_STANDING = "Standing";
+    public static final String CLASS_LABEL_WALKING = "Walking";
+    public static final String CLASS_LABEL_RUNNING = "Running";
+    public static final String CLASS_LABEL_OTHER = "others";
+
+    public static final String FEAT_FFT_COEF_LABEL = "fft_coef_";
+    public static final String FEAT_MAX_LABEL = "max";
+    public static final String FEAT_SET_NAME = "accelerometer_features";
+
+    public static final String FEATURE_FILE_NAME = "features.arff";
+    public static final String RAW_DATA_NAME = "raw_data.txt";
+    public static final int FEATURE_SET_CAPACITY = 10000;
+
 }
