@@ -141,7 +141,6 @@ public class SensorService extends Service implements SensorEventListener {
             // capacity-restricted queue, it is generally preferable to use
             // offer.
 
-            Log.d("data.sensor", m+"");
             try {
                 mAccBuffer.add(new Double(m));
             } catch (IllegalStateException e) {
@@ -217,7 +216,7 @@ public class SensorService extends Service implements SensorEventListener {
                         votingScores[activityIndex] ++;
                         String activity = getActivityWithMaxVotingScore();
 
-                        if(statCount == 100){
+                        if(statCount == 20){
                             statCount = 0;
                             int actNum = voteCount.indexOf(Collections.max(voteCount));
                             activity = ACTIVITIES[actNum];
@@ -226,6 +225,8 @@ public class SensorService extends Service implements SensorEventListener {
                             intent.setAction("SENSOR_TYPE");
                             intent.putExtra("type", activity);
                             sendBroadcast(intent);*/
+                            voteCount = new ArrayList<>(Arrays.asList(0, 0, 0, 0));
+
                             DartReminderDBHelper mScheduleDBHelper = new DartReminderDBHelper(getApplicationContext());
                             ArrayList<Schedule> list = mScheduleDBHelper.fetchSchedulesByActivity();
 
